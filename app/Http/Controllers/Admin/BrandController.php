@@ -7,6 +7,9 @@ use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+
 
 class BrandController extends Controller
 {
@@ -48,7 +51,7 @@ class BrandController extends Controller
             'logo.max' => 'The logo size must not exceed 2MB.',
         ];
 
-        $validator = \Validator::make($request->all(), $rules, $messages);
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -118,7 +121,7 @@ class BrandController extends Controller
             'logo.max' => 'The logo size must not exceed 2MB.',
         ];
 
-        $validator = \Validator::make($request->all(), $rules, $messages);
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -134,8 +137,8 @@ class BrandController extends Controller
         // Handle logo upload
         if ($request->hasFile('logo')) {
             // Delete old logo if exists
-            if ($brand->logo && \Storage::disk('public')->exists($brand->logo)) {
-                \Storage::disk('public')->delete($brand->logo);
+            if ($brand->logo && Storage::disk('public')->exists($brand->logo)) {
+                Storage::disk('public')->delete($brand->logo);
             }
 
             $logo = $request->file('logo');
@@ -156,8 +159,8 @@ class BrandController extends Controller
     public function destroy(Brand $brand)
     {
         // Delete logo if exists
-        if ($brand->logo && \Storage::disk('public')->exists($brand->logo)) {
-            \Storage::disk('public')->delete($brand->logo);
+        if ($brand->logo && Storage::disk('public')->exists($brand->logo)) {
+            Storage::disk('public')->delete($brand->logo);
         }
 
         $brand->delete();
