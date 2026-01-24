@@ -14,6 +14,8 @@ class UsersSeeder extends Seeder
      */
     public function run(): void
     {
+        // Delete existing users
+        User::whereIn('email', ['admin@gmail.com', 'supervisor@gmail.com', 'vendor@gmail.com'])->delete();
 
         $users = [
             [
@@ -26,29 +28,36 @@ class UsersSeeder extends Seeder
                 'role' => 'admin',
             ],
             [
-                'name' => 'User',
-                'email' => 'user@gmail.com',
-                'mobile' => '+919876543210',
-                'state' => 'Gujrat',
+                'name' => 'Supervisor',
+                'email' => 'supervisor@gmail.com',
+                'mobile' => '+919876543211',
+                'state' => 'Gujarat',
                 'country' => 'India',
                 'password' => '123456',
-                'role' => 'user',
+                'role' => 'supervisor',
+            ],
+            [
+                'name' => 'Vendor',
+                'email' => 'vendor@gmail.com',
+                'mobile' => '+919876543212',
+                'state' => 'Maharashtra',
+                'country' => 'India',
+                'password' => '123456',
+                'role' => 'vendor',
             ],
         ];
 
         foreach ($users as $userData) {
-            if (!User::where('email', $userData['email'])->orWhere('mobile', $userData['mobile'])->exists()) {
-                $user = new User();
-                $user->name = $userData['name'];
-                $user->email = $userData['email'];
-                $user->mobile = $userData['mobile'];
-                $user->state = $userData['state'];
-                $user->country = $userData['country'];
-                $user->email_verified_at = now();
-                $user->password = Hash::make($userData['password']);
-                $user->save();
-                $user->assignRole($userData['role']);
-            }
+            $user = new User();
+            $user->name = $userData['name'];
+            $user->email = $userData['email'];
+            $user->mobile = $userData['mobile'];
+            $user->state = $userData['state'];
+            $user->country = $userData['country'];
+            $user->email_verified_at = now();
+            $user->password = Hash::make($userData['password']);
+            $user->save();
+            $user->assignRole($userData['role']);
         }
 
     }

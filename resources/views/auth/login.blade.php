@@ -19,7 +19,7 @@
                     <!-- Email -->
                     <div class="auth-group">
                         <label>{{ __('common.username_or_email') }}</label>
-                        <input type="email"
+                        <input type="text"
                             name="email"
                             value="{{ old('email') }}"
                             class="@error('email') is-invalid @enderror"

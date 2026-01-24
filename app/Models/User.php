@@ -15,8 +15,12 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'name',
         'email',
+        'username',
         'mobile',
+        'whatsapp_number',
         'state',
+        'area',
+        'address',
         'country',
         'password',
         'email_verified_at',

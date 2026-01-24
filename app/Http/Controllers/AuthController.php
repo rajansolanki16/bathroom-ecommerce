@@ -163,13 +163,12 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $rules = [
-            'email' => 'required|email',
+            'email' => 'required|string',
             'password' => 'required|string|min:6',
         ];
 
         $messages = [
-            'email.required' => 'The email field is required.',
-            'email.email' => 'The email must be a valid email address.',
+            'email.required' => 'The email or username field is required.',
             'password.required' => 'The password field is required.',
             'password.min' => 'The password must be at least 6 characters.',
         ];
@@ -178,24 +177,24 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
-        }else{
-            
-            $credentials = $request->only('email', 'password');
+        } else {
+            $login_input = $request->input('email');
+            $password = $request->input('password');
             $remember = $request->has('remember');
 
-            $user = User::where('email', $credentials['email'])->first();
+            // Check if input is email or username
+            $user = User::where('email', $login_input)
+                        ->orWhere('username', $login_input)
+                        ->first();
             
             if ($user && is_null($user->email_verified_at)) {
                 return back()->withErrors(['email' => 'Your email is not verified. Please try to reset your password.']);
             }
 
-            if (Auth::attempt($credentials, $remember)) {
+            // Attempt login with email or username
+            if (Auth::attempt(['email' => $login_input, 'password' => $password], $remember) || 
+                Auth::attempt(['username' => $login_input, 'password' => $password], $remember)) {
                 $user = Auth::user();
-
-                if (Session::get('abandoned_cart')) {
-                    $acid = Session::get('abandoned_cart');
-                    AbandonedCart::where('id', $acid)->update(['user_id' => $user->id]);
-                }
                 
                 if ($user->hasRole('admin')) {
                     return redirect()->route('view.admin.dashboard');

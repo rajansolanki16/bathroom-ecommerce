@@ -40,7 +40,7 @@
         <p>We sent this email for reset your password. Click the button below to set a new password.</p>
         <a href="{{ route('view.new_password', ['token' => $token]) }}" class="btn">Reset Password</a>
         <p>Please reset the password before {{ now()->addMinutes(30)->format('Y-m-d H:i:s') }}.</p>
-        <p>Thank you for being with us,<br>Knight Oasis</p>
+        <p>Thank you for being with us,<br>E-Commerce</p>
     </div>
 </body>
 </html>

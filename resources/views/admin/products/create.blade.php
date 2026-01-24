@@ -1,4 +1,4 @@
-<x-admin.header :title="'Product'" />
+<x-admin.header :title="'Product Create'" />
     <div class="container-fluid">
         <form id="productForm" action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
             @csrf

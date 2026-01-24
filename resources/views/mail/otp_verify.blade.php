@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $mailData['otp'] }} Is Your OTP to Login On Knight Oasis</title>
+    <title>{{ $mailData['otp'] }} Is Your OTP to Login On E-Commerce</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,8 +36,8 @@
 <body>
 
     <div class="container">
-        <h2>Welcome to Knight Oasis, {{ $mailData['user_name'] }}!</h2>
-        <p>Please use the OTP below to verify your email address on Knight Oasis.</p>
+        <h2>Welcome to E-Commerce, {{ $mailData['user_name'] }}!</h2>
+        <p>Please use the OTP below to verify your email address on E-Commerce.</p>
         <p class="otp">{{ $mailData['otp'] }}</p>
         <p>Don't share this code with anyone.</p>
         <div class="footer">

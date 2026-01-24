@@ -47,18 +47,18 @@
                     </button>
                 </div>
                 <div class="d-flex align-items-center">
-                    <div class="ms-1 header-item d-none d-sm-flex">
+                    {{-- <div class="ms-1 header-item d-none d-sm-flex">
                         <button type="button" class="btn btn-icon btn-topbar btn-ghost-dark rounded-circle"
                             data-toggle="fullscreen">
                             <i class='bi bi-arrows-fullscreen fs-lg'></i>
                         </button>
-                    </div>
+                    </div> --}}
                     <div class="dropdown topbar-head-dropdown ms-1 header-item">
-                        <button type="button"
+                        {{-- <button type="button"
                             class="btn btn-icon btn-topbar btn-ghost-dark rounded-circle mode-layout"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="align-middle bi bi-sun fs-3xl"></i>
-                        </button>
+                        </button> --}}
                         <div class="p-2 dropdown-menu dropdown-menu-end" id="light-dark-mode">
                             <a href="#!" class="dropdown-item" data-mode="light"><i
                                     class="align-middle bi bi-sun me-2"></i> Default (light mode)</a>

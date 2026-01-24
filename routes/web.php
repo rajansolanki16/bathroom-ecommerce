@@ -11,8 +11,10 @@ use Illuminate\Support\Facades\Auth;
 // Controllers
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AmenityController;
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\AttributeValueController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\BlogCategoriesController;
@@ -91,6 +93,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/products/generate-variants', [ProductController::class, 'generateVariants'])->name('products.generate.variants');
         Route::resource('/products', ProductController::class)->names('products');
         Route::resource('/categories', CategoryController::class)->names('categories');
+        Route::resource('/brands', BrandController::class)->names('brands');
         Route::resource('/tags', TagsController::class)->names('tags');
         Route::resource('/coupons', CouponController::class)->names('coupons');
         Route::resource('/payment-options', PaymentOptionsController::class)->names('paymentoptions');
@@ -126,18 +129,6 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/ecommerce/store', [SettingController::class, 'store_ecommerce'])->name('settings.ecommerce.store');
         });
 
-        Route::get('/offline-booking', [BookingController::class, 'show_offline_booking'])->name('view.offline_booking');
-        Route::post('/offline-booking', [BookingController::class, 'store_offline_booking'])->name('offline_booking.save');
-
-        Route::get('/transactions', [BookingController::class, 'show_transactions'])->name('view.transactions');
-        Route::get('/bookings', [BookingController::class, 'show_bookings'])->name('view.bookings');
-
-        Route::get('/booking/{id}', [BookingController::class, 'show_single_booking'])->name('view.booking');
-        // Route::get('/booking/{id}/edit', [BookingController::class, 'edit_booking'])->name('view.edit_booking');
-        // Route::post('/booking/{id}/edit', [BookingController::class, 'save_edit_booking'])->name('edit_booking.save');
-        Route::post('/booking/pay-status/{bid}', [BookingController::class, 'change_pay_status'])->name('booking_payment.change.save');
-        Route::get('/users', [AdminController::class, 'show_users'])->name('view.users');
-        Route::post('/remove-room-media', [RoomController::class, 'remove_room_media'])->name('rooms.media.remove');
-        Route::post('/room-wise-services', [RoomController::class, 'room_wise_services'])->name('rooms.services');
+        Route::resource('/users', UserController::class)->names('users');
     });
 });
