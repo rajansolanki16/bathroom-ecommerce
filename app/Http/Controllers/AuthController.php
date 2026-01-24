@@ -89,11 +89,6 @@ class AuthController extends Controller
             $user->save();
             $user->assignRole('user');
 
-            if (Session::get('abandoned_cart')) {
-                $acid = Session::get('abandoned_cart');
-                AbandonedCart::where('id', $acid)->update(['user_id' => $user->id]);
-            }
-
             $mailData = [
                 'email' => $user->email,
                 'otp' => $otp,
@@ -305,14 +300,12 @@ class AuthController extends Controller
         $user = Auth::user();
 
         if ($user->id) {
-            $bookings = Booking::where("user_id", '=', $user->id)->get();
-            $transactions = Transaction::where("user_id", '=', $user->id)->get();
             $countries = Country::select('c_code', 'c_name')->distinct('c_name')->get()->sortBy(function ($country) {
                 return (int) filter_var($country->c_code, FILTER_SANITIZE_NUMBER_INT);
             });
             $sid = Country::where('s_name', '=', $user->state)->where('c_name', '=', $user->country)->first();
 
-            return view('account')->with(['bookings' => $bookings, 'transactions' => $transactions, 'countries' => $countries, 'user' => $user, 'sid' => $sid]);
+            return view('account')->with(['countries' => $countries, 'user' => $user, 'sid' => $sid]);
         } else {
             return redirect()->back();
         }

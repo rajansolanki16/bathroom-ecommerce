@@ -9,7 +9,7 @@
                         <img src="{{ publicPath('assets/images/total-b.png') }}" class="w-100" />
                     </div>
                 </div>
-                <h4>{{ $bookingCount }}</h4>
+                <h4>5</h4>
                 <p class="text-muted mb-4">Total Bookings</p>
             </div>
             <div class="progress progress-sm rounded-0">
@@ -26,7 +26,7 @@
                         <img src="{{ publicPath('assets/images/total-r.png') }}" class="w-100" />
                     </div>
                 </div>
-                <h4>₹<span>{{ $totalAmount }}</span></h4>
+                <h4>₹<span>20000</span></h4>
                 <p class="text-muted mb-4">Total Revenue</p>
             </div>
             <div class="progress progress-sm rounded-0">
@@ -43,7 +43,7 @@
                         <img src="{{ publicPath('assets/images/monthly-b.png') }}" class="w-100" />
                     </div>
                 </div>
-                <h4>{{ $month_bookingCount }}</h4>
+                <h4> 2</h4>
                 <p class="text-muted mb-4">Last Month Bookings</p>
             </div>
             <div class="progress progress-sm rounded-0">
@@ -60,7 +60,7 @@
                         <img src="{{ publicPath('assets/images/total-r.png') }}" class="w-100" />
                     </div>
                 </div>
-                <h4>₹<span>{{ $month_totalAmount }}</span></h4>
+                <h4>₹<span>1200</span></h4>
                 <p class="text-muted mb-4">Last Month Revenue</p>
             </div>
             <div class="progress progress-sm rounded-0">
@@ -91,39 +91,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($current_checkins as $booking )
-                                @php
-                                    $guest['name'] = '--';  
-                                    $guest['phone'] = '--';
-                                    $g = json_decode($booking->customer_details);
-                                    $room = App\Models\Room::find($booking->room_id);
 
-                                    if (isset($booking->user_id)) {
-                                        $g = App\Models\User::find($booking->user_id);
-                                        $guest['name'] = $g->name;  
-                                        $guest['phone'] = $g->mobile;
-                                    } elseif (strlen($g->name > 0)) {
-                                        $guest['name'] = $g->name;  
-                                        $guest['phone'] = $g->phone;
-                                    }
-                                @endphp
-
-                                <tr>
-                                    <th scope="row">{{ $booking->id }}</th>
-                                    <td>{{ $guest['name'] }}</td>
-                                    <td>{{ $guest['phone'] }}</td>
-                                    <td>{{ $room->name }}</td>
-                                    <td><a href="{{ route('view.booking' , $booking->id) }}" class="link-success">View More <i
-                                                class="ri-arrow-right-line align-middle"></i></a></td>
-                                </tr>
-                                
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted">
-                                        No bookings for today.
-                                    </td>
-                                </tr>
-                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -150,39 +118,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($today_checkins as $booking )
-                                @php
-                                    $guest['name'] = '--';  
-                                    $guest['phone'] = '--';
-                                    $g = json_decode($booking->customer_details);
-                                    $room = App\Models\Room::find($booking->room_id);
-
-                                    if (isset($booking->user_id)) {
-                                        $g = App\Models\User::find($booking->user_id);
-                                        $guest['name'] = $g->name;  
-                                        $guest['phone'] = $g->mobile;
-                                    } elseif (strlen($g->name > 0)) {
-                                        $guest['name'] = $g->name;  
-                                        $guest['phone'] = $g->phone;
-                                    }
-                                @endphp
-
-                                <tr>
-                                    <th scope="row">{{ $booking->id }}</th>
-                                    <td>{{ $guest['name'] }}</td>
-                                    <td>{{ $guest['phone'] }}</td>
-                                    <td>{{ $room->name }}</td>
-                                    <td><a href="{{ route('view.booking' , $booking->id) }}" class="link-success">View More <i
-                                                class="ri-arrow-right-line align-middle"></i></a></td>
-                                </tr>
-                                
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted">
-                                        No bookings for today.
-                                    </td>
-                                </tr>
-                            @endforelse
                         </tbody>
                     </table>
                 </div>

@@ -82,11 +82,6 @@ Route::post('/reviews', [ProductReviewController::class, 'store'])->name('review
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'show_admin'])->name('view.admin.dashboard');
-        Route::resource('/blogs', BlogController::class)->names('blogs');
-        Route::resource('/blog-categories', BlogCategoriesController::class)->names('blog_categories');
-        Route::resource('/room-services', ServiceController::class)->names('services');
-        Route::resource('/room-amenities', AmenityController::class)->names('amenities');
-        Route::resource('/rooms', RoomController::class)->names('rooms');
 
         Route::post('/products/{product}/variants/update', [ProductController::class, 'updateVariants'])->name('products.variants.update');
         Route::post('/products/{product}/variants/remove', [ProductController::class, 'removeVariant'])->name('products.variants.remove');
@@ -101,10 +96,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/attribute-values', AttributeValueController::class)->names('attribute_values');
 
         Route::get('/wishlist/show', [WishListController::class, 'showadmin'])->name('wishlist.show');
-
-        //order routes
         Route::get('/orders', [OrderController::class, 'indexshow'])->name('orders.show');
-         Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
+        Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
 
         Route::prefix('settings')->group(function () {
 
