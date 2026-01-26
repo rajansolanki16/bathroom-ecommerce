@@ -45,7 +45,7 @@
                     <div class="mb-3">
                         <label for="subcategory" class="form-label">{{ __('category.Parent_Category') }} <span class="text-danger">{{ __('category.required_mark') }}</span></label>
 
-                        
+
                         <select name="parent_id" id="subcategory" class="form-control">
                             <option value="">Select parent Category</option>
                             @foreach($parentCategories as $parent)
@@ -55,6 +55,12 @@
                             @endforeach
                         </select>
 
+                        <div class="mb-3">
+                            <div class="form-check form-switch mb-3">
+                                <input type="checkbox" name="is_visible" value="1" class="form-check-input" {{ old('is_visible', $category->is_visible) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="isvisibleInput">Is Visible</label>
+                            </div>
+                        </div>
 
                     </div>
 

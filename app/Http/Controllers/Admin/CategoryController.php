@@ -66,6 +66,7 @@ class CategoryController extends Controller
         $categories->name = $request->name;
         $categories->slug = Str::slug($request->name);
         $categories->parent_id = $request->parent_id;
+        $categories->is_visible = $request->has('is_visible') ? 1 : 0; //added
         $categories->save();
 
         if ($categories) {
@@ -83,7 +84,6 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         //
-
 
     }
 
@@ -133,6 +133,7 @@ class CategoryController extends Controller
             'name'      => $request->name,
             'slug'      => Str::slug($request->name),
             'parent_id' => $request->parent_id,
+            'is_visible' => $request->has('is_visible') ? 1 : 0, //updated
         ]);
 
         return redirect()->route('categories.index')

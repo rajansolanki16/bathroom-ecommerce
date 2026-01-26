@@ -20,6 +20,7 @@
                             <th scope="col">ID</th>
                             <th scope="col">Name</th>
                             <th scope="col">slug</th>
+                            <th scope="col">Is Visible</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -37,6 +38,14 @@
                                 {{ $category->name }}
                             </td>
                             <td class="fw-medium">{{ $category->slug }}</td>
+                            <td>
+                                @if($category->is_visible)
+                                <span class="badge bg-success">Visible</span>
+                                @else
+                                <span class="badge bg-danger">Hidden</span>
+                                @endif
+                            </td>
+
 
                             <td>
                                 <div class="dropdown position-static">

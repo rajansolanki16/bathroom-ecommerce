@@ -11,6 +11,7 @@ class Category extends Model
         'name',
         'slug',
         'parent_id',
+        'is_visible'
     ];
 
     public function parentCategory()

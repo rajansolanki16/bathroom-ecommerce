@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('categories', function (Blueprint $table) {
+            //
+            $table->tinyInteger('is_visible')->default(1)->after('parent_id')->comment('1=visible, 0=hidden'); //1=visible,0=hidden
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('categories', function (Blueprint $table) {
+            //
+             $table->dropColumn('is_visible');
+        });
+    }
+};
