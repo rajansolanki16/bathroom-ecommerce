@@ -28,8 +28,7 @@ class ProductReviewController extends Controller
                 $q->where('user_id', auth()->id())
                   ->where('status', 'completed');
             })
-            ->latest()
-            ->first();
+            ->latest()->first();
 
         ProductReview::updateOrCreate(
             [

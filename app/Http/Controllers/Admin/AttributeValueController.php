@@ -20,7 +20,7 @@ class AttributeValueController extends Controller
         //
         $attribute = ProductAttribute::with('values');
 
-        return view('admin.productattributes.edit', compact('attribute'));
+        return view('admin.productattribute.edit', compact('attribute'));
     }
 
     /**

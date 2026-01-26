@@ -126,6 +126,23 @@
                         </div>
                     </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="#sidebarorder"
+                            data-bs-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="sidebarorder">
+                            <i class="ri-folder-2-line"></i>
+                            <span>Order</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown" id="sidebarorder">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="{{ route('orders.show') }}" class="nav-link">Show</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
                 <!-- SETTINGS -->
                 <li class="nav-item">
                     @if(Route::is('view.settings.*') || Route::is('faqs.*') )
@@ -163,8 +180,7 @@
                                 </li>
                             </ul>
                         </div>
-              
-                </li>
+                    </li>
 
                 <!-- Users -->
                 <li class="nav-item">

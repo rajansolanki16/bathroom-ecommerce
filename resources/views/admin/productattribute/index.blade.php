@@ -7,7 +7,7 @@
 <div class="col-xl-12">
     <div class="card">
          <div class="card-header d-flex align-items-center justify-content-between flex-nowrap">
-            <h4 class="mb-0 card-title">Product Attributes listing</h4>
+            <h4 class="mb-0 card-title">Product Attributes</h4>
 
             <a href="{{ route('product_attributes.create') }}" class="btn btn-primary add-btn">
                 <i class="align-baseline bi bi-plus-circle me-1"></i>

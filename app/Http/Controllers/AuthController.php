@@ -194,7 +194,7 @@ class AuthController extends Controller
                 if ($user->hasRole('admin')) {
                     return redirect()->route('view.admin.dashboard');
                 } else {
-                    return redirect()->route('view.home');
+                    return redirect()->route('user.product');
                 }
             }
             
@@ -274,7 +274,6 @@ class AuthController extends Controller
         $user->token = null;
         $user->email_verified_at = Carbon::now();
         $user->save();
-
         Auth::login($user);
 
         return redirect()->route('view.home')->with([

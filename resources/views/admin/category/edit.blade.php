@@ -53,7 +53,7 @@
                                 {{ $parent->name }}
                             </option>
                             @endforeach
-                        </select>
+                        </select> <br>
 
                         <div class="mb-3">
                             <div class="form-check form-switch mb-3">

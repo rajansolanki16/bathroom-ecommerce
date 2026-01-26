@@ -9,7 +9,9 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Coupon;
+use App\Mail\OrderMail;
 
 
 class CheckoutController extends Controller
@@ -107,6 +109,14 @@ class CheckoutController extends Controller
             }
 
             session()->forget('applied_coupon');
+
+            /* ---------------- SEND ADMIN EMAIL NOTIFICATION ---------------- */
+            // Load the order with its items
+            $order->load('items.product');
+            
+            // Send email to admin
+            $adminEmail = config('mail.from.address') ?? 'admin@yopmail.com';
+            Mail::to($adminEmail)->send(new OrderMail($order));
         });
 
         return redirect()
@@ -136,7 +146,7 @@ class CheckoutController extends Controller
             ->get()
             ->keyBy('id');
 
-        // STEP 3: Normalize cart (🔥 IMPORTANT)
+        // STEP 3: Normalize cart
         return $cart->map(function ($item) use ($products) {
 
             $product = $products->get($item['id']);
