@@ -124,9 +124,6 @@ class SettingController extends Controller
         if (isset($request->otp_expiry_time) && strlen($request->otp_expiry_time) > 0) {
             Setting::where('slug', '=', 'otp_expiry_time')->update(['value' => $request->otp_expiry_time]);
         }
-        if (isset($request->otp_vendor_expiry_time) && strlen($request->otp_vendor_expiry_time) > 0) {
-            Setting::where('slug', '=', 'otp_vendor_expiry_time')->update(['value' => $request->otp_vendor_expiry_time]);
-        }
         if (isset($request->otp_max_attempts) && strlen($request->otp_max_attempts) > 0) {
             Setting::where('slug', '=', 'otp_max_attempts')->update(['value' => $request->otp_max_attempts]);
         }

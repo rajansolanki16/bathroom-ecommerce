@@ -24,6 +24,12 @@ class Brand extends Model
         'is_active' => 'boolean',
     ];
 
+    // Relationships
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
     // Auto generate slug if not provided
     protected static function boot()
     {

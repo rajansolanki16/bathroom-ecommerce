@@ -17,6 +17,7 @@ class Product extends Model
         'sku_number',
 
         'product_type',
+        'brand_id',
         'short_description',
         'product_decscription',
 
@@ -80,6 +81,11 @@ class Product extends Model
     /* ============================
        Relationships
     ============================ */
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
 
     public function categories()
     {
