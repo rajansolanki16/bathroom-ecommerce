@@ -1,3 +1,4 @@
+<?php use Illuminate\Support\Facades\Storage; ?>
 <x-admin.header :title="'product Categories edit'" />
 <!--datatable css-->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
@@ -29,7 +30,7 @@
             <div class="card-body">
                 <p class="text-muted">{{ __('category.Edit_Description') }}</p>
 
-                <form action="{{ route('categories.update', $category->id) }}" method="post">
+                <form action="{{ route('categories.update', $category->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="mb-3">
@@ -38,6 +39,19 @@
                         <input type="text" name="name" id="category" class="form-control @error('name') is-invalid @enderror" placeholder="Enter category title" value="{{ old('name', isset($category) ? $category->name : '') }}">
 
                         @error('name')
+                        <div class="invalid-response" style="display:flex">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Category Image</label>
+                        @if($category->image && Storage::disk('public')->exists($category->image))
+                            <div class="mb-2">
+                                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" height="100">
+                            </div>
+                        @endif
+                        <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                        @error('image')
                         <div class="invalid-response" style="display:flex">{{ $message }}</div>
                         @enderror
                     </div>

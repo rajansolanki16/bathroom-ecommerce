@@ -121,6 +121,15 @@ class SettingController extends Controller
         if (isset($request->admin_email) && strlen($request->admin_email) > 0) {
             Setting::where('slug', '=', 'admin_email')->update(['value' => $request->admin_email]);
         }
+        if (isset($request->otp_expiry_time) && strlen($request->otp_expiry_time) > 0) {
+            Setting::where('slug', '=', 'otp_expiry_time')->update(['value' => $request->otp_expiry_time]);
+        }
+        if (isset($request->otp_vendor_expiry_time) && strlen($request->otp_vendor_expiry_time) > 0) {
+            Setting::where('slug', '=', 'otp_vendor_expiry_time')->update(['value' => $request->otp_vendor_expiry_time]);
+        }
+        if (isset($request->otp_max_attempts) && strlen($request->otp_max_attempts) > 0) {
+            Setting::where('slug', '=', 'otp_max_attempts')->update(['value' => $request->otp_max_attempts]);
+        }
         if (isset($request->site_copyright_text) && strlen($request->site_copyright_text) > 0) {
             Setting::where('slug', '=', 'site_copyright_text')->update(['value' => $request->site_copyright_text]);
         }

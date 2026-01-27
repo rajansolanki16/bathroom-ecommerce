@@ -79,6 +79,9 @@ class ProductController extends Controller
             $validated = $request->validate([
                 'title'                     => 'required|string|max:255',
                 'sku_number'                => 'nullable|string|max:255|unique:products,sku_number',
+                'meta_title'                => 'nullable|string|max:160',
+                'meta_description'          => 'nullable|string|max:160',
+                'meta_keywords'             => 'nullable|string',
 
                 'categories'                => 'nullable|array',
                 'categories.*'              => 'exists:categories,id',
@@ -210,6 +213,9 @@ class ProductController extends Controller
 
         $product->product_title        = $validated['title'];
         $product->slug                 = Str::slug($validated['title']);
+        $product->meta_title           = $validated['meta_title'] ?? null;
+        $product->meta_description     = $validated['meta_description'] ?? null;
+        $product->meta_keywords        = $validated['meta_keywords'] ?? null;
         $product->sku_number           = $validated['sku_number'] ?? null;
 
         $product->product_type         = $validated['product_type'];
@@ -420,6 +426,9 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'title'             => 'required|string|max:255',
+            'meta_title'        => 'nullable|string|max:160',
+            'meta_description'  => 'nullable|string|max:160',
+            'meta_keywords'     => 'nullable|string',
             'categories'        => 'nullable|array',
             'product_type'      => 'required',
             'short_description' => 'required|string',
@@ -458,6 +467,9 @@ class ProductController extends Controller
         /* ---------- PRODUCT DATA ---------- */
         $product->product_title        = $validated['title'];
         $product->slug                 = Str::slug($validated['title']);
+        $product->meta_title           = $validated['meta_title'] ?? null;
+        $product->meta_description     = $validated['meta_description'] ?? null;
+        $product->meta_keywords        = $validated['meta_keywords'] ?? null;
         $product->product_type         = $validated['product_type'];
         $product->short_description    = $validated['short_description'];
         $product->product_decscription = $request->product_decscription ?? $product->product_decscription;

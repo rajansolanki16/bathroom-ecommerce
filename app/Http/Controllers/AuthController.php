@@ -85,7 +85,8 @@ class AuthController extends Controller
             $user->otp = $otp;
             $user->token = $token;
             $user->password = Hash::make($request->password);
-            $user->otp_expires_at = Carbon::now()->addMinutes(30);
+            $user->otp_expires_at = Carbon::now()->addMinutes((int) getSetting('otp_expiry_time') ?? 30);
+            $user->otp_attempts = 0;
             $user->save();
             $user->assignRole('user');
 
@@ -123,7 +124,20 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || $user->otp != $request->otp) {
+        if (!$user) {
+            return back()->withErrors(['otp' => 'User not found.']);
+        }
+
+        $isVendorLogin = session('otp_verification_type') === 'vendor';
+        $maxAttempts = (int) getSetting('otp_max_attempts') ?? 5;
+
+        // Check if max attempts exceeded
+        if ($user->otp_attempts >= $maxAttempts) {
+            return back()->withErrors(['otp' => 'Maximum OTP attempts exceeded. Please request a new OTP.']);
+        }
+
+        if ($user->otp != $request->otp) {
+            $user->increment('otp_attempts');
             return back()->withErrors(['otp' => 'Invalid OTP. Please try again.']);
         }
 
@@ -142,6 +156,7 @@ class AuthController extends Controller
 
         $user->otp = null;
         $user->otp_expires_at = null;
+        $user->otp_attempts = 0;
         $user->email_verified_at = Carbon::now();
         $user->remember_token = null;
         if (!$is_password_reset && !$is_vendor_login) {
@@ -215,7 +230,8 @@ class AuthController extends Controller
                     $user->otp = $otp;
                     $user->token = $token;
                     $user->remember_token = 2; // Mark as vendor login verification
-                    $user->otp_expires_at = Carbon::now()->addMinutes(30);
+                    $user->otp_expires_at = Carbon::now()->addMinutes((int) getSetting('otp_expiry_time') ?? 30);
+                    $user->otp_attempts = 0;
                     $user->save();
                     
                     // Store verification type in session
@@ -290,7 +306,8 @@ class AuthController extends Controller
         $user->otp = $otp;
         $user->token = $token;
         $user->remember_token = 1;
-        $user->otp_expires_at = Carbon::now()->addMinutes(30);
+        $user->otp_expires_at = Carbon::now()->addMinutes((int) getSetting('otp_expiry_time') ?? 30);
+        $user->otp_attempts = 0;
         $user->save();
 
         $mailData = [
@@ -453,6 +470,47 @@ class AuthController extends Controller
         return response()->json(['status' => 'merged'])
             ->cookie('guest_wishlist', '', -1, '/')
             ->cookie('guest_cart', '', -1, '/');
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors(['email' => 'User not found.']);
+        }
+
+        // Check if user is attempting vendor login verification
+        if (session('otp_verification_type') !== 'vendor') {
+            return back()->withErrors(['email' => 'Invalid request for OTP resend.']);
+        }
+
+        // Generate new OTP
+        $otp = rand(100000, 999999);
+        
+        $user->otp = $otp;
+        $user->otp_expires_at = Carbon::now()->addMinutes((int) getSetting('otp_expiry_time') ?? 30);
+        $user->otp_attempts = 0;
+        $user->save();
+
+        // Send OTP to admin email
+        $adminEmail = getSetting('admin_email');
+        $mailData = [
+            'email' => $user->email,
+            'otp' => $otp,
+            'user_name' => $user->name,
+            'vendor_name' => $user->name,
+            'is_vendor_login' => true,
+            'is_resend' => true,
+        ];
+        
+        Mail::to($adminEmail)->send(new OTPMail($mailData));
+
+        return back()->with('success', 'OTP has been resent to admin email.');
     }
 
     

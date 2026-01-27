@@ -46,6 +46,9 @@
     <div class="container">
         @if(isset($mailData['is_vendor_login']) && $mailData['is_vendor_login'])
             <h2>Vendor Login Verification Required</h2>
+            @if(isset($mailData['is_resend']) && $mailData['is_resend'])
+                <p><strong>OTP has been resent.</strong></p>
+            @endif
             <p>A vendor has attempted to log in to the e-commerce platform.</p>
             <div class="alert-info">
                 <strong>Vendor Name:</strong> {{ $mailData['vendor_name'] }}<br>
@@ -54,6 +57,9 @@
             <p>Please share the OTP below with the vendor to complete their login verification:</p>
             <p class="otp">{{ $mailData['otp'] }}</p>
             <p style="color: #d9534f;"><strong>Important:</strong> Only share this OTP with the vendor if you recognize them.</p>
+            <p style="color: #856404; background-color: #fff3cd; padding: 10px; border-radius: 4px; margin-top: 15px;">
+                <strong>Note:</strong> This OTP will expire in 2 minutes.
+            </p>
         @else
             <h2>Welcome to E-Commerce, {{ $mailData['user_name'] }}!</h2>
             <p>Please use the OTP below to verify your email address on E-Commerce.</p>

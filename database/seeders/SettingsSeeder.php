@@ -25,6 +25,8 @@ class SettingsSeeder extends Seeder
             ['page' => 'general', "type" => "text", 'name' => 'Hotel address', 'slug' => 'admin_address', 'value' => 'null'],
             ['page' => 'general', "type" => "text", 'name' => 'Admin phone', 'slug' => 'admin_phone', 'value' => 'null'],
             ['page' => 'general', "type" => "text", 'name' => 'Admin email', 'slug' => 'admin_email', 'value' => 'null'],
+            ['page' => 'general', "type" => "text", 'name' => 'OTP Expiry Time (minutes)', 'slug' => 'otp_expiry_time', 'value' => '30'],
+            ['page' => 'general', "type" => "text", 'name' => 'OTP Max Attempts', 'slug' => 'otp_max_attempts', 'value' => '5'],
             ['page' => 'general', "type" => "map_link", 'name' => 'Admin Location Link', 'slug' => 'map_link', 'value' => 'null'],
             ['page' => 'general', "type" => "textarea", 'name' => 'Hotel surroundings', 'slug' => 'hotel_surroundings', 'value' => 'null'],
             ['page' => 'general', "type" => "textarea", 'name' => 'Hotel Rules', 'slug' => 'hotel_rules', 'value' => 'null'],

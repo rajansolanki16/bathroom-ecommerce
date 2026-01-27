@@ -222,6 +222,60 @@
                 </div><!--end col-->
             </div><!--end row-->
 
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xxl-4">
+                                    <h5 class="card-title mb-3">SEO Settings</h5>
+                                    <p class="text-muted">Add SEO meta tags to help search engines understand your product better.</p>
+                                </div><!--end col-->
+                                <div class="col-xxl-8">
+                                    <div class="mb-3">
+                                        <label for="metaTitle" class="form-label">Meta Title</label>
+                                        <input type="text" class="form-control @error('meta_title') is-invalid @enderror" 
+                                            name="meta_title" id="metaTitle"
+                                            value="{{ old('meta_title', $product->meta_title) }}" 
+                                            placeholder="Enter meta title (max 160 characters)"
+                                            maxlength="160">
+                                        <small class="text-muted">Recommended: 50-60 characters</small>
+                                        @error('meta_title')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="metaDescription" class="form-label">Meta Description</label>
+                                        <textarea class="form-control @error('meta_description') is-invalid @enderror" 
+                                            name="meta_description" id="metaDescription"
+                                            rows="3" 
+                                            placeholder="Enter meta description (max 160 characters)"
+                                            maxlength="160">{{ old('meta_description', $product->meta_description) }}</textarea>
+                                        <small class="text-muted">Recommended: 150-160 characters</small>
+                                        @error('meta_description')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="metaKeywords" class="form-label">Meta Keywords</label>
+                                        <textarea class="form-control @error('meta_keywords') is-invalid @enderror" 
+                                            name="meta_keywords" id="metaKeywords"
+                                            rows="3" 
+                                            placeholder="Enter meta keywords separated by comma">{{ old('meta_keywords', $product->meta_keywords) }}</textarea>
+                                        <small class="text-muted">Example: bathroom fixtures, tiles, faucets</small>
+                                        @error('meta_keywords')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div><!--end row-->
+                        </div>
+                    </div>
+                </div><!--end col-->
+            </div><!--end row-->
+
             <div class="row" id="vec_general_Info_Section">
                 <div class="col-lg-12">
                     <div class="card">

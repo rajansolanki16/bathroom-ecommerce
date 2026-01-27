@@ -38,6 +38,7 @@ Route::get('/forgot-password', [RedirectController::class, 'forgotPassword'])->n
 Route::post('/forgot-password', [AuthController::class, 'forgot_password'])->name('auth.password.otp');
 Route::get('/verification/{token}', [AuthController::class, 'view_otp_verify'])->name('view.otp_verify');
 Route::post('/verification', [AuthController::class, 'otp_verify'])->name('auth.otp_verify');
+Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('auth.resend_otp');
 Route::get('/new-password/{token}', [RedirectController::class, 'newPassword'])->name('view.new_password');
 Route::post('/new-password', [AuthController::class, 'new_password'])->name('auth.password');
 Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');

@@ -13,6 +13,11 @@
                                 {{ $message }}
                             </div>
                         @endif
+                        @if ($message = session('success'))
+                            <div class="alert alert-success" role="alert">
+                                {{ $message }}
+                            </div>
+                        @endif
                         <div class="ko-row">
                             <div class="ko-col-12">
                                 <div class="ko-loginRegister-grp">
@@ -35,6 +40,17 @@
                         </div>
                         <button type="submit" class="ko-btn">Verify</button>
                     </form>
+
+                    @if (session('otp_verification_type') === 'vendor')
+                    <div style="margin-top: 20px; text-align: center;">
+                        <p style="margin-bottom: 10px; font-size: 14px; color: #666;">Didn't receive the OTP?</p>
+                        <form action="{{ route('auth.resend_otp') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <input type="hidden" name="email" value="{{ $email ?? old('email') }}">
+                            <button type="submit" class="ko-btn" style="background-color: #6c757d;">Resend OTP</button>
+                        </form>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

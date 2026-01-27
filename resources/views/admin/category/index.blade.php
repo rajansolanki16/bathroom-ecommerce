@@ -18,6 +18,7 @@
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
+                            <th scope="col">Image</th>
                             <th scope="col">Name</th>
                             <th scope="col">slug</th>
                             <th scope="col">Is Visible</th>
@@ -29,6 +30,13 @@
                         @foreach ($categories as $category)
                         <tr>
                             <td class="fw-medium">{{ $category->id }}</td>
+                            <td>
+                                @if($category->image)
+                                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" height="50">
+                                @else
+                                    <span class="text-muted">No image</span>
+                                @endif
+                            </td>
                             <td>
                                 @if($category->parent_id)
                                 <span class="badge bg-secondary me-1">Sub</span>

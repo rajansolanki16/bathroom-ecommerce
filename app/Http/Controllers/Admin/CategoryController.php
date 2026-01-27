@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -47,12 +48,16 @@ class CategoryController extends Controller
                     return $query->where('parent_id', $request->parent_id);
                 }),
             ],
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
 
         $messages = [
             'name.required' => 'The category field is required.',
             'name.min' => 'The category must be at least 3 characters.',
             'name.unique' => 'This category already exists under the same parent. Please choose a different name.',
+            'image.image' => 'The image must be an image file.',
+            'image.mimes' => 'The image must be a jpeg, png, jpg, or gif image.',
+            'image.max' => 'The image size must not exceed 2MB.',
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
 
@@ -66,7 +71,16 @@ class CategoryController extends Controller
         $categories->name = $request->name;
         $categories->slug = Str::slug($request->name);
         $categories->parent_id = $request->parent_id;
-        $categories->is_visible = $request->has('is_visible') ? 1 : 0; 
+        $categories->is_visible = $request->has('is_visible') ? 1 : 0;
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imagePath = $image->storeAs('categories', $imageName, 'public');
+            $categories->image = $imagePath;
+        }
+
         $categories->save();
 
         if ($categories) {
@@ -115,11 +129,15 @@ class CategoryController extends Controller
                         return $query->where('parent_id', $request->parent_id);
                     }),
             ],
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
         $messages = [
             'name.required' => 'The category field is required.',
             'name.min' => 'The category must be at least 3 characters.',
             'name.unique' => 'The category already exists. Please choose a different name.',
+            'image.image' => 'The image must be an image file.',
+            'image.mimes' => 'The image must be a jpeg, png, jpg, or gif image.',
+            'image.max' => 'The image size must not exceed 2MB.',
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
 
@@ -128,12 +146,28 @@ class CategoryController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
+        
         $category = Category::findOrFail($id);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($category->image && Storage::disk('public')->exists($category->image)) {
+                Storage::disk('public')->delete($category->image);
+            }
+
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imagePath = $image->storeAs('categories', $imageName, 'public');
+            $category->image = $imagePath;
+        }
+
         $category->update([
             'name'      => $request->name,
             'slug'      => Str::slug($request->name),
             'parent_id' => $request->parent_id,
-            'is_visible' => $request->has('is_visible') ? 1 : 0, //updated
+            'is_visible' => $request->has('is_visible') ? 1 : 0,
+            'image'     => $category->image,
         ]);
 
         return redirect()->route('categories.index')
@@ -146,8 +180,13 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         //
-
         $category = Category::findOrFail($id);
+        
+        // Delete image if exists
+        if ($category->image && Storage::disk('public')->exists($category->image)) {
+            Storage::disk('public')->delete($category->image);
+        }
+        
         $category->delete();
         return redirect()->route('categories.index');
     }
