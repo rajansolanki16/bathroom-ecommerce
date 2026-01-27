@@ -114,8 +114,8 @@ class CheckoutController extends Controller
             // Load the order with its items
             $order->load('items.product');
             
-            // Send email to admin
-            $adminEmail = config('mail.from.address') ?? 'admin@yopmail.com';
+            // Send email to admin 
+            $adminEmail = getSetting('admin_email');
             Mail::to($adminEmail)->send(new OrderMail($order));
         });
 

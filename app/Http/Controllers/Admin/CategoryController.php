@@ -66,7 +66,7 @@ class CategoryController extends Controller
         $categories->name = $request->name;
         $categories->slug = Str::slug($request->name);
         $categories->parent_id = $request->parent_id;
-        $categories->is_visible = $request->has('is_visible') ? 1 : 0; //added
+        $categories->is_visible = $request->has('is_visible') ? 1 : 0; 
         $categories->save();
 
         if ($categories) {

@@ -132,21 +132,35 @@ class AuthController extends Controller
         }
 
         $is_password_reset = null;
+        $is_vendor_login = null;
+        
         if ($user->remember_token == 1) {
             $is_password_reset = true;
+        } elseif (session('otp_verification_type') === 'vendor') {
+            $is_vendor_login = true;
         }
 
         $user->otp = null;
         $user->otp_expires_at = null;
         $user->email_verified_at = Carbon::now();
         $user->remember_token = null;
-        if (!$is_password_reset) {
+        if (!$is_password_reset && !$is_vendor_login) {
             $user->token = null;
         }
         $user->save();
 
         if ($is_password_reset) {
             return redirect()->route('view.new_password', ['token' => $user->token]);
+        } elseif ($is_vendor_login) {
+            // Login the vendor user
+            Auth::login($user);
+            $user->token = null;
+            $user->save();
+            session()->forget('otp_verification_type');
+            return redirect()->route('user.product')->with([
+                'success' => true,
+                'message' => 'Vendor verified successfully. Welcome!'
+            ]);
         } else {
             return redirect()->route('login')->with([
                 'success' => true,
@@ -193,6 +207,36 @@ class AuthController extends Controller
                 
                 if ($user->hasRole('admin')) {
                     return redirect()->route('view.admin.dashboard');
+                } elseif ($user->hasRole('vendor')) {
+                    // Generate OTP for vendor login verification
+                    $otp = rand(100000, 999999);
+                    $token = Str::random(32);
+                    
+                    $user->otp = $otp;
+                    $user->token = $token;
+                    $user->remember_token = 2; // Mark as vendor login verification
+                    $user->otp_expires_at = Carbon::now()->addMinutes(30);
+                    $user->save();
+                    
+                    // Store verification type in session
+                    session(['otp_verification_type' => 'vendor']);
+                    
+                    // Send OTP to admin email
+                    $adminEmail = getSetting('admin_email');
+                    $mailData = [
+                        'email' => $user->email,
+                        'otp' => $otp,
+                        'user_name' => $user->name,
+                        'vendor_name' => $user->name,
+                        'is_vendor_login' => true,
+                    ];
+                    
+                    Mail::to($adminEmail)->send(new OTPMail($mailData));
+                    
+                    // Logout the user temporarily
+                    Auth::logout();
+                    
+                    return redirect()->route('view.otp_verify', $token)->with('message', 'Vendor login verification. Check admin email for OTP.')->with("email", $user->email);
                 } else {
                     return redirect()->route('user.product');
                 }
