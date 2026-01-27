@@ -95,6 +95,30 @@
                             @enderror
                         </div>
 
+                        <hr>
+
+                        <div class="mb-3">
+                            <label class="form-label">Account Status</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                       value="1" {{ old('is_active', $user->is_active) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="is_active">
+                                    Account is Active
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Access Status</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="is_approved" name="is_approved" 
+                                       value="1" {{ old('is_approved', $user->is_approved) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="is_approved">
+                                    User Access is Approved
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="d-flex gap-2 justify-content-end">
                             <a href="{{ route('users.show', $user) }}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary">

@@ -116,5 +116,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::resource('/users', UserController::class)->names('users');
+        Route::post('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
+        Route::post('/users/{user}/toggle-approval', [UserController::class, 'toggleApproval'])->name('users.toggle-approval');
     });
 });

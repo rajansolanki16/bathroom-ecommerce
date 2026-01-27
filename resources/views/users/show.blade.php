@@ -75,6 +75,31 @@
 
                     <hr>
 
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Account Status</h6>
+                            <p>
+                                @if($user->is_active)
+                                    <span class="badge bg-success">Active</span>
+                                @else
+                                    <span class="badge bg-danger">Inactive</span>
+                                @endif
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Access Status</h6>
+                            <p>
+                                @if($user->is_approved)
+                                    <span class="badge bg-success">Approved</span>
+                                @else
+                                    <span class="badge bg-warning text-dark">Pending Approval</span>
+                                @endif
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr>
+
                     <div class="row">
                         <div class="col-md-6">
                             <h6 class="text-muted">Email Verified</h6>
@@ -93,13 +118,39 @@
                     </div>
 
                     <div class="mt-4 pt-3 border-top">
-                        <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash"></i> Delete User
-                            </button>
-                        </form>
+                        <div class="mb-3">
+                            <form action="{{ route('users.toggle-active', $user) }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn @if($user->is_active) btn-warning @else btn-success @endif">
+                                    @if($user->is_active)
+                                        <i class="fas fa-lock"></i> Deactivate User
+                                    @else
+                                        <i class="fas fa-unlock"></i> Activate User
+                                    @endif
+                                </button>
+                            </form>
+                        </div>
+                        <div class="mb-3">
+                            <form action="{{ route('users.toggle-approval', $user) }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn @if($user->is_approved) btn-danger @else btn-primary @endif">
+                                    @if($user->is_approved)
+                                        <i class="fas fa-ban"></i> Block User Access
+                                    @else
+                                        <i class="fas fa-check"></i> Approve User Access
+                                    @endif
+                                </button>
+                            </form>
+                        </div>
+                        <div>
+                            <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> Delete User
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -27,8 +27,8 @@
                         <th>Email</th>
                         <th>Username</th>
                         <th>Mobile</th>
-                        <th>WhatsApp</th>
-                        <th>Area</th>
+                        <th>Status</th>
+                        <th>Approval</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -40,8 +40,20 @@
                             <td>{{ $user->email }}</td>
                             <td><span class="badge bg-info">{{ $user->username }}</span></td>
                             <td>{{ $user->mobile }}</td>
-                            <td>{{ $user->whatsapp_number ?? '-' }}</td>
-                            <td>{{ $user->area ?? '-' }}</td>
+                            <td>
+                                @if($user->is_active)
+                                    <span class="badge bg-success">Active</span>
+                                @else
+                                    <span class="badge bg-danger">Inactive</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($user->is_approved)
+                                    <span class="badge bg-success">Approved</span>
+                                @else
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                @endif
+                            </td>
                             <td>
                                 <div class="dropdown position-static">
                                     <button class="btn btn-subtle-secondary btn-sm btn-icon" role="button"
@@ -51,6 +63,32 @@
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li><a href="{{ route('users.show', $user) }}" class="dropdown-item edit-item-btn"><i class="align-middle ph-eye me-1"></i>View</a></li>
                                         <li><a href="{{ route('users.edit', $user) }}" class="dropdown-item edit-item-btn"><i class="align-middle ph-pencil me-1"></i>Edit</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="POST" action="{{ route('users.toggle-active', $user) }}" style="display:inline;">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item">
+                                                    @if($user->is_active)
+                                                        <i class="align-middle bi-lock me-1"></i>Deactivate
+                                                    @else
+                                                        <i class="align-middle bi-unlock me-1"></i>Activate
+                                                    @endif
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form method="POST" action="{{ route('users.toggle-approval', $user) }}" style="display:inline;">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item">
+                                                    @if($user->is_approved)
+                                                        <i class="align-middle bi-x-circle me-1"></i>Block Access
+                                                    @else
+                                                        <i class="align-middle bi-check-circle me-1"></i>Approve Access
+                                                    @endif
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <a class="dropdown-item remove-item-btn" href="javascript:void(0);"
                                                 data-delete-url="{{ route('users.destroy', $user->id) }}"

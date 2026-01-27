@@ -99,18 +99,26 @@ class UserController extends Controller
             'address' => 'nullable|string|max:500',
             'country' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:100',
+            'is_active' => 'nullable|boolean',
+            'is_approved' => 'nullable|boolean',
         ]);
 
-        $user->update($request->only([
-            'name',
-            'email',
-            'mobile',
-            'whatsapp_number',
-            'area',
-            'address',
-            'country',
-            'state',
-        ]));
+        $user->update(array_merge(
+            $request->only([
+                'name',
+                'email',
+                'mobile',
+                'whatsapp_number',
+                'area',
+                'address',
+                'country',
+                'state',
+            ]),
+            [
+                'is_active' => $request->has('is_active'),
+                'is_approved' => $request->has('is_approved'),
+            ]
+        ));
 
         return redirect()->route('users.show', $user)->with('success', 'User updated successfully.');
     }
@@ -122,6 +130,28 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    }
+
+    /**
+     * Activate or deactivate a user.
+     */
+    public function toggleActive(User $user)
+    {
+        $user->update(['is_active' => !$user->is_active]);
+        
+        $status = $user->is_active ? 'activated' : 'deactivated';
+        return back()->with('success', "User has been {$status} successfully.");
+    }
+
+    /**
+     * Approve or block a user.
+     */
+    public function toggleApproval(User $user)
+    {
+        $user->update(['is_approved' => !$user->is_approved]);
+        
+        $status = $user->is_approved ? 'approved' : 'blocked';
+        return back()->with('success', "User access has been {$status} successfully.");
     }
 
     /**
