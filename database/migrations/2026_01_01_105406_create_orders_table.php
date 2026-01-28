@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('phone');
             $table->text('address');
             $table->decimal('total', 10, 2);
-            $table->string('status')->default('pending');
+            $table->tinyInteger('status')->default(0)->comment('0=Processing,1=Completed,2=Cancelled');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -3,12 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\OrderStatus;
 
 
 class Order extends Model
 {
     protected $fillable = [
-        'user_id','name','email','phone','address','total','status'
+        'user_id',
+        'name',
+        'email',
+        'phone',
+        'address',
+        'total',
+        'status'
+    ];
+
+
+    protected $casts = [
+        'status' => OrderStatus::class,
     ];
 
     public function items()
@@ -16,7 +28,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
     public function user()
-{
-    return $this->belongsTo(User::class);
-}
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
@@ -90,7 +91,8 @@ class CheckoutController extends Controller
                 'discount'  => $discount,
                 'total'     => $total,
                 'coupon_id' => $couponId,
-                'status'    => 'pending',
+                // 'status'    => 'pending',
+                'status'    => OrderStatus::PROCESSING,
             ]);
 
             /* ---------------- CREATE ORDER ITEMS ---------------- */

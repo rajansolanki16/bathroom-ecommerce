@@ -1,5 +1,4 @@
 <x-admin.header :title="'order Details'" />
-
 <div class="col-xl-12">
     <div class="card">
         <div class="card-header d-flex align-items-center justify-content-between flex-nowrap">
@@ -7,6 +6,61 @@
         </div>
         <div class="card-body">
             <p class="text-muted"> this is the list of all User Order. </p>
+            <div class="row">
+                <form method="GET" action="{{ route('orders.show') }}">
+                    <div class="row g-3 align-items-end">
+
+                        <div class="col-xxl">
+                            <div class="search-box">
+                                <input type="text"
+                                    name="search"
+                                    value="{{ request('search') }}"
+                                    class="form-control"
+                                    placeholder="Search products and User...">
+                                <i class="ri-search-line search-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="col-xxl col-sm-6">
+                            <select
+                                class="form-control"
+                                name="status"
+                                data-choices
+                                data-choices-search="true">
+                                <option value="">All Statuses</option>
+                                @foreach ($statuses as $status)
+                                <option value="{{ $status->value }}" {{ request('status') == $status->value ? 'selected' : '' }}>
+                                    {{ $status->label() }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <!-- Date range -->
+                        <div class="col-xxl col-sm-6">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" name="from_date" value="{{ request('from_date') }}" class="form-control">
+                        </div>
+                        <div class="col-xxl col-sm-6">
+                            <label class="form-label">End Date</label>
+                            <input type="date" name="to_date" value="{{ request('to_date') }}" class="form-control">
+                        </div>
+
+                        <div class="col-xxl-auto col-sm-6">
+                            <button class="btn btn-primary w-md">
+                                <i class="bi bi-funnel me-1"></i> Filter
+                            </button>
+                        </div>
+
+                        <div class="col-xxl-auto col-sm-6">
+                            <a href="{{ route('orders.show') }}" class="btn btn-light w-md">
+                                Reset
+                            </a>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
             <div class="table-responsive">
                 <table id="fixed-header" class="table align-middle table-bordered dt-responsive nowrap table-striped" style="width:100%">
                     <thead>
@@ -15,8 +69,8 @@
                             <th scope="col">Customer Name</th>
                             <th scope="col">Full Name</th>
                             <th scope="col">Email</th>
+                            <th scope="col">product Name</th>
                             <th scope="col">Phone Number</th>
-                            <th scope="col">Address</th>
                             <th scope="col">Total</th>
                             <th scope="col">status</th>
                         </tr>
@@ -29,20 +83,32 @@
                             <td>{{ $order->user->name ?? $order->name }}</td>
                             <td>{{ $order->name }}</td>
                             <td>{{ $order->email }}</td>
+
+                            <td>
+                                @if($order->items->count())
+                                @foreach($order->items as $item)
+                                {{ $item->product?->product_title ?? 'N/A' }}
+                                @endforeach
+                                @else
+                                N/A
+                                @endif
+                            </td>
+
                             <td>{{ $order->phone }}</td>
-                            <td>{{ $order->address }}</td>
                             <td>{{ $order->total }}</td>
+
                             <td>
                                 <select class="form-select order-status" data-id="{{ $order->id }}">
-                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="complete" {{ $order->status == 'complete' ? 'selected' : '' }}>Complete</option>
-                                    <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Processing</option>
+                                    @foreach ($statuses as $status)
+                                    <option value="{{ $status->value }}"
+                                        {{ optional($order->status)->value === $status->value ? 'selected' : '' }}>
+                                        {{ $status->label() }}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </td>
                         </tr>
-
                         @endforeach
-
                     </tbody>
                 </table>
             </div>

@@ -135,8 +135,8 @@
                                     <td>{{ $order->user->name ?? $order->name }}</td>
                                     <td>₹{{ number_format($order->total, 2) }}</td>
                                     <td>
-                                        <span class="badge bg-{{ $order->status === 'completed' ? 'success' : ($order->status === 'pending' ? 'warning' : 'danger') }}">
-                                            {{ ucfirst($order->status) }}
+                                        <span class="badge bg-{{ $order->status->value === '1' ? 'success' : ($order->status->value === '0' ? 'warning' : 'danger') }}">
+                                            {{ $order->status->label() }}
                                         </span>
                                     </td>
                                     <td>{{ $order->created_at->format('M d, Y') }}</td>
@@ -269,8 +269,8 @@
                                 @endphp
                                 <tr>
                                     <td>
-                                        <span class="badge bg-{{ $statusData->status === 'completed' ? 'success' : ($statusData->status === 'pending' ? 'warning' : 'danger') }}">
-                                            {{ ucfirst($statusData->status) }}
+                                        <span class="badge bg-{{ $statusData->status->value === '1' ? 'success' : ($statusData->status->value === '0' ? 'warning' : 'danger') }}">
+                                            {{ $statusData->status->label() }}
                                         </span>
                                     </td>
                                     <td class="fw-medium">{{ $statusData->count }}</td>
