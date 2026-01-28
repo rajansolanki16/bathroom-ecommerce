@@ -169,12 +169,12 @@
                                 <li class="nav-item">
                                     <a href="{{ route('view.settings.general') }}/" class="nav-link">General</a>
                                 </li>
-                                {{-- <li class="nav-item">
+                                <li class="nav-item">
                                     <a href="{{ route('view.settings.home') }}/" class="nav-link">Home</a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('view.settings.pages') }}/" class="nav-link">Pages</a>
-                                </li> --}}
+                                </li>
                                 <li class="nav-item">
                                     <a href="{{ route('view.settings.ecommerce') }}/" class="nav-link">E-Commerce</a>
                                 </li>
