@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
+
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Controller;
@@ -7,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Enums\ProductType;
 use App\Enums\ProductVisibility;
 use App\Enums\ProductStatus;
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Tag;
@@ -45,21 +48,24 @@ class ProductController extends Controller
      */
     public function create()
     {
-       $attributes = ProductAttribute::with('values')->get();
-       $attributesJson = $attributes->map(function($a){
-           return [
-               'id' => $a->id,
-               'name' => $a->name,
-               'values' => $a->values->map(function($v){ return ['id'=>$v->id,'value'=>$v->value]; }),
-           ];
-       })->toJson();
+        $attributes = ProductAttribute::with('values')->get();
+        $attributesJson = $attributes->map(function ($a) {
+            return [
+                'id' => $a->id,
+                'name' => $a->name,
+                'values' => $a->values->map(function ($v) {
+                    return ['id' => $v->id, 'value' => $v->value];
+                }),
+            ];
+        })->toJson();
 
-       return view('admin.products.create', [
+        return view('admin.products.create', [
             'productTypes'       => ProductType::cases(),
             'productStatuses'    => ProductStatus::cases(),
-            'productVisibilities'=> ProductVisibility::cases(),
+            'productVisibilities' => ProductVisibility::cases(),
             'categories'         => Category::orderBy('name')->get(),
             'allTags'            => Tag::orderBy('name')->get(),
+            'allbrands'          => Brand::orderBy('name')->get(),
             'attributes'         => $attributes,
             'attributesJson'     => $attributesJson,
         ]);
@@ -110,12 +116,12 @@ class ProductController extends Controller
             ]);
 
             Log::info('=== INITIAL VALIDATION PASSED ===', ['validated' => $validated]);
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                Log::error('=== INITIAL VALIDATION FAILED ===', [
-                    'errors' => $e->errors(),
-                ]);
-                throw $e;
-            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('=== INITIAL VALIDATION FAILED ===', [
+                'errors' => $e->errors(),
+            ]);
+            throw $e;
+        }
 
         $productType = $validated['product_type'] ?? $request->input('product_type');
         Log::info('=== PRODUCT TYPE CHECK ===', ['product_type' => $productType, 'is_simple' => $productType == ProductType::SIMPLE->value]);
@@ -226,6 +232,8 @@ class ProductController extends Controller
         $product->refundable           = $request->boolean('refundable');
         $product->free_shipping        = $request->boolean('free_shipping');
 
+        $product->brand_id             = $request->brand_id ?? null;
+
         if ($product->product_type == ProductType::SIMPLE->value || $product->product_type == ProductType::SIMPLE) {
             $product->stock                = $request->stock ?? 0;
 
@@ -233,7 +241,7 @@ class ProductController extends Controller
             $product->discount             = $validated['discount'] ?? 0;
 
             $product->sell_price           = $validated['sell_price'] ?? null;
-            $product->sell_price_start_date= $validated['sell_price_start_date'] ?? null;
+            $product->sell_price_start_date = $validated['sell_price_start_date'] ?? null;
             $product->sell_price_end_date  = $validated['sell_price_end_date'] ?? null;
 
             $product->weight               = $validated['weight'] ?? null;
@@ -245,7 +253,7 @@ class ProductController extends Controller
             $product->price                = $validated['price'];
             $product->discount             = 0;
             $product->sell_price           = null;
-            $product->sell_price_start_date= null;
+            $product->sell_price_start_date = null;
             $product->sell_price_end_date  = null;
             $product->weight               = null;
             $product->length               = null;
@@ -269,7 +277,6 @@ class ProductController extends Controller
             ]);
             throw $e;
         }
-
         /* ===============================
         Sync Relations
         =============================== */
@@ -311,9 +318,9 @@ class ProductController extends Controller
                         'height'     => $variant['height'] ?? null,
                         'status'     => $variant['status'] ?? $product->status,
                         'visibility' => $variant['visibility'] ?? $product->visibility,
-                        'exchangeable'=> $variant['exchangeable'] ?? $product->exchangeable,
+                        'exchangeable' => $variant['exchangeable'] ?? $product->exchangeable,
                         'refundable' => $variant['refundable'] ?? $product->refundable,
-                        'free_shipping'=> $variant['free_shipping'] ?? $product->free_shipping,
+                        'free_shipping' => $variant['free_shipping'] ?? $product->free_shipping,
                         'shipping_address' => $variant['shipping_address'] ?? null,
                         'general_info' => $variant['general_info'] ?? null,
                     ];
@@ -364,24 +371,26 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-   public function edit(Product $product)
+    public function edit(Product $product)
     {
 
-       $attributes = ProductAttribute::with('values')->get();
+        $attributes = ProductAttribute::with('values')->get();
 
-       $attributesJson = $attributes->map(function($a){
-           return [
-               'id' => $a->id,
-               'name' => $a->name,
-               'values' => $a->values->map(function($v){ return ['id'=>$v->id,'value'=>$v->value]; }),
-           ];
-       })->toJson();
+        $attributesJson = $attributes->map(function ($a) {
+            return [
+                'id' => $a->id,
+                'name' => $a->name,
+                'values' => $a->values->map(function ($v) {
+                    return ['id' => $v->id, 'value' => $v->value];
+                }),
+            ];
+        })->toJson();
 
-        $product->load(['variants' => function($query) {
+        $product->load(['variants' => function ($query) {
             $query->with('attributeValues');
         }]);
 
-        $variantsData = $product->variants->map(function($variant) {
+        $variantsData = $product->variants->map(function ($variant) {
             return [
                 'id' => $variant->id,
                 'name' => $variant->attributeValues->pluck('value')->join(' / ') ?: 'Variant #' . $variant->id,
@@ -411,8 +420,9 @@ class ProductController extends Controller
             'categories'         => Category::all(),
             'productTypes'       => ProductType::cases(),
             'productStatuses'    => ProductStatus::cases(),
-            'productVisibilities'=> ProductVisibility::cases(),
+            'productVisibilities' => ProductVisibility::cases(),
             'allTags'            => Tag::orderBy('name')->get(),
+            'allbrands'          => Brand::orderBy('name')->get(),
             'attributes'         => $attributes,
             'attributesJson'     => $attributesJson,
             'variantsJson'       => $variantsJson,
@@ -478,9 +488,11 @@ class ProductController extends Controller
         $product->refundable           = $request->boolean('refundable');
         $product->free_shipping        = $request->boolean('free_shipping');
 
+        $product->brand_id             = $request->brand_id ?? null;
+
         if ($product->product_type == ProductType::SIMPLE->value || $product->product_type == ProductType::SIMPLE) {
-            $product->stock                = $validated['stock']; 
-            $product->price                = $validated['price'] ?? 0 ;
+            $product->stock                = $validated['stock'];
+            $product->price                = $validated['price'] ?? 0;
             $product->discount             = $request->discount ?? $product->discount;
         } else {
             $product->stock = 0;
@@ -491,7 +503,7 @@ class ProductController extends Controller
         $product->visibility           = $request->visibility ?? $product->visibility;
 
         $product->sell_price           = $request->sell_price ?? $product->sell_price;
-        $product->sell_price_start_date= $request->sell_price_start_date ?? $product->sell_price_start_date;
+        $product->sell_price_start_date = $request->sell_price_start_date ?? $product->sell_price_start_date;
         $product->sell_price_end_date  = $request->sell_price_end_date ?? $product->sell_price_end_date;
 
         $product->weight               = $request->weight ?? $product->weight;
@@ -618,15 +630,15 @@ class ProductController extends Controller
         ]);
     }
 
-   public function destroy(Product $product)
+    public function destroy(Product $product)
     {
-        $product->delete(); 
+        $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 
     public function generateVariants(Request $request)
     {
-        $attributes = $request->input('attributes'); 
+        $attributes = $request->input('attributes');
 
         if (empty($attributes)) {
             return response()->json(['html' => '']);

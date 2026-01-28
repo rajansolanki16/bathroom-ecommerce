@@ -33,16 +33,71 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'mobile' => 'required|string|max:20|unique:users',
-            'whatsapp_number' => 'nullable|string|max:20',
-            'area' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:500',
-            'country' => 'nullable|string|max:100',
-            'state' => 'nullable|string|max:100',
-        ]);
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'email' => 'required|string|email|max:255|unique:users',
+        //     'mobile' => 'required|string|max:20|unique:users',
+        //     'whatsapp_number' => 'nullable|string|max:20',
+        //     'area' => 'nullable|string|max:255',
+        //     'address' => 'nullable|string|max:500',
+        //     'country' => 'nullable|string|max:100',
+        //     'state' => 'nullable|string|max:100',
+        // ]);
+
+        $request->validate(
+            [
+                'name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    'regex:/^[a-zA-Z\s\-]+$/', // only letters & spaces
+                ],
+
+                'email' => [
+                    'required',
+                    'email',
+                    'max:255',
+                    'unique:users,email,',
+                ],
+
+                'mobile' => [
+                    'required',
+                    'regex:/^[0-9]+$/',
+                    'digits:10',
+                    'unique:users,mobile,',
+                ],
+
+                'whatsapp_number' => [
+                    'nullable',
+                    'regex:/^[0-9]+$/',
+                    'digits:10',
+                ],
+
+                'area' => 'nullable|string|max:255',
+                'address' => 'nullable|string|max:500',
+                'country' => 'nullable|string|max:100',
+                'state' => 'nullable|string|max:100',
+                'is_active' => 'nullable|boolean',
+                'is_approved' => 'nullable|boolean',
+            ],
+            [
+                // Custom error messages
+                'name.required' => 'Name is required.',
+                'name.regex' => 'Name must contain only letters and spaces.',
+
+                'email.required' => 'Email is required.',
+                'email.email' => 'Please enter a valid email address(example: user@gmail.com).',
+                'email.unique' => 'This email is already taken.',
+
+                'mobile.required' => 'Mobile number is required.',
+                'mobile.regex' => 'Mobile number must contain digits only.',
+                'mobile.digits' => 'Mobile number must be exactly 10 digits.',
+                'mobile.unique' => 'This mobile number is already registered.',
+
+                'whatsapp_number.regex' => 'WhatsApp number must contain digits only.',
+                'whatsapp_number.digits' => 'WhatsApp number must be exactly 10 digits.',
+            ]
+        );
 
         // Generate username from email or name
         $username = $this->generateUniqueUsername($request->name, $request->email);
@@ -90,18 +145,73 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'mobile' => 'required|string|max:20|unique:users,mobile,' . $user->id,
-            'whatsapp_number' => 'nullable|string|max:20',
-            'area' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:500',
-            'country' => 'nullable|string|max:100',
-            'state' => 'nullable|string|max:100',
-            'is_active' => 'nullable|boolean',
-            'is_approved' => 'nullable|boolean',
-        ]);
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+        //     'mobile' => 'required|string|max:20|unique:users,mobile,' . $user->id,
+        //     'whatsapp_number' => 'nullable|string|max:20',
+        //     'area' => 'nullable|string|max:255',
+        //     'address' => 'nullable|string|max:500',
+        //     'country' => 'nullable|string|max:100',
+        //     'state' => 'nullable|string|max:100',
+        //     'is_active' => 'nullable|boolean',
+        //     'is_approved' => 'nullable|boolean',
+        // ]);
+
+        $request->validate(
+            [
+                'name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    'regex:/^[a-zA-Z\s\-]+$/', // only letters & spaces
+                ],
+
+                'email' => [
+                    'required',
+                    'email',
+                    'max:255',
+                    'unique:users,email,' . $user->id,
+                ],
+
+                'mobile' => [
+                    'required',
+                    'regex:/^[0-9]+$/',
+                    'digits:10',
+                    'unique:users,mobile,' . $user->id,
+                ],
+
+                'whatsapp_number' => [
+                    'nullable',
+                    'regex:/^[0-9]+$/',
+                    'digits:10',
+                ],
+
+                'area' => 'nullable|string|max:255',
+                'address' => 'nullable|string|max:500',
+                'country' => 'nullable|string|max:100',
+                'state' => 'nullable|string|max:100',
+                'is_active' => 'nullable|boolean',
+                'is_approved' => 'nullable|boolean',
+            ],
+            [
+                // Custom error messages
+                'name.required' => 'Name is required.',
+                'name.regex' => 'Name must contain only letters and spaces.',
+
+                'email.required' => 'Email is required.',
+                'email.email' => 'Please enter a valid email address(example: user@gmail.com).',
+                'email.unique' => 'This email is already taken.',
+
+                'mobile.required' => 'Mobile number is required.',
+                'mobile.regex' => 'Mobile number must contain digits only.',
+                'mobile.digits' => 'Mobile number must be exactly 10 digits.',
+                'mobile.unique' => 'This mobile number is already registered.',
+
+                'whatsapp_number.regex' => 'WhatsApp number must contain digits only.',
+                'whatsapp_number.digits' => 'WhatsApp number must be exactly 10 digits.',
+            ]
+        );
 
         $user->update(array_merge(
             $request->only([
@@ -138,7 +248,7 @@ class UserController extends Controller
     public function toggleActive(User $user)
     {
         $user->update(['is_active' => !$user->is_active]);
-        
+
         $status = $user->is_active ? 'activated' : 'deactivated';
         return back()->with('success', "User has been {$status} successfully.");
     }
@@ -149,7 +259,7 @@ class UserController extends Controller
     public function toggleApproval(User $user)
     {
         $user->update(['is_approved' => !$user->is_approved]);
-        
+
         $status = $user->is_approved ? 'approved' : 'blocked';
         return back()->with('success', "User access has been {$status} successfully.");
     }

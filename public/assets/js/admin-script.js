@@ -460,6 +460,16 @@ document.addEventListener('DOMContentLoaded', function() {
             placeholderValue: 'Select tags',
         });
     }
+    const brandSelect = document.querySelector('#productBrands');
+    if (brandSelect) {
+        new Choices(brandSelect, {
+            searchEnabled: true,
+            removeItemButton: true,
+            shouldSort: false,
+            placeholderValue: 'Select brands',
+        });
+    }
+
 
     const productTypeSelect = document.querySelector('#productType');
     if (productTypeSelect) {

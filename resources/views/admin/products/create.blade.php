@@ -1,148 +1,158 @@
 <x-admin.header :title="'Product Create'" />
-    <div class="container-fluid">
-        <form id="productForm" action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
+<div class="container-fluid">
+    <form id="productForm" action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-xxl-4">
-                                    <h5 class="card-title mb-3">Product Information</h5>
-                                    <p class="text-muted">Product Information refers to any information held by an organisation about the products it produces, buys, sells or distributes.</p>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xxl-4">
+                                <h5 class="card-title mb-3">Product Information</h5>
+                                <p class="text-muted">Product Information refers to any information held by an organisation about the products it produces, buys, sells or distributes.</p>
+                            </div>
+                            <div class="col-xxl-8">
+                                <div class="mb-3">
+                                    <label for="productTitle" class="form-label">Product Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="title" id="productTitle"
+                                        value="{{ old('title') }}" placeholder="Enter product title">
+                                    @error('title')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div class="col-xxl-8">
-                                        <div class="mb-3">
-                                            <label for="productTitle" class="form-label">Product Title <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="title" id="productTitle"
-                                                value="{{ old('title') }}" placeholder="Enter product title">  
-                                                @error('title')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                                @enderror                                              
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="productType" class="form-label">Product Type <span class="text-danger">*</span></label>
-                                            <select class="form-control"
-                                                name="product_type"
-                                                id="productType">
-                                                <option value="">Select Type</option>
-                                                @foreach ($productTypes as $type)
-                                                    <option value="{{ $type->value }}">{{ $type->label() }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('product_type')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror    
-                                        </div>
+                                <div class="mb-3">
+                                    <label for="productType" class="form-label">Product Type <span class="text-danger">*</span></label>
+                                    <select class="form-control"
+                                        name="product_type"
+                                        id="productType">
+                                        <option value="">Select Type</option>
+                                        @foreach ($productTypes as $type)
+                                        <option value="{{ $type->value }}">{{ $type->label() }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('product_type')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
-                                        <div class="mb-3">
-                                        <label for="productCategories" class="form-label">
-                                                Categories 
-                                            </label>
+                                <div class="mb-3">
+                                    <label for="productCategories" class="form-label">
+                                        Categories
+                                    </label>
 
-                                            <select class="form-control"
-                                                    name="categories[]"
-                                                    id="productCategories"
-                                                    multiple>
-                                                @forelse ($categories as $category)
-                                                    <option value="{{ $category->id }}"
-                                                        {{ collect(old('categories'))->contains($category->id) ? 'selected' : '' }}>
-                                                        {{ $category->name }}
-                                                    </option>
-                                                @empty
-                                                    <option disabled>No categories found</option>
-                                                @endforelse
-                                            </select>
-                                        </div>
-                                       
-                                        <div class="mb-3">
-                                            <label for="shortDecs" class="form-label">Short Description </label>
-                                            <textarea class="form-control" name="short_description" id="shortDecs" rows="3">
-                                                {{ old('short_description') }}
-                                            </textarea>
-                                            @error('short_description')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    <select class="form-control"
+                                        name="categories[]"
+                                        id="productCategories"
+                                        multiple>
+                                        @forelse ($categories as $category)
+                                        <option value="{{ $category->id }}"
+                                            {{ collect(old('categories'))->contains($category->id) ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                        @empty
+                                        <option disabled>No categories found</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="shortDecs" class="form-label">Short Description <span class="text-danger">*</span> </label>
+                                    <textarea class="form-control" name="short_description" id="shortDecs" rows="3">
+                                    {{ old('short_description') }}
+                                    </textarea>
+                                    @error('short_description')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="row">
+                                    <!-- SKU -->
+                                    <div class="col-lg-6">
+                                        <div>
+                                            <label class="form-label">SKU Number</label>
+                                            <input type="text"
+                                                name="sku_number"
+                                                value="{{ old('sku_number') }}"
+                                                class="form-control"
+                                                placeholder="SKU-ABC-001">
+                                            @error('sku_number')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                        <div class="row">
-                                            <!-- SKU -->
-                                            <div class="col-lg-6">
-                                                <div>
-                                                    <label class="form-label">SKU Number</label>
-                                                    <input type="text"
-                                                        name="sku_number"
-                                                        value="{{ old('sku_number') }}"
-                                                        class="form-control"
-                                                        placeholder="SKU-ABC-001">
-                                                    @error('sku_number')
-                                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div>
+                                            <label class="form-label" for="product-price-input">Price <span class="text-danger">*</span></label>
+                                            <div class="input-group has-validation">
+                                                <span class="input-group-text" id="product-price-addon">$</span>
+                                                <input type="number" step="0.01" name="price" class="form-control">
+                                                <div class="invalid-feedback">Please Enter a product price.</div>
                                             </div>
-
-                                            <div class="col-lg-6">
-                                                <div>
-                                                    <label class="form-label" for="product-price-input">Price</label>
-                                                    <div class="input-group has-validation">
-                                                        <span class="input-group-text" id="product-price-addon">$</span>
-                                                        <input type="number" step="0.01" name="price" class="form-control">
-                                                        <div class="invalid-feedback">Please Enter a product price.</div>
-                                                    </div>
-                                                </div>
-                                                @error('price')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                                @enderror
-                                            </div><!--end col-->
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Tags</label>
-                                                <select id="productTags" name="tags[]" class="form-control" multiple>
-                                                    @foreach ($allTags as $tag)
-                                                        <option value="{{ $tag->id }}" {{ (collect(old('tags'))->contains($tag->id) || (isset($product) && $product->tags->contains($tag->id))) ? 'selected' : '' }}>{{ $tag->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <label for="productStatus" class="form-label">Status</label>
-                                                <select class="form-control"
-                                                        name="status"
-                                                        id="productStatus">
-                                                    <option value="">Select Status</option>
-
-                                                    @foreach ($productStatuses as $status)
-                                                        <option value="{{ $status->value }}"
-                                                            {{ old('status') === $status->value ? 'selected' : '' }}>
-                                                            {{ $status->label() }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('status')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div>
-                                                    <label for="productVisibility" class="form-label">Visibility</label>
-                                                    <select class="form-control" name="visibility" id="productVisibility">
-                                                        <option value="">Select Visibility</option>
-
-                                                        @foreach ($productVisibilities as $visibility)
-                                                            <option value="{{ $visibility->value }}"
-                                                                {{ old('visibility') === $visibility->value ? 'selected' : '' }}>
-                                                                {{ $visibility->label() }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('visibility')
-                                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div><!--end col-->
                                         </div>
-                                    
+                                        @error('price')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div><!--end col-->
+
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Tags</label>
+                                        <select id="productTags" name="tags[]" class="form-control" multiple>
+                                            @foreach ($allTags as $tag)
+                                            <option value="{{ $tag->id }}" {{ (collect(old('tags'))->contains($tag->id) || (isset($product) && $product->tags->contains($tag->id))) ? 'selected' : '' }}>{{ $tag->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Brands</label>
+                                        <select id="productBrands" name="brand_id" class="form-control" >
+                                          @foreach( $allbrands as $brand)
+                                            <option value="{{ $brand->id }}" {{ (collect(old('brands'))->contains($brand->id) || (isset($product) && $product->brands->contains($brand->id))) ? 'selected' : '' }}>{{ $brand->name }}</option>
+                                          @endforeach
+                                        </select>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label for="productStatus" class="form-label">Status</label>
+                                            <select class="form-control"
+                                                name="status"
+                                                id="productStatus">
+                                                <option value="">Select Status</option>
+
+                                                @foreach ($productStatuses as $status)
+                                                <option value="{{ $status->value }}"
+                                                    {{ old('status') === $status->value ? 'selected' : '' }}>
+                                                    {{ $status->label() }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                            @error('status')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div>
+                                                <label for="productVisibility" class="form-label">Visibility</label>
+                                                <select class="form-control" name="visibility" id="productVisibility">
+                                                    <option value="">Select Visibility</option>
+
+                                                    @foreach ($productVisibilities as $visibility)
+                                                    <option value="{{ $visibility->value }}"
+                                                        {{ old('visibility') === $visibility->value ? 'selected' : '' }}>
+                                                        {{ $visibility->label() }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                @error('visibility')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div><!--end col-->
+                                    </div>
+
                                 </div><!--end col-->
                             </div><!--end row-->
                         </div>
@@ -183,39 +193,39 @@
                                 <div class="col-xxl-8">
                                     <div class="mb-3">
                                         <label for="metaTitle" class="form-label">Meta Title</label>
-                                        <input type="text" class="form-control @error('meta_title') is-invalid @enderror" 
+                                        <input type="text" class="form-control @error('meta_title') is-invalid @enderror"
                                             name="meta_title" id="metaTitle"
-                                            value="{{ old('meta_title') }}" 
+                                            value="{{ old('meta_title') }}"
                                             placeholder="Enter meta title (max 160 characters)"
                                             maxlength="160">
                                         <small class="text-muted">Recommended: 50-60 characters</small>
                                         @error('meta_title')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="metaDescription" class="form-label">Meta Description</label>
-                                        <textarea class="form-control @error('meta_description') is-invalid @enderror" 
+                                        <textarea class="form-control @error('meta_description') is-invalid @enderror"
                                             name="meta_description" id="metaDescription"
-                                            rows="3" 
+                                            rows="3"
                                             placeholder="Enter meta description (max 160 characters)"
                                             maxlength="160">{{ old('meta_description') }}</textarea>
                                         <small class="text-muted">Recommended: 150-160 characters</small>
                                         @error('meta_description')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="metaKeywords" class="form-label">Meta Keywords</label>
-                                        <textarea class="form-control @error('meta_keywords') is-invalid @enderror" 
+                                        <textarea class="form-control @error('meta_keywords') is-invalid @enderror"
                                             name="meta_keywords" id="metaKeywords"
-                                            rows="3" 
+                                            rows="3"
                                             placeholder="Enter meta keywords separated by comma">{{ old('meta_keywords') }}</textarea>
                                         <small class="text-muted">Example: bathroom fixtures, tiles, faucets</small>
                                         @error('meta_keywords')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
@@ -252,7 +262,7 @@
                                         </div>
 
                                         @error('product_image')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -269,7 +279,7 @@
                                         <div class="row mt-3" id="galleryPreview"></div>
 
                                         @error('gallery_images')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
@@ -279,7 +289,7 @@
                 </div><!--end col-->
             </div><!--end row-->
 
-            <div class="row"  id="vec_general_Info_Section" style="display: none">
+            <div class="row" id="vec_general_Info_Section" style="display: none">
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
@@ -294,7 +304,7 @@
                                             <div>
                                                 <label class="form-label">Stock Status <span class="text-danger">*</span></label>
                                                 <select name="stock_status"
-                                                        class="form-control">
+                                                    class="form-control">
                                                     <option value="">Select Status</option>
                                                     <option value="instock" {{ old('stock_status') === 'instock' ? 'selected' : '' }}>
                                                         In Stock
@@ -305,11 +315,11 @@
                                                 </select>
 
                                                 @error('stock_status')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
-                                        
+
                                         <div class="col-lg-4">
                                             <div>
                                                 <label class="form-label" for="product-discount-input">Discount</label>
@@ -319,10 +329,10 @@
                                                 </div>
                                             </div>
                                             @error('discount')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
-                                        </div><!--end col--> 
-                                        
+                                        </div><!--end col-->
+
                                         <div class="col-lg-4">
                                             <div>
                                                 <label class="form-label">Sell Price</label>
@@ -336,7 +346,7 @@
                                                         placeholder="Special price">
                                                 </div>
                                                 @error('sell_price')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
@@ -350,7 +360,7 @@
                                                     value="{{ old('sell_price_start_date') }}"
                                                     class="form-control">
                                                 @error('sell_price_start_date')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
@@ -363,7 +373,7 @@
                                                     value="{{ old('sell_price_end_date') }}"
                                                     class="form-control">
                                                 @error('sell_price_end_date')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
@@ -374,7 +384,7 @@
                                                 <i class="ph-info me-1"></i>
                                                 Sell price will override the regular price during the selected date range.
                                             </div>
-                                        </div>    
+                                        </div>
                                         <div class="col-lg-6">
                                             <div class="form-check form-switch mb-3">
                                                 <input type="checkbox" name="exchangeable" value="1" class="form-check-input">
@@ -387,7 +397,7 @@
                                                 <label class="form-check-label" for="refundableInput">Refundable</label>
                                             </div>
                                         </div>
-                                        
+
                                     </div><!--end row-->
                                 </div>
                             </div><!--end row-->
@@ -423,7 +433,7 @@
                                                     class="form-control"
                                                     placeholder="e.g. 1.5">
                                                 @error('weight')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
@@ -439,7 +449,7 @@
                                                     class="form-control"
                                                     placeholder="e.g. 30">
                                                 @error('length')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
@@ -455,7 +465,7 @@
                                                     class="form-control"
                                                     placeholder="e.g. 20">
                                                 @error('width')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
@@ -471,7 +481,7 @@
                                                     class="form-control"
                                                     placeholder="e.g. 10">
                                                 @error('height')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
@@ -497,7 +507,7 @@
                     </div>
                 </div><!--end col-->
             </div><!--end row-->
-            
+
             {{-- Variant Section --}}
             <div class="row" id="vec_variantSection" style="display:none;">
                 <div class="col-lg-12">
@@ -518,9 +528,9 @@
                                         <label class="form-label fw-semibold">Variant Attributes</label>
                                         <select class="form-control" id="variantAttributesSelect" name="product_attributes[]" multiple>
                                             @forelse($attributes as $attribute)
-                                                <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
+                                            <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
                                             @empty
-                                                <option disabled>No attributes found</option>
+                                            <option disabled>No attributes found</option>
                                             @endforelse
                                         </select>
                                     </div>
@@ -535,32 +545,34 @@
                                         <!-- Variants will be rendered here -->
                                     </div>
 
-                                    </div>
                                 </div>
-
                             </div>
+
                         </div>
                     </div>
                 </div>
-                {{-- End Variant Section --}}
+            </div>
+            {{-- End Variant Section --}}
 
             <div class="hstack gap-2 justify-content-end mb-3">
-               <a href="{{ route('products.index') }}" class="btn btn-danger">
+                <a href="{{ route('products.index') }}" class="btn btn-danger">
                     <i class="ph-x align-middle"></i> Cancel
                 </a>
                 <button class="btn btn-primary">Submit</button>
             </div>
 
-        </form>
-    </div>
-    <script>
-    window.attributesData = {!! $attributesJson !!};
-    $(document).ready(function () {
+    </form>
+</div>
+<script>
+    window.attributesData = {
+        !!$attributesJson!!
+    };
+    $(document).ready(function() {
 
-        const $attrSelect    = $('#variantAttributesSelect');
-        const $containers    = $('#attributeValuesContainers');
-        const $generateBtn   = $('#generateVariants');
-        const $variantsList  = $('#variantsList');
+        const $attrSelect = $('#variantAttributesSelect');
+        const $containers = $('#attributeValuesContainers');
+        const $generateBtn = $('#generateVariants');
+        const $variantsList = $('#variantsList');
 
         /* --------------------------------------------
          * Create multi-select for attribute values
@@ -628,7 +640,7 @@
             const attributes = [];
             let hasError = false;
 
-            $containers.find('select').each(function () {
+            $containers.find('select').each(function() {
                 const $select = $(this);
                 const attributeId = $select.data('attribute-id');
                 const selectedValues = $select.val();
@@ -640,7 +652,7 @@
                 }
 
                 const valuesMap = {};
-                $select.find('option').each(function () {
+                $select.find('option').each(function() {
                     valuesMap[this.value] = this.text;
                 });
 
@@ -660,12 +672,12 @@
                     _token: "{{ csrf_token() }}",
                     attributes: attributes
                 },
-                success: function (res) {
-                   $('#variantsList').html(res.html);
+                success: function(res) {
+                    $('#variantsList').html(res.html);
                     $('#vec_variantSection').show();
 
                 },
-                error: function () {
+                error: function() {
                     alert('Failed to generate variants');
                 }
             });
@@ -676,8 +688,8 @@
          * -------------------------------------------- */
         $attrSelect.on('change', onAttributesChange);
         $generateBtn.on('click', generateVariants);
-        
-        
+
+
         /* --------------------------------------------
          * Variant UI handlers (create page only)
          * -------------------------------------------- */
@@ -687,7 +699,7 @@
             const $sku = $card.find('.variant-sku');
             const base = $('input[name="title"]').val() || 'PRD';
             const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
-            const sku = base.replace(/\s+/g, '-').toUpperCase().substring(0,6) + '-' + rand;
+            const sku = base.replace(/\s+/g, '-').toUpperCase().substring(0, 6) + '-' + rand;
             $sku.val(sku);
             $card.find('.meta-sku').text(sku);
         });
@@ -704,7 +716,10 @@
             const $card = $input.closest('.variant-card');
             const $preview = $card.find('.variant-image-preview');
             const file = this.files && this.files[0];
-            if (!file) { $preview.hide(); return; }
+            if (!file) {
+                $preview.hide();
+                return;
+            }
             const reader = new FileReader();
             reader.onload = function(ev) {
                 $preview.attr('src', ev.target.result).show();
@@ -722,14 +737,14 @@
             $card.find('.meta-stock').text(stock);
             $card.find('.meta-sku').text(sku);
         });
-   
-        $(document).on('click', '.variant-card .card-header', function () {
+
+        $(document).on('click', '.variant-card .card-header', function() {
             const $card = $(this).closest('.variant-card');
             $card.toggleClass('open');
             $card.find('.card-body').slideToggle();
         });
 
-     });
-    </script>
-    <script src="{{ asset('admin/js/pages/ecommerce-create-product.init.js') }}"></script>
+    });
+</script>
+<script src="{{ asset('admin/js/pages/ecommerce-create-product.init.js') }}"></script>
 <x-admin.footer />

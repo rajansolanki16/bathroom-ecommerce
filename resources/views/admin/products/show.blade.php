@@ -97,10 +97,17 @@
                             </span>
                         </div>
 
-                        <div class="col-12">
+                        <div class="col-6">
                             <p class="mb-1 text-muted">Categories</p>
                             <p>
                                 {{ $product->categories->pluck('name')->join(', ') ?: '-' }}
+                            </p>
+                        </div>
+
+                         <div class="col-6">
+                            <p class="mb-1 text-muted">Brand</p>
+                            <p>
+                                {{ $product->brand->name ?? '-' }}
                             </p>
                         </div>
 
