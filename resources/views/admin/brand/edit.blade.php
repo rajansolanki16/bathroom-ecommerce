@@ -30,9 +30,23 @@
 
                     <div class="mb-3">
                         <label for="logo" class="form-label">Brand Logo</label>
-                        @if($brand->logo)
-                            <div class="mb-2">
-                                <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}" style="height: 100px; width: 100px; object-fit: cover; border-radius: 4px;">
+                        @if($brand->hasMedia('brand_logo'))
+                            @php
+                                $media = $brand->getFirstMedia('brand_logo');
+                            @endphp
+
+                            <div class="mb-2 position-relative d-inline-block brand-logo-wrapper">
+                                <img src="{{ $media->getUrl() }}"
+                                    alt="{{ $brand->name }}"
+                                    style="height: 100px; width: 100px; object-fit: cover; border-radius: 4px;">
+
+                                <button type="button"
+                                    class="btn btn-sm btn-danger position-absolute top-0 end-0 delete-brand-logo"
+                                    data-url="{{ route('media.delete', $media->id) }}"
+                                    title="Delete logo">
+                                    ✕
+                                </button>
+
                                 <p class="text-muted small mt-1">Current logo</p>
                             </div>
                         @endif
@@ -71,5 +85,24 @@
         </div>
     </div>
 </div>
+<script>
+$(document).on('click', '.delete-brand-logo', function () {
+    const mediaId = $(this).data('id');
+
+    let url = "{{ route('media.delete', ':id') }}";
+    url = url.replace(':id', mediaId);
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function () {
+            location.reload(); 
+        }
+    });
+});
+</script>
 
 <x-admin.footer />

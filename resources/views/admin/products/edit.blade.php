@@ -190,8 +190,12 @@
 
                             <div class="border rounded p-3 text-center">
                                 <img id="productImagePreview"
-                                    src="{{ old('product_image', $product->product_image ? asset('storage/' . $product->product_image) : asset('admin/images/new-document.png')) }}"
-                                    class="img-thumbnail mb-3" style="max-height: 180px">
+                                    src="{{ 
+                                        $product->getFirstMediaUrl('main_image') 
+                                            ?: asset('admin/images/new-document.png') 
+                                    }}"
+                                    class="img-thumbnail mb-3"
+                                    style="max-height: 180px">
 
                                 <input type="file"
                                     name="product_image"
@@ -218,14 +222,21 @@
                                 onchange="previewMultipleImages(event)">
 
                             <div class="row mt-3" id="galleryPreview">
-                                @foreach ($product->gallery_images ?? [] as $image)
-                                <div class="col-md-3 mb-3">
-                                    <div class="card shadow-sm">
-                                        <img src="{{ asset('storage/' . $image) }}"
-                                            class="card-img-top"
-                                            style="height:150px; object-fit:cover">
+                                @foreach ($product->getMedia('gallery') as $media)
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card shadow-sm position-relative">
+                                            <img src="{{ $media->getUrl() }}"
+                                                class="card-img-top"
+                                                style="height:150px; object-fit:cover">
+
+                                            <!-- Optional delete button -->
+                                            <button type="button"
+                                                class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 delete-gallery-image" 
+                                                  data-url="{{ route('media.delete', $media->id) }}">
+                                                ✕
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
                                 @endforeach
                             </div>
 
@@ -1031,4 +1042,29 @@
 
 <script src="{{ asset('admin/js/pages/ecommerce-create-product.init.js') }}"></script>
 @stack('scripts')
+<script>
+$(document).on('click', '.delete-gallery-image', function () {
+    const btn   = $(this);
+    const url   = btn.data('url');
+    const id    = btn.data('id');
+    const card  = btn.closest('.col-md-3');
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            media_id: id
+        },
+        success: function () {
+            card.fadeOut(300, function () {
+                $(this).remove();
+            });
+        },
+        error: function () {
+            alert('Failed to delete image');
+        }
+    });
+});
+</script>
 <x-admin.footer />

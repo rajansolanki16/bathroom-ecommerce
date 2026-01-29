@@ -32,8 +32,10 @@
                                 <tr>
                                     <td>#{{ $brand->id }}</td>
                                     <td>
-                                        @if($brand->logo)
-                                            <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}" style="height: 40px; width: 40px; object-fit: cover; border-radius: 4px;">
+                                        @if($brand->hasMedia('brand_logo'))
+                                            <img src="{{ $brand->getFirstMediaUrl('brand_logo') }}"
+                                                alt="{{ $brand->name }}"
+                                                style="height: 40px; width: 40px; object-fit: cover; border-radius: 4px;">
                                         @else
                                             <span class="badge bg-secondary">No Image</span>
                                         @endif

@@ -35,49 +35,29 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
+        $request->validate([
             'name' => 'required|string|min:3|unique:brands,name',
             'description' => 'nullable|string|max:1000',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'nullable|boolean',
-        ];
+        ]);
 
-        $messages = [
-            'name.required' => 'The brand name field is required.',
-            'name.min' => 'The brand name must be at least 3 characters.',
-            'name.unique' => 'This brand name already exists.',
-            'logo.image' => 'The logo must be an image file.',
-            'logo.mimes' => 'The logo must be a jpeg, png, jpg, or gif image.',
-            'logo.max' => 'The logo size must not exceed 2MB.',
-        ];
+        $brand = Brand::create([
+            'name'        => $request->name,
+            'slug'        => Str::slug($request->name),
+            'description' => $request->description,
+            'is_active'   => $request->boolean('is_active'),
+        ]);
 
-        $validator = Validator::make($request->all(), $rules, $messages);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $brand = new Brand();
-        $brand->name = $request->name;
-        $brand->slug = Str::slug($request->name);
-        $brand->description = $request->description;
-        $brand->is_active = $request->has('is_active') ? true : false;
-
-        // Handle logo upload
         if ($request->hasFile('logo')) {
-            $logo = $request->file('logo');
-            $logoName = time() . '_' . $logo->getClientOriginalName();
-            $logoPath = $logo->storeAs('brands', $logoName, 'public');
-            $brand->logo = $logoPath;
+            $brand->addMedia($request->file('logo'))
+                ->toMediaCollection('brand_logo');
         }
-
-        $brand->save();
 
         return redirect()->route('brands.index')
             ->with('success', 'Brand created successfully');
     }
+
 
     /**
      * Display the specified brand.
@@ -100,7 +80,7 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
-        $rules = [
+        $request->validate([
             'name' => [
                 'required',
                 'string',
@@ -110,44 +90,20 @@ class BrandController extends Controller
             'description' => 'nullable|string|max:1000',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'nullable|boolean',
-        ];
+        ]);
 
-        $messages = [
-            'name.required' => 'The brand name field is required.',
-            'name.min' => 'The brand name must be at least 3 characters.',
-            'name.unique' => 'This brand name already exists.',
-            'logo.image' => 'The logo must be an image file.',
-            'logo.mimes' => 'The logo must be a jpeg, png, jpg, or gif image.',
-            'logo.max' => 'The logo size must not exceed 2MB.',
-        ];
+        $brand->update([
+            'name'        => $request->name,
+            'slug'        => Str::slug($request->name),
+            'description' => $request->description,
+            'is_active'   => $request->boolean('is_active'),
+        ]);
 
-        $validator = Validator::make($request->all(), $rules, $messages);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $brand->name = $request->name;
-        $brand->slug = Str::slug($request->name);
-        $brand->description = $request->description;
-        $brand->is_active = $request->has('is_active') ? true : false;
-
-        // Handle logo upload
         if ($request->hasFile('logo')) {
-            // Delete old logo if exists
-            if ($brand->logo && Storage::disk('public')->exists($brand->logo)) {
-                Storage::disk('public')->delete($brand->logo);
-            }
-
-            $logo = $request->file('logo');
-            $logoName = time() . '_' . $logo->getClientOriginalName();
-            $logoPath = $logo->storeAs('brands', $logoName, 'public');
-            $brand->logo = $logoPath;
+            $brand->clearMediaCollection('brand_logo');
+            $brand->addMedia($request->file('logo'))
+                ->toMediaCollection('brand_logo');
         }
-
-        $brand->save();
 
         return redirect()->route('brands.index')
             ->with('success', 'Brand updated successfully');

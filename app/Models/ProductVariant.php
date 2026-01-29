@@ -5,9 +5,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
 use App\Models\AttributeValue;
 use Illuminate\Support\Facades\Schema;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class ProductVariant extends Model
+class ProductVariant extends Model implements HasMedia
 {
+    use InteractsWithMedia ;
     protected $table = 'product_variants';
 
     protected $fillable = [

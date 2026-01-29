@@ -39,14 +39,13 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $rules = [
             'name' => [
                 'required',
                 'min:3',
-                Rule::unique('categories')->where(function ($query) use ($request) {
-                    return $query->where('parent_id', $request->parent_id);
-                }),
+                Rule::unique('categories')->where(fn ($q) =>
+                    $q->where('parent_id', $request->parent_id)
+                ),
             ],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
@@ -54,42 +53,30 @@ class CategoryController extends Controller
         $messages = [
             'name.required' => 'The category field is required.',
             'name.min' => 'The category must be at least 3 characters.',
-            'name.unique' => 'This category already exists under the same parent. Please choose a different name.',
-            'image.image' => 'The image must be an image file.',
-            'image.mimes' => 'The image must be a jpeg, png, jpg, or gif image.',
-            'image.max' => 'The image size must not exceed 2MB.',
+            'name.unique' => 'This category already exists under the same parent.',
         ];
-        $validator = Validator::make($request->all(), $rules, $messages);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $validated = $request->validate($rules, $messages);
 
-        $categories = new Category;
-        $categories->name = $request->name;
-        $categories->slug = Str::slug($request->name);
-        $categories->parent_id = $request->parent_id;
-        $categories->is_visible = $request->has('is_visible') ? 1 : 0;
+        $category = Category::create([
+            'name'       => $validated['name'],
+            'slug'       => Str::slug($validated['name']),
+            'parent_id'  => $request->parent_id,
+            'is_visible' => $request->boolean('is_visible'),
+        ]);
 
-        // Handle image upload
+        /* ===============================
+        CATEGORY IMAGE (Spatie)
+        =============================== */
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $imagePath = $image->storeAs('categories', $imageName, 'public');
-            $categories->image = $imagePath;
+            $category
+                ->clearMediaCollection('category_image')
+                ->addMediaFromRequest('image')
+                ->toMediaCollection('category_image');
         }
 
-        $categories->save();
-
-        if ($categories) {
-            return redirect()->route('categories.index');
-        } else {
-            return redirect()->back()
-                ->withErrors(['category' => 'Unable to create or update the category.'])
-                ->withInput();
-        }
+        return redirect()->route('categories.index')
+            ->with('success', 'Category created successfully');
     }
 
     /**
@@ -117,58 +104,39 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
         $category = Category::findOrFail($id);
+
         $rules = [
             'name' => [
                 'required',
                 'min:3',
                 Rule::unique('categories')
-                    ->ignore($category->id) // ignore current category
-                    ->where(function ($query) use ($request) {
-                        return $query->where('parent_id', $request->parent_id);
-                    }),
+                    ->ignore($category->id)
+                    ->where(fn ($q) =>
+                        $q->where('parent_id', $request->parent_id)
+                    ),
             ],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
-        $messages = [
-            'name.required' => 'The category field is required.',
-            'name.min' => 'The category must be at least 3 characters.',
-            'name.unique' => 'The category already exists. Please choose a different name.',
-            'image.image' => 'The image must be an image file.',
-            'image.mimes' => 'The image must be a jpeg, png, jpg, or gif image.',
-            'image.max' => 'The image size must not exceed 2MB.',
-        ];
-        $validator = Validator::make($request->all(), $rules, $messages);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        
-        $category = Category::findOrFail($id);
-
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($category->image && Storage::disk('public')->exists($category->image)) {
-                Storage::disk('public')->delete($category->image);
-            }
-
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $imagePath = $image->storeAs('categories', $imageName, 'public');
-            $category->image = $imagePath;
-        }
+        $validated = $request->validate($rules);
 
         $category->update([
-            'name'      => $request->name,
-            'slug'      => Str::slug($request->name),
-            'parent_id' => $request->parent_id,
-            'is_visible' => $request->has('is_visible') ? 1 : 0,
-            'image'     => $category->image,
+            'name'       => $validated['name'],
+            'slug'       => Str::slug($validated['name']),
+            'parent_id'  => $request->parent_id,
+            'is_visible' => $request->boolean('is_visible'),
         ]);
+
+        /* ===============================
+        UPDATE IMAGE (Spatie)
+        =============================== */
+        if ($request->hasFile('image')) {
+            $category
+                ->clearMediaCollection('category_image')
+                ->addMediaFromRequest('image')
+                ->toMediaCollection('category_image');
+        }
 
         return redirect()->route('categories.index')
             ->with('success', 'Category updated successfully');

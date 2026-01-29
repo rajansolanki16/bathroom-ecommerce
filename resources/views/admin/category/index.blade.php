@@ -31,8 +31,12 @@
                         <tr>
                             <td class="fw-medium">{{ $category->id }}</td>
                             <td>
-                                @if($category->image)
-                                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" height="50">
+                                @if($category->hasMedia('category_image'))
+                                    <img
+                                        src="{{ $category->getFirstMediaUrl('category_image', 'thumb') }}"
+                                        alt="{{ $category->name }}"
+                                        height="50"
+                                    >
                                 @else
                                     <span class="text-muted">No image</span>
                                 @endif

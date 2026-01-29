@@ -118,5 +118,12 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/users', UserController::class)->names('users');
         Route::post('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
         Route::post('/users/{user}/toggle-approval', [UserController::class, 'toggleApproval'])->name('users.toggle-approval');
+
+       Route::post('media/delete/{media}', function (
+            \Spatie\MediaLibrary\MediaCollections\Models\Media $media) {
+                $media->delete();
+
+            return response()->json(['success' => true]);
+        })->name('media.delete');
     });
 });

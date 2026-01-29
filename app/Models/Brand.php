@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Brand extends Model
+class Brand extends Model  implements HasMedia
 {
     use HasFactory;
+     use InteractsWithMedia;
 
     protected $table = 'brands';
 
@@ -46,5 +49,17 @@ class Brand extends Model
                 $brand->slug = Str::slug($brand->name);
             }
         });
+    }
+    
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('brand_logo')->singleFile();
+    }
+
+    public function getLogoUrlAttribute()
+    {
+        return $this->hasMedia('brand_logo')
+            ? $this->getFirstMediaUrl('brand_logo')
+            : asset('admin/images/no-image.png');
     }
 }

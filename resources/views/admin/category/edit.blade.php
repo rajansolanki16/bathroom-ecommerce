@@ -44,15 +44,35 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="image" class="form-label">Category Image</label>
-                        @if($category->image && Storage::disk('public')->exists($category->image))
-                            <div class="mb-2">
-                                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" height="100">
+                        <label class="form-label">Category Image</label>
+
+                        @if($category->hasMedia('category_image'))
+                            <div class="mb-2 position-relative d-inline-block">
+                                <img
+                                    src="{{ $category->getFirstMediaUrl('category_image') }}"
+                                    alt="{{ $category->name }}"
+                                    height="100"
+                                    class="rounded border"
+                                >
+
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-danger position-absolute top-0 end-0 delete-category-image"
+                                    data-id="{{ $category->getFirstMedia('category_image')->id }}">
+                                    ✕
+                                </button>
                             </div>
                         @endif
-                        <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+
+                        <input
+                            type="file"
+                            name="image"
+                            class="form-control @error('image') is-invalid @enderror"
+                            accept="image/*"
+                        >
+
                         @error('image')
-                        <div class="invalid-response" style="display:flex">{{ $message }}</div>
+                            <div class="invalid-response">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -87,4 +107,23 @@
         </div>
     </div>
 </div>
+<script>
+$(document).on('click', '.delete-category-image', function () {
+    const mediaId = $(this).data('id');
+
+    let url = "{{ route('media.delete', ':id') }}";
+    url = url.replace(':id', mediaId);
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function () {
+            location.reload(); 
+        }
+    });
+});
+</script>
 <x-admin.footer />

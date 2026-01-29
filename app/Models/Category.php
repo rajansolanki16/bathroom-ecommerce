@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Category extends Model
+class Category extends Model implements HasMedia
 {
+      use InteractsWithMedia;
     //
     protected $fillable = [
         'name',
@@ -18,6 +21,11 @@ class Category extends Model
     public function parentCategory()
     {
         return $this->belongsTo(Category::class, 'parent_id');
+    }
+  
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('category_image')->singleFile();
     }
 
 

@@ -124,13 +124,10 @@
                                                         <div class="d-flex align-items-center">
                                                             <div class="avatar-xs bg-light rounded p-1 me-2">
                                                                 <img
-                                                                    src="{{ $product->product_image
-                                                                        ? asset('storage/'.$product->product_image)
-                                                                        : asset('admin/images/no-image.png') }}"
+                                                                    src="{{ $product->getFirstMediaUrl('main_image') ?: asset('admin/images/new-document.png')}}"
                                                                     class="img-fluid d-block"
                                                                     alt="Product Image">
                                                             </div>
-
                                                             <div>
                                                                 <h6 class="mb-0">
                                                                     <a href="{{ route('products.edit', $product->id) }}" class="text-reset">
