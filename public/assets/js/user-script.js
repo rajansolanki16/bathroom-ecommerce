@@ -107,11 +107,7 @@ function sendGuestStorageToServer() {
             _token: $('meta[name="csrf-token"]').attr('content')
         },
         success: function (res) {
-            console.log('Merge success:', res);
-
-            // update UI counts
-            refreshWishlistCount();
-            refreshCartCount();
+            console.log('Merge success:', res); 
         },
         error: function (xhr) {
             console.error('Merge failed:', xhr.responseText);

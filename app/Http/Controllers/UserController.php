@@ -33,24 +33,13 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'name' => 'required|string|max:255',
-        //     'email' => 'required|string|email|max:255|unique:users',
-        //     'mobile' => 'required|string|max:20|unique:users',
-        //     'whatsapp_number' => 'nullable|string|max:20',
-        //     'area' => 'nullable|string|max:255',
-        //     'address' => 'nullable|string|max:500',
-        //     'country' => 'nullable|string|max:100',
-        //     'state' => 'nullable|string|max:100',
-        // ]);
-
         $request->validate(
             [
                 'name' => [
                     'required',
                     'string',
                     'max:255',
-                    'regex:/^[a-zA-Z\s\-]+$/', // only letters & spaces
+                    'regex:/^[a-zA-Z\s\-]+$/', 
                 ],
 
                 'email' => [
@@ -81,7 +70,6 @@ class UserController extends Controller
                 'is_approved' => 'nullable|boolean',
             ],
             [
-                // Custom error messages
                 'name.required' => 'Name is required.',
                 'name.regex' => 'Name must contain only letters and spaces.',
 
@@ -145,26 +133,13 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // $request->validate([
-        //     'name' => 'required|string|max:255',
-        //     'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-        //     'mobile' => 'required|string|max:20|unique:users,mobile,' . $user->id,
-        //     'whatsapp_number' => 'nullable|string|max:20',
-        //     'area' => 'nullable|string|max:255',
-        //     'address' => 'nullable|string|max:500',
-        //     'country' => 'nullable|string|max:100',
-        //     'state' => 'nullable|string|max:100',
-        //     'is_active' => 'nullable|boolean',
-        //     'is_approved' => 'nullable|boolean',
-        // ]);
-
         $request->validate(
             [
                 'name' => [
                     'required',
                     'string',
                     'max:255',
-                    'regex:/^[a-zA-Z\s\-]+$/', // only letters & spaces
+                    'regex:/^[a-zA-Z\s\-]+$/', 
                 ],
 
                 'email' => [
@@ -269,7 +244,6 @@ class UserController extends Controller
      */
     private function generateUniqueUsername($name, $email)
     {
-        // Try to create username from first name and last name
         $parts = explode(' ', trim($name));
         $username = strtolower($parts[0]);
 
@@ -277,7 +251,6 @@ class UserController extends Controller
             $username = strtolower($parts[0] . $parts[count($parts) - 1]);
         }
 
-        // If username already exists, append a random number
         $originalUsername = $username;
         $counter = 1;
 

@@ -17,12 +17,10 @@ class ProductReviewController extends Controller
             'review'     => 'nullable|string|max:1000',
         ]);
 
-        // ✅ Only purchased users
         if (!OrderItem::hasPurchased($request->product_id)) {
             abort(403, 'You have not purchased this product.');
         }
 
-        // ✅ Prevent duplicate review for same order
         $orderItem = OrderItem::where('product_id', $request->product_id)
             ->whereHas('order', function ($q) {
                 $q->where('user_id', auth()->id())

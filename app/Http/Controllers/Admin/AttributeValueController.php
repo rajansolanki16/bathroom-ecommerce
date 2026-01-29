@@ -17,9 +17,7 @@ class AttributeValueController extends Controller
      */
     public function index()
     {
-        //
         $attribute = ProductAttribute::with('values');
-
         return view('admin.productattribute.edit', compact('attribute'));
     }
 
@@ -36,7 +34,6 @@ class AttributeValueController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $validator = Validator::make($request->all(), [
             'value' => [
                 'required',
@@ -62,7 +59,6 @@ class AttributeValueController extends Controller
         $attributeValue->slug = Str::slug($request->value);
         $attributeValue->save();
 
-        // Load the relationship to get attribute name
         $attributeValue->load('attribute');
 
         return response()->json([
@@ -113,7 +109,6 @@ class AttributeValueController extends Controller
             'slug' => Str::slug($request->value)
         ]);
 
-        // Load the relationship to get attribute name
         $value->load('attribute');
 
         return response()->json([

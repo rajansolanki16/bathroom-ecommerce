@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AbandonedCart;
-use App\Models\Booking;
 use App\Models\Country;
-use App\Models\Transaction;
 use App\Models\User;
 use App\Mail\OTPMail;
 use Carbon\Carbon;
@@ -221,7 +218,7 @@ class AuthController extends Controller
                 $user = Auth::user();
                 
                 if ($user->hasRole('admin')) {
-                    return redirect()->route('view.admin.dashboard');
+                    return redirect()->route('admin.dashboard');
                 } elseif ($user->hasRole('vendor')) {
                     // Generate OTP for vendor login verification
                     $otp = rand(100000, 999999);

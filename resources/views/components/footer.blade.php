@@ -87,7 +87,6 @@
 
     {{-- EXISTING SCRIPTS (UNCHANGED) --}}
     <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
-    <script src="{{ publicPath('assets/js/custom-script.js') }}?version={{ rand(10,99) }}.{{ rand(10,99) }}.{{ rand(100,999) }}"></script>
     {{-- {!! getSetting('page_custom_scrip_footer') !!} --}}
    <script src="{{ asset('assets/js/user-script.js') }}"></script>
    <script>

@@ -16,7 +16,7 @@
                 <form action="{{ route('categories.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label for="category" class="form-label">{{ __('category.Category_Title') }}<span class="text-danger">{{ __('category.required_mark') }}</span></label>
+                        <label for="category" class="form-label">{{ __('category.Category_Title') }}<span class="text-danger">{{ __('category.required_mark') }}</span></label> 
 
                         <input type="text" name="name" id="category" class="form-control @error('name') is-invalid @enderror" placeholder="Enter category title">
 

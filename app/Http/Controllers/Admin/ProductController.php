@@ -219,7 +219,7 @@ class ProductController extends Controller
         $product->brand_id             = $request->brand_id ?? null;
 
         if ($product->product_type == ProductType::SIMPLE->value || $product->product_type == ProductType::SIMPLE) {
-            $product->stock                = $request->stock ?? 0;
+            $product->stock                = $request->stock_status ?? 0;
 
             $product->price                = $validated['price'] ?? 0;
             $product->discount             = $validated['discount'] ?? 0;

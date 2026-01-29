@@ -3,17 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactMail;
-use App\Models\Blogs;
 use App\Models\User;
-use App\Models\Booking;
-use App\Models\Room;
-use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class RedirectController extends Controller
@@ -28,11 +22,10 @@ class RedirectController extends Controller
         $user = Auth::user();
 
         if ($user->hasRole('admin')) {
-            return redirect()->route('view.admin.dashboard');
+            return redirect()->route('admin.dashboard');
         }
 
         if ($user->hasRole('user')) {
-            // return view('user.home');
             return redirect()->route('user.home');
         }
 

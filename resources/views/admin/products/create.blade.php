@@ -306,10 +306,10 @@
                                                 <select name="stock_status"
                                                     class="form-control">
                                                     <option value="">Select Status</option>
-                                                    <option value="instock" {{ old('stock_status') === 'instock' ? 'selected' : '' }}>
+                                                    <option value="1" {{ old('stock_status') === 'instock' ? 'selected' : '' }}>
                                                         In Stock
                                                     </option>
-                                                    <option value="outstock" {{ old('stock_status') === 'outstock' ? 'selected' : '' }}>
+                                                    <option value="0" {{ old('stock_status') === 'outstock' ? 'selected' : '' }}>
                                                         Out of Stock
                                                     </option>
                                                 </select>

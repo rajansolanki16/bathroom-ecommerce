@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Booking;
 use App\Models\User;
-use App\Models\Transaction;
 use App\Models\Order;
 use App\Models\Brand;
 use App\Models\Product;
@@ -18,7 +16,6 @@ class AdminController extends Controller
     public function show_admin(){
         $user = Auth::user();
 
-        // Get total statistics
         $totalOrders = Order::count();
         $totalRevenue = Order::sum('total');
         $totalProducts = Product::count();
@@ -26,34 +23,28 @@ class AdminController extends Controller
         $totalCategories = Category::count();
         $totalUsers = User::whereDoesntHave('roles', fn($q) => $q->where('name', 'admin'))->count();
 
-        // Get recent orders (last 10)
         $recentOrders = Order::with('user', 'items')
             ->latest()
             ->limit(10)
             ->get();
 
-        // Get monthly revenue
         $monthlyRevenue = Order::whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->sum('total');
 
-        // Get monthly order count
         $monthlyOrders = Order::whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->count();
 
-        // Get top brands
         $topBrands = Brand::withCount('products')
             ->orderBy('products_count', 'desc')
             ->limit(5)
             ->get();
 
-        // Get order status breakdown
         $ordersByStatus = Order::selectRaw('status, COUNT(*) as count')
             ->groupBy('status')
             ->get();
 
-        // Get low stock products
         $lowStockProducts = Product::where('stock', '<', 10)
             ->orderBy('stock', 'asc')
             ->limit(5)
