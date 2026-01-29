@@ -71,6 +71,9 @@ Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('c
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 Route::post('/reviews', [ProductReviewController::class, 'store'])->name('reviews.store');
 
+
+
+
 //admin panel
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
@@ -89,6 +92,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/attribute-values', AttributeValueController::class)->names('attribute_values');
 
         Route::get('/wishlist/show', [WishListController::class, 'showadmin'])->name('wishlist.show');
+
+        Route::get('/orders/export/{type}', [OrderController::class, 'export'])->name('orders.export');
+        
         Route::get('/orders', [OrderController::class, 'indexshow'])->name('orders.show');
         Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
 

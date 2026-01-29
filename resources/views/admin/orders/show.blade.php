@@ -6,6 +6,27 @@
         </div>
         <div class="card-body">
             <p class="text-muted"> this is the list of all User Order. </p>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-download me-1"></i> Export
+                </button>
+
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="{{ route('orders.export', 'csv') }}">
+                            <i class="bi bi-filetype-csv me-2"></i>Export CSV
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('orders.export', 'excel') }}">
+                            <i class="bi bi-file-earmark-excel me-2"></i>Export Excel
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
             <div class="row">
                 <form method="GET" action="{{ route('orders.show') }}">
                     <div class="row g-3 align-items-end">

@@ -7,7 +7,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum;
 use App\Enums\OrderStatus;
-use Illuminate\Support\Facades\Auth;
+use App\Exports\OrdersExport;
 
 class OrderController extends Controller
 {
@@ -74,6 +74,75 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'status'  => $order->status->label(),
+        ]);
+    }
+
+    // Export orders as CSV or Excel
+    public function export(string $type = 'csv')
+    {
+        // Normalize type
+        $type = strtolower($type);
+
+        // =====================
+        // EXCEL EXPORT (XLSX)
+        // =====================
+        if ($type === 'excel') {
+            $exporter = new OrdersExport();
+            $xlsxPath = $exporter->generateExcelXlsx();
+
+            if ($xlsxPath && file_exists($xlsxPath)) {
+                return response()->download($xlsxPath, 'orders.xlsx', [
+                    'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                ])->deleteFileAfterSend(true);
+            }
+
+            return response()->json(['error' => 'Failed to generate Excel file'], 500);
+        }
+
+        // =====================
+        // CSV EXPORT (DEFAULT)
+        // =====================
+        $orders = Order::with(['user', 'items.product'])->get();
+
+        return response()->stream(function () use ($orders) {
+            $handle = fopen('php://output', 'w');
+
+            // Write BOM for proper UTF-8 encoding in Excel
+            fwrite($handle, "\xEF\xBB\xBF");
+
+            // Write headers
+            $headers = [
+                'Order ID',
+                'Customer Name',
+                'Full Name',
+                'Email',
+                'Phone',
+                'Products',
+                'Total',
+                'Status',
+                'Order Date',
+            ];
+            fputcsv($handle, $headers);
+
+            // Write data rows
+            foreach ($orders as $order) {
+                fputcsv($handle, [
+                    $order->id,
+                    $order->user->name ?? $order->name,
+                    $order->name,
+                    $order->email,
+                    $order->phone,
+                    $order->items->pluck('product.product_title')->implode(', '),
+                    $order->total,
+                    optional($order->status)->label(),
+                    $order->created_at->format('Y-m-d'),
+                ]);
+            }
+
+            fclose($handle);
+        }, 200, [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="orders.csv"',
         ]);
     }
 }
