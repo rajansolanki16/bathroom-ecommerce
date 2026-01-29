@@ -27,7 +27,7 @@ class CheckoutController extends Controller
 
         $subtotal = $cart->sum(fn ($i) => $i['price'] * $i['quantity']);
         $discount = 0;
-
+    
         if ($coupon = session('applied_coupon')) {
             if ($coupon['type'] === 'percentage') {
                 $discount = ($subtotal * $coupon['amount']) / 100;

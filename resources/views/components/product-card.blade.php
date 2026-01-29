@@ -6,9 +6,7 @@
         <div class="product-image position-relative">
             <a href="{{ route('product.user.show', $product->slug ?? '#') }}">
                 <img
-                    src="{{ $product->product_image
-                            ? asset('storage/'.$product->product_image)
-                            : asset('assets/images/no-image.png') }}"
+                    src="{{ $product->getFirstMediaUrl('main_image') ?: asset('assets/images/no-image.png') }}"
                     alt="{{ $product->product_title }}"
                     class="w-100"
                     style="aspect-ratio: 1 / 1; object-fit: cover;">

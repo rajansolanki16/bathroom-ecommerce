@@ -38,17 +38,17 @@
                             ₹{{ number_format($order->total) }}
                         </div>
 
-                        @php
-                            $statusMap = [
-                                'pending' => 'warning',
-                                'processing' => 'info',
-                                'completed' => 'success',
-                                'cancelled' => 'danger',
-                            ];
+                         @php
+                            $statusColor = match ($order->status) {
+                                \App\Enums\OrderStatus::PROCESSING => 'info',
+                                \App\Enums\OrderStatus::COMPLETED  => 'success',
+                                \App\Enums\OrderStatus::CANCELLED  => 'danger',
+                                default => 'secondary',
+                            };
                         @endphp
 
-                        <span class="badge bg-{{ $statusMap[$order->status] ?? 'secondary' }}">
-                            {{ ucfirst($order->status) }}
+                        <span class="badge bg-{{ $statusColor }}">
+                            {{ $order->status->label() }}
                         </span>
                     </div>
                 </div>
@@ -60,9 +60,9 @@
                         <div class="d-flex align-items-center gap-3 mb-3">
 
                             {{-- PRODUCT IMAGE --}}
-                            <a href="{{ route('product.user.show', $item->product->slug) }}">
+                           <a href="{{ route('product.user.show', $item->product->slug) }}">
                                 <img
-                                    src="{{ asset('storage/'.$item->product->product_image) }}"
+                                    src="{{ $item->product->getFirstMediaUrl('product_image') ?: asset('admin/images/no-image.png') }}"
                                     class="rounded-2 border"
                                     style="width:70px;height:70px;object-fit:cover"
                                     alt="{{ $item->product->product_title }}">

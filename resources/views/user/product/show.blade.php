@@ -53,19 +53,22 @@
             <div class="col-lg-6">
 
                 <div class="bg-white rounded-3 shadow-sm p-4">
-                    <img id="mainImage" src="{{ asset('storage/' . $product->product_image) }}"
+                    <img id="mainImage" src="{{ $product->getFirstMediaUrl('main_image') ?: asset('assets/images/no-image.png') }}"
                         class="img-fluid rounded-2 w-100" style="aspect-ratio:1/1;object-fit:cover;">
                 </div>
 
-                @if (!empty($product->gallery_images))
+                @if($product->hasMedia('product_gallery'))
                     <div class="d-flex gap-3 mt-3">
-                        @foreach ($product->gallery_images as $img)
-                            <img src="{{ asset('storage/' . $img) }}" class="border rounded-2 p-1 bg-white"
+                        @foreach($product->getMedia('gallery') as $media)
+                            <img
+                                src="{{ $media->getUrl() }}"
+                                class="border rounded-2 p-1 bg-white"
                                 style="width:80px;height:80px;object-fit:cover;cursor:pointer"
-                                onclick="document.getElementById('mainImage').src=this.src">
+                                onclick="document.getElementById('mainImage').src='{{ $media->getUrl() }}'">
                         @endforeach
                     </div>
                 @endif
+
             </div>
 
             {{-- PRODUCT INFORMATION --}}
