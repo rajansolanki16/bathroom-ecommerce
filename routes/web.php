@@ -72,6 +72,8 @@ Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 Route::post('/reviews', [ProductReviewController::class, 'store'])->name('reviews.store');
 
 
+Route::get('/user/orders/{order}', [OrderController::class, 'show'])
+    ->name('user.order.details');
 
 
 //admin panel
@@ -94,9 +96,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/wishlist/show', [WishListController::class, 'showadmin'])->name('wishlist.show');
 
         Route::get('/orders/export/{type}', [OrderController::class, 'export'])->name('orders.export');
-        
+
         Route::get('/orders', [OrderController::class, 'indexshow'])->name('orders.show');
         Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
+
 
         Route::prefix('settings')->group(function () {
 
@@ -125,9 +128,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
         Route::post('/users/{user}/toggle-approval', [UserController::class, 'toggleApproval'])->name('users.toggle-approval');
 
-       Route::post('media/delete/{media}', function (
-            \Spatie\MediaLibrary\MediaCollections\Models\Media $media) {
-                $media->delete();
+        Route::post('media/delete/{media}', function (
+            \Spatie\MediaLibrary\MediaCollections\Models\Media $media
+        ) {
+            $media->delete();
 
             return response()->json(['success' => true]);
         })->name('media.delete');

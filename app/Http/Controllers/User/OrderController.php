@@ -145,4 +145,12 @@ class OrderController extends Controller
             'Content-Disposition' => 'attachment; filename="orders.csv"',
         ]);
     }
+
+    // Order details page
+    public function show($id) {
+        $order = Order::with('items.product')->findOrFail($id);
+            $statuses = OrderStatus::cases();
+
+    return view('user.orders.details', compact('order','statuses'));
+    }
 }

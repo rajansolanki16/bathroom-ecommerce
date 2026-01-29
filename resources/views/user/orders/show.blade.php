@@ -34,7 +34,7 @@
 
                     @foreach($order->items as $item)
                     <div class="d-flex gap-3 border-bottom pb-3 mb-3">
-                        <img src="{{ asset($item->product->image) }}"
+                        <img src="{{ $item->product->getFirstMediaUrl('product_image') ?: asset('admin/images/no-image.png') }}"
                              class="rounded"
                              width="80"
                              height="80"

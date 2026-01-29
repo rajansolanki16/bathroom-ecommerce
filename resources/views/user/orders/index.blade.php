@@ -103,9 +103,9 @@
 
                     <div class="d-flex gap-2">
 
-                        <a href="{{ route('product.user.show', $item->product->slug) }}"
+                        <a href="{{ route('user.order.details', $order->id) }}"
                            class="btn btn-outline-dark btn-sm">
-                            View Order
+                            View Order Detrails
                         </a>
 
                         @if($order->status === 'completed')
