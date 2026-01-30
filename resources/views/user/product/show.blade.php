@@ -57,7 +57,7 @@
                         class="img-fluid rounded-2 w-100" style="aspect-ratio:1/1;object-fit:cover;">
                 </div>
 
-                @if($product->hasMedia('product_gallery'))
+                @if($product->hasMedia('gallery'))
                     <div class="d-flex gap-3 mt-3">
                         @foreach($product->getMedia('gallery') as $media)
                             <img
