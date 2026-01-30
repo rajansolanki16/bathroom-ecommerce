@@ -6,7 +6,7 @@ use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-
+//
 
 // Controllers
 use App\Http\Controllers\RedirectController;
