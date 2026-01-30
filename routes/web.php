@@ -99,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/orders', [OrderController::class, 'indexshow'])->name('orders.show');
         Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
+        Route::post('/orders/{order}/notes', [OrderController::class, 'updateNotes'])->name('orders.notes');
 
 
         Route::prefix('settings')->group(function () {

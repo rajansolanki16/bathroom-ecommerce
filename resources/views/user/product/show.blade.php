@@ -86,6 +86,11 @@
                         {{ $product->product_title }}
                     </h1>
 
+                    {{-- BRAND / VENDOR --}}
+                    @if($product->brand)
+                        <div class="mb-2"><a href="{{ route('brands.show', $product->brand->id ?? '#') }}" class="text-decoration-none text-secondary small">By {{ $product->brand->name }}</a></div>
+                    @endif
+
                     {{-- PRICE --}}
                     <div class="mb-3">
                         @if ($product->sell_price)
@@ -158,8 +163,12 @@
                             <input type="number" name="qty" value="1" min="1"
                                 class="form-control w-25">
 
-                            <button class="btn btn-dark btn-lg flex-grow-1 add-to-cart" data-id="{{ $product->id }}">
+                            <button class="btn btn-dark btn-lg add-to-cart" data-id="{{ $product->id }}">
                                 <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                            </button>
+
+                            <button class="btn btn-primary btn-lg ms-2" id="buyNowBtn" data-id="{{ $product->id }}">
+                                Buy Now
                             </button>
                         </div>
                     </form>
@@ -176,6 +185,35 @@
                 </div>
             </div>
         </div>
+
+<script>
+    // Buy now: add to cart via AJAX then redirect to checkout
+    document.getElementById('buyNowBtn')?.addEventListener('click', function () {
+        var id = this.getAttribute('data-id');
+        var qty = document.querySelector('input[name="qty"]').value || 1;
+        var token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+        fetch("{{ route('cart.add') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ product_id: id, qty: qty })
+        }).then(function (res) { return res.json(); })
+        .then(function (data) {
+            // CartController returns { status: 'added', ... } on success
+            if (data && (data.status === 'added' || data.status === 'success')) {
+                window.location.href = '{{ route('checkout') }}';
+            } else {
+                alert(data.message || 'Unable to proceed to checkout');
+            }
+        }).catch(function () {
+            alert('Server error while processing Buy Now');
+        });
+    });
+</script>
 
         {{-- PRODUCT DETAILS --}}
         <div class="bg-white rounded-3 shadow-sm mt-5 p-5">

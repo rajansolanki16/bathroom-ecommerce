@@ -124,7 +124,24 @@ $(document).on('click', '.vec_wishlist_remove', function (e) {
     e.preventDefault();
 
     let productId = $(this).data('id');
-    let row = $(this).closest('tr');
+
+    // Determine the element to remove: table row or card
+    let $row = $(this).closest('tr');
+    let $card = $(this).closest('.wishlist-card');
+    let $target;
+
+    if ($card.length) {
+        $target = $card;
+    } else if ($row.length) {
+        $target = $row;
+    } else if ($('#wishlist-item-' + productId).length) {
+        $target = $('#wishlist-item-' + productId);
+    } else if ($('#wishlist-row-' + productId).length) {
+        $target = $('#wishlist-row-' + productId);
+    } else {
+        $target = $(this).closest('.wishlist-card, tr');
+    }
+
     $.ajax({
         url: wishlistDeleteUrl + '/' + productId,
         type: 'POST',
@@ -133,15 +150,25 @@ $(document).on('click', '.vec_wishlist_remove', function (e) {
         },
         success: function (res) {
             if (res.status === 'removed') {
-                row.fadeOut(300, function () {
+                $target.fadeOut(300, function () {
                     $(this).remove();
                 });
 
-                $('#wishlist-count').text(res.count);
+                if (typeof res.count !== 'undefined') {
+                    $('#wishlist-count').text(res.count);
+                }
+
+                // Use centralized toast if available
+                if (typeof showToast === 'function') {
+                    showToast('Removed from wishlist', 'success');
+                }
             }
         },
         error: function (xhr) {
             console.error('Delete failed:', xhr.responseText);
+            if (typeof showToast === 'function') {
+                showToast('Unable to remove wishlist item', 'danger');
+            }
         }
     });
 });

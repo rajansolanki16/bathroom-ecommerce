@@ -6,9 +6,11 @@ use App\Models\Order;
 
 class OrdersExport
 {
-    public function export()
+    public function export($orders = null)
     {
-        $orders = Order::with(['user', 'items.product'])->get();
+        if ($orders === null) {
+            $orders = Order::with(['user', 'items.product'])->get();
+        }
 
         $data = [];
         $data[] = [
@@ -40,9 +42,9 @@ class OrdersExport
         return $data;
     }
 
-    public function generateExcelXlsx()
+    public function generateExcelXlsx($orders = null)
     {
-        $data = $this->export();
+        $data = $this->export($orders);
         
         // Create temporary directory
         $tempDir = sys_get_temp_dir() . '/xlsx_' . uniqid();

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\OrderStatus;
+use App\Models\OrderAudit;
 
 
 class Order extends Model
@@ -15,7 +16,8 @@ class Order extends Model
         'phone',
         'address',
         'total',
-        'status'
+        'status',
+        'internal_notes',
     ];
 
 
@@ -34,5 +36,10 @@ class Order extends Model
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function audits()
+    {
+        return $this->hasMany(OrderAudit::class);
     }
 }

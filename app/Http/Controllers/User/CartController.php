@@ -25,7 +25,7 @@ class CartController extends Controller
                         'name'     => $item->product->name,
                         'price'    => $item->price,
                         'quantity' => $item->quantity,
-                        'image'    => $item->product->product_image,
+                        'image'    => $item->product->getFirstMediaUrl('main_image') ?: ($item->product->product_image ? asset('storage/'.$item->product->product_image) : asset('assets/images/no-image.png')),
                     ];
                 }
             }
@@ -50,7 +50,7 @@ class CartController extends Controller
                 'name'     => $product->name,
                 'price'    => $product->price,
                 'quantity' => max(1, (int) ($item['quantity'] ?? 1)),
-                'image'    => $product->product_image,
+                'image'    => $product->getFirstMediaUrl('main_image') ?: ($product->product_image ? asset('storage/'.$product->product_image) : asset('assets/images/no-image.png')),
             ];
         }
 

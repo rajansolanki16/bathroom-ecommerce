@@ -21,7 +21,7 @@
             <div class="col-12 col-lg-8">
                 <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive d-none d-lg-block">
                             <table class="table align-middle mb-0">
                                 <thead>
                                     <tr>
@@ -43,7 +43,7 @@
                                     <tr id="cart-row-{{ $item['id'] }}">
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
-                                                <img src="{{ asset('storage/'.$item['image']) }}" width="60" style="object-fit:cover">
+                                                <img src="{{ $item['image'] ?: asset('assets/images/no-image.png') }}" width="60" style="object-fit:cover">
                                                 <div>
                                                     <div class="fw-semibold">{{ $item['name'] }}</div>
                                                 </div>
@@ -74,6 +74,38 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+
+                        {{-- Mobile cards --}}
+                        <div class="d-lg-none">
+                            @foreach($cart as $item)
+                                @php $total = $item['price'] * $item['quantity']; @endphp
+                                <div class="card mb-3" id="cart-card-{{ $item['id'] }}">
+                                    <div class="row g-0 align-items-center">
+                                        <div class="col-4">
+                                            <img src="{{ $item['image'] ?: asset('assets/images/no-image.png') }}" class="img-fluid rounded-start" alt="{{ $item['name'] }}" style="height:100px;object-fit:cover;" />
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="card-body p-2">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div class="fw-semibold">{{ $item['name'] }}</div>
+                                                    <div class="fw-bold">₹{{ $total }}</div>
+                                                </div>
+
+                                                <div class="d-flex gap-2 align-items-center">
+                                                    <div class="input-group input-group-sm">
+                                                        <button class="btn btn-outline-secondary btn-sm qty-decrease" data-id="{{ $item['id'] }}">-</button>
+                                                        <input type="number" class="form-control form-control-sm text-center update-quantity" data-id="{{ $item['id'] }}" value="{{ $item['quantity'] }}" style="width:70px">
+                                                        <button class="btn btn-outline-secondary btn-sm qty-increase" data-id="{{ $item['id'] }}">+</button>
+                                                    </div>
+
+                                                    <button class="btn btn-sm btn-danger ms-auto remove-from-cart" data-id="{{ $item['id'] }}" data-row="cart-card-{{ $item['id'] }}">Remove</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>

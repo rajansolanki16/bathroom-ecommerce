@@ -271,7 +271,7 @@ $(document).ready(function () {
                 if (response.success) {
                 mediaElement.fadeOut(300, function () {$(this).remove();});
             } else {
-                alert("Unexpected response received.");
+                console.warn("Unexpected response received.");
             }
             },
             error: function (xhr) {
@@ -282,7 +282,7 @@ $(document).ready(function () {
                 } else {
                     errorMessage += "Unknown error occurred.";
                 }
-                alert(errorMessage);
+                console.warn(errorMessage);
             }
         });
     });
@@ -539,8 +539,13 @@ $(document).ready(function () {
     //     pageLength: 10
     // });
     if (!$.fn.DataTable.isDataTable('#fixed-header')) {
+        // Disable DataTables' default search box and entries selector since we use server-side filters on the page
         table = $('#fixed-header').DataTable({
-            pageLength: 10
+            pageLength: 10,
+            searching: false,
+            lengthChange: false,
+            // 'l' = length changing input, 'f' = filtering input — removed by using this dom
+            dom: 'lrtip'
         });
     } else {
         table = $('#fixed-header').DataTable();
@@ -574,69 +579,66 @@ $(document).ready(function () {
             formData.append('_method', 'PUT');
         }
 
-        fetch(url, {
+        $.ajax({
+            url: url,
             method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
             headers: {
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
             },
-            body: formData
-        })
-        .then(res => {
-            if (!res.ok) {
-                return res.json().then(err => Promise.reject(err));
-            }
-            return res.json();
-        })
-        .then(data => {
-            if (isEditMode) {
-                // Update existing row in DataTable
-                table.rows().every(function() {
-                    let rowData = this.data();
-                    if (rowData[0] == data.id) {
-                        this.data([
-                            data.id,
-                            data.value,
-                            data.attribute || attributeName,
-                            actionButtons(data.id, data.attribute || attributeName)
-                        ]).draw(false);
-                        return false;
-                    }
-                });
-                
-                // Reset form from edit mode
-                $(form).removeData('edit-id');
-                $(form).removeData('update-url');
-                submitButton.text('Submit');
-                $('.cancel-edit').remove();
-            } else {
-                // Add new row to DataTable
-                let displayAttribute = data.attribute || attributeName || '';
-                table.row.add([
-                    data.id,
-                    data.value,
-                    displayAttribute,
-                    actionButtons(data.id, data.attribute || attributeName)
-                ]).draw(false);
-            }
+            success: function (data) {
+                if (isEditMode) {
+                    // Update existing row in DataTable
+                    table.rows().every(function() {
+                        let rowData = this.data();
+                        if (rowData[0] == data.id) {
+                            this.data([
+                                data.id,
+                                data.value,
+                                data.attribute || attributeName,
+                                actionButtons(data.id, data.attribute || attributeName)
+                            ]).draw(false);
+                            return false;
+                        }
+                    });
+                    
+                    // Reset form from edit mode
+                    $(form).removeData('edit-id');
+                    $(form).removeData('update-url');
+                    submitButton.text('Submit');
+                    $('.cancel-edit').remove();
+                } else {
+                    // Add new row to DataTable
+                    let displayAttribute = data.attribute || attributeName || '';
+                    table.row.add([
+                        data.id,
+                        data.value,
+                        displayAttribute,
+                        actionButtons(data.id, data.attribute || attributeName)
+                    ]).draw(false);
+                }
 
-            form.reset();
-            $('#valueError').text('').hide();
-            submitButton.prop('disabled', false).text('Submit');
-        })
-        .catch(error => {
-            submitButton.prop('disabled', false).text(originalButtonText);
-            
-            if (error.errors) {
-                // Handle validation errors
-                $.each(error.errors, function(key, messages) {
-                    if (key === 'value') {
-                        $('#valueError').text(messages[0]).show();
-                        $(form).find('[name="value"]').addClass('is-invalid');
-                    }
-                });
-            } else {
-                alert('An error occurred: ' + (error.message || 'Unknown error'));
+                form.reset();
+                $('#valueError').text('').hide();
+                submitButton.prop('disabled', false).text('Submit');
+            },
+            error: function (xhr) {
+                submitButton.prop('disabled', false).text(originalButtonText);
+                var err = xhr && xhr.responseJSON ? xhr.responseJSON : {};
+
+                if (err.errors) {
+                    $.each(err.errors, function(key, messages) {
+                        if (key === 'value') {
+                            $('#valueError').text(messages[0]).show();
+                            $(form).find('[name="value"]').addClass('is-invalid');
+                        }
+                    });
+                } else {
+                    console.warn('An error occurred: ' + (err.message || 'Unknown error'));
+                }
             }
         });
     });
@@ -696,27 +698,34 @@ $(document).ready(function () {
             formData.append('_method', 'DELETE');
             formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
             
-            fetch(deleteUrl, {
+            $.ajax({
+                url: deleteUrl,
                 method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
                 headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json'
                 },
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status) {
-                    // Find and remove the row from DataTable
-                    table.rows().every(function() {
-                        let rowData = this.data();
-                        if (rowData[0] == valueId) {
-                            this.remove().draw(false);
-                            return false;
-                        }
-                    });
+                success: function (data) {
+                    if (data.status) {
+                        // Find and remove the row from DataTable
+                        table.rows().every(function() {
+                            let rowData = this.data();
+                            if (rowData[0] == valueId) {
+                                this.remove().draw(false);
+                                return false;
+                            }
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    var errMsg = 'Failed to delete item';
+                    if (xhr && xhr.responseJSON && xhr.responseJSON.message) errMsg = xhr.responseJSON.message;
+                    console.warn(errMsg);
                 }
-            })
+            });
             
         //}
     });
@@ -777,35 +786,3 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-//order status update
-$(document).ready(function() {
-    $('.order-status').change(function() {
-        console.log('script changed detected');
-        
-        var orderId = $(this).data('id');
-        var status = $(this).val();
-        
-        $.ajax({
-            url: '/admin/orders/' + orderId + '/status',  
-            type: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'), 
-                status: status
-            },
-            success: function(response) {
-                if(response.success) {
-                    console.log('Order status updated to ' + response.status);
-                }
-            },
-            error: function(xhr) {
-                console.log('Error Response:', xhr); 
-                
-                if(xhr.responseJSON && xhr.responseJSON.errors) {
-                    console.log('Error: ' + Object.values(xhr.responseJSON.errors).join(', '));
-                } else {
-                    console.log('Something went wrong! Status: ' + xhr.status);
-                }
-            }
-        });
-    });
-});
