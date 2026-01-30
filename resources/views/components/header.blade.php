@@ -153,14 +153,14 @@
                     </a>
                 </li>
 
-                @foreach($categories ?? [] as $category)
+                {{-- @foreach($categories ?? [] as $category)
                 <li class="nav-item">
                     <a class="nav-link text-muted"
                        href="#">
                         {{ $category->name }}
                     </a>
                 </li>
-                @endforeach
+                @endforeach --}}
             </ul>
         </nav>
 

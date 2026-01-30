@@ -164,7 +164,7 @@
         <div class="modal-body">
           <input type="hidden" id="notesOrderId" name="order_id" value="">
           <div class="mb-3">
-            <label for="notesTextarea" class="form-label">Internal Notes (admin only)</label>
+            <label for="notesTextarea" class="form-label">Internal Notes</label>
             <textarea id="notesTextarea" name="internal_notes" class="form-control" rows="6"></textarea>
           </div>
         </div>

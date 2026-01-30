@@ -46,10 +46,13 @@
                                                 data-choices-search="true"
                                             >
                                                 <option value="">All Categories</option>
-                                                @foreach ($categories as $category)
-                                                    <option value="{{ $category->id }}">
-                                                        {{ $category->name }}
-                                                    </option>
+                                                @foreach ($categories as $parent)
+                                                    <optgroup label="{{ $parent->name }}">
+                                                        <option value="{{ $parent->id }}">{{ $parent->name }}</option>
+                                                        @foreach($parent->children as $child)
+                                                            <option value="{{ $child->id }}">— {{ $child->name }}</option>
+                                                        @endforeach
+                                                    </optgroup>
                                                 @endforeach
                                             </select>
                                         </div>

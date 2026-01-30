@@ -39,7 +39,7 @@ class ProductController extends Controller
         }
 
         $products = $query->latest()->paginate(10)->withQueryString();
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::whereNull('parent_id')->with('children')->orderBy('name')->get();
 
         return view('admin.products.index', compact('products', 'categories'));
     }
@@ -63,7 +63,7 @@ class ProductController extends Controller
             'productTypes'       => ProductType::cases(),
             'productStatuses'    => ProductStatus::cases(),
             'productVisibilities' => ProductVisibility::cases(),
-            'categories'         => Category::orderBy('name')->get(),
+            'categories'         => Category::whereNull('parent_id')->with('children')->orderBy('name')->get(),
             'allTags'            => Tag::orderBy('name')->get(),
             'allbrands'          => Brand::orderBy('name')->get(),
             'attributes'         => $attributes,
@@ -413,7 +413,7 @@ class ProductController extends Controller
 
         return view('admin.products.edit', [
             'product'            => $product,
-            'categories'         => Category::all(),
+            'categories'         => Category::whereNull('parent_id')->with('children')->orderBy('name')->get(),
             'productTypes'       => ProductType::cases(),
             'productStatuses'    => ProductStatus::cases(),
             'productVisibilities' => ProductVisibility::cases(),

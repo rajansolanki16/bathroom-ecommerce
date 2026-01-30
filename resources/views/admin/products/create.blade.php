@@ -45,11 +45,13 @@
                                         name="categories[]"
                                         id="productCategories"
                                         multiple>
-                                        @forelse ($categories as $category)
-                                        <option value="{{ $category->id }}"
-                                            {{ collect(old('categories'))->contains($category->id) ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
+                                        @forelse ($categories as $parent)
+                                            <optgroup label="{{ $parent->name }}">
+                                                <option value="{{ $parent->id }}" {{ collect(old('categories'))->contains($parent->id) ? 'selected' : '' }}>{{ $parent->name }}</option>
+                                                @foreach($parent->children as $child)
+                                                    <option value="{{ $child->id }}" {{ collect(old('categories'))->contains($child->id) ? 'selected' : '' }}>— {{ $child->name }}</option>
+                                                @endforeach
+                                            </optgroup>
                                         @empty
                                         <option disabled>No categories found</option>
                                         @endforelse

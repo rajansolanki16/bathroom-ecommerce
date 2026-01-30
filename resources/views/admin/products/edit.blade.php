@@ -38,11 +38,13 @@
                                     </label>
 
                                     <select class="form-control" name="categories[]" id="productCategories" multiple>
-                                        @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}"
-                                            {{ in_array($category->id, old('categories', $product->categories->pluck('id')->toArray())) ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
+                                        @foreach ($categories as $parent)
+                                            <optgroup label="{{ $parent->name }}">
+                                                <option value="{{ $parent->id }}" {{ in_array($parent->id, old('categories', $product->categories->pluck('id')->toArray())) ? 'selected' : '' }}>{{ $parent->name }}</option>
+                                                @foreach($parent->children as $child)
+                                                    <option value="{{ $child->id }}" {{ in_array($child->id, old('categories', $product->categories->pluck('id')->toArray())) ? 'selected' : '' }}>— {{ $child->name }}</option>
+                                                @endforeach
+                                            </optgroup>
                                         @endforeach
                                     </select>
                                 </div>
