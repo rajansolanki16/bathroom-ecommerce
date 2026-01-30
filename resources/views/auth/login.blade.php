@@ -55,6 +55,10 @@
                         </label>
                     </div>
 
+                    <div class="auth-forgot" style="margin-top:10px;">
+                        <a href="{{ route('view.forget_password') }}" class="ko-forgot-pass">Forgot your password?</a>
+                    </div>
+
                     <button type="submit" class="auth-btn">
                         {{ __('common.login_button') }}
                     </button>

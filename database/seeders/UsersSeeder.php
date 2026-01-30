@@ -15,12 +15,12 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
         // Delete existing users
-        User::whereIn('email', ['admin@gmail.com', 'supervisor@gmail.com', 'vendor@gmail.com'])->delete();
+        User::whereIn('email', ['admin-ecom-123@yopmail.com', 'supervisor@gmail.com', 'vendor@gmail.com'])->delete();
 
         $users = [
             [
                 'name' => 'Admin',
-                'email' => 'admin@gmail.com',
+                'email' => 'admin-ecom-123@yopmail.com',
                 'mobile' => '+911234567890',
                 'state' => 'Rajasthan',
                 'country' => 'India',
@@ -29,16 +29,16 @@ class UsersSeeder extends Seeder
             ],
             [
                 'name' => 'Supervisor',
-                'email' => 'supervisor@gmail.com',
+                'email' => 'supervisor-ecom-123@yopmail.com',
                 'mobile' => '+919876543211',
                 'state' => 'Gujarat',
                 'country' => 'India',
                 'password' => '123456',
-                'role' => 'supervisor',
+                'role' => 'salesman',
             ],
             [
                 'name' => 'Vendor',
-                'email' => 'vendor@gmail.com',
+                'email' => 'vendor-ecom-123@yopmail.com',
                 'mobile' => '+919876543212',
                 'state' => 'Maharashtra',
                 'country' => 'India',

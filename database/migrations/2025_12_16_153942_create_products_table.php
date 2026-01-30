@@ -22,7 +22,6 @@ return new class extends Migration
             $table->tinyInteger('exchangeable')->comment('0=no,1=yes')->default(0);
             $table->tinyInteger('refundable')->comment('0=no,1=yes')->default(0);
             $table->longText('product_decscription');
-            $table->string('product_image');
             $table->json('gallery_images')->nullable();
             // $table->string('manufacturer_name')->nullable();
             // $table->string('manufacturer_brand')->nullable();
