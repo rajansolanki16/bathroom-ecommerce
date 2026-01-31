@@ -99,19 +99,6 @@
         </div>
     </div>
 </div>
-<script>
-$(document).ready(function () {
-    window.initMediaPicker({
-        pickerBtnSelector: '[data-bs-target="#mediaPickerModal"]',
-        modalBodySelector: '#mediaPickerModalBody',
-        modalSelector: '#mediaPickerModal',
-        hiddenInputSelector: '#media_library_logo_id',
-        previewSelector: '#selected-media-preview',
-        pickerUrl: "{{ route('media-library.picker') }}",
-        formSelector: 'form[action*="categories.update"]'
-    });
-});
-</script>
 <!-- Media Picker Modal -->
 <div class="modal fade" id="mediaPickerModal" tabindex="-1" aria-labelledby="mediaPickerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -126,4 +113,17 @@ $(document).ready(function () {
         </div>
     </div>
 </div>
+<script>
+$(document).ready(function () {
+    window.initMediaPicker({
+        pickerBtnSelector: '[data-bs-target="#mediaPickerModal"]',
+        modalBodySelector: '#mediaPickerModalBody',
+        modalSelector: '#mediaPickerModal',
+        hiddenInputSelector: '#media_library_logo_id',
+        previewSelector: '#selected-media-preview',
+        pickerUrl: "{{ route('media-library.picker') }}",
+        formSelector: 'form[action*="categories.update"]'
+    });
+});
+</script>
 <x-admin.footer />

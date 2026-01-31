@@ -48,6 +48,9 @@ class Product extends Model implements HasMedia
 
         'product_image',
         'gallery_images',
+
+        'media_library_main_image_id',
+        'media_library_gallery_image_ids',
     ];
 
     protected $casts = [

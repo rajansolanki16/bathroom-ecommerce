@@ -248,39 +248,20 @@
                                 </div><!--end col-->
                                 <div class="col-xxl-8">
                                     <div class="mb-4">
-                                        <label class="form-label">Product Image <span class="text-danger">*</span></label>
-
-                                        <div class="border rounded p-3 text-center">
-                                            <img id="productImagePreview"
-                                                src="{{ asset('admin/images/new-document.png') }}"
-                                                class="img-thumbnail mb-3"
-                                                style="max-height: 180px">
-
-                                            <input type="file"
-                                                name="product_image"
-                                                class="form-control"
-                                                accept="image/*"
-                                                onchange="previewSingleImage(event)">
-                                        </div>
-
-                                        @error('product_image')
+                                        <label class="form-label">Product Main Image <span class="text-danger">*</span></label>
+                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModalMain">Choose from Media Library</button>
+                                        <input type="hidden" name="media_library_main_image_id" id="media_library_main_image_id" value="{{ old('media_library_main_image_id', '') }}">
+                                        <div id="selected-main-image-preview" class="mt-2"></div>
+                                        @error('media_library_main_image_id')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
-
                                     <div class="mb-4">
-                                        <label class="form-label">Gallery Images </label>
-
-                                        <input type="file"
-                                            name="gallery_images[]"
-                                            class="form-control"
-                                            multiple
-                                            accept="image/*"
-                                            onchange="previewMultipleImages(event)">
-
-                                        <div class="row mt-3" id="galleryPreview"></div>
-
-                                        @error('gallery_images')
+                                        <label class="form-label">Gallery Images</label>
+                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModalGallery">Choose from Media Library</button>
+                                        <input type="hidden" name="media_library_gallery_image_ids" id="media_library_gallery_image_ids" value="{{ old('media_library_gallery_image_ids', '') }}">
+                                        <div id="selected-gallery-images-preview" class="mt-2 d-flex flex-wrap" style="gap:10px;"></div>
+                                        @error('media_library_gallery_image_ids')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -747,4 +728,56 @@
     });
 </script>
 <script src="{{ asset('admin/js/pages/ecommerce-create-product.init.js') }}"></script>
+<!-- Media Picker Modals -->
+<div class="modal fade" id="mediaPickerModalMain" tabindex="-1" aria-labelledby="mediaPickerModalMainLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mediaPickerModalMainLabel">Select Main Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mediaPickerModalMainBody">
+                <!-- Media grid will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="mediaPickerModalGallery" tabindex="-1" aria-labelledby="mediaPickerModalGalleryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mediaPickerModalGalleryLabel">Select Gallery Images</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mediaPickerModalGalleryBody">
+                <!-- Media grid will be loaded here -->
+            </div>
+        </div>          
+    </div>
+</div>
+<script>
+$(document).ready(function () {
+    // Main image picker
+    window.initMediaPicker({
+        pickerBtnSelector: '[data-bs-target="#mediaPickerModalMain"]',
+        modalBodySelector: '#mediaPickerModalMainBody',
+        modalSelector: '#mediaPickerModalMain',
+        hiddenInputSelector: '#media_library_main_image_id',
+        previewSelector: '#selected-main-image-preview',
+        pickerUrl: "{{ route('media-library.picker') }}",
+        formSelector: 'form[action*="products.store"]'
+    });
+    // Gallery picker (multi-select)
+    window.initMediaPicker({
+        pickerBtnSelector: '[data-bs-target="#mediaPickerModalGallery"]',
+        modalBodySelector: '#mediaPickerModalGalleryBody',
+        modalSelector: '#mediaPickerModalGallery',
+        hiddenInputSelector: '#media_library_gallery_image_ids',
+        previewSelector: '#selected-gallery-images-preview',
+        pickerUrl: "{{ route('media-library.picker') }}?multi=1",
+        formSelector: 'form[action*="products.store"]',
+        multi: true
+    });
+});
+</script>
 <x-admin.footer />

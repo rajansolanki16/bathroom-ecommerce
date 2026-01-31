@@ -98,7 +98,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/brands', BrandController::class)->names('brands');
         Route::resource('/tags', TagsController::class)->names('tags');
         Route::resource('/coupons', CouponController::class)->names('coupons');
-        Route::resource('/payment-options', PaymentOptionsController::class)->names('paymentoptions');
+        // Route::resource('/payment-options', PaymentOptionsController::class)->names('paymentoptions');
         Route::resource('/product-attributes', ProductAttributeController::class)->names('product_attributes');
         Route::resource('/attribute-values', AttributeValueController::class)->names('attribute_values');
 

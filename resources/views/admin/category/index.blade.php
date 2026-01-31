@@ -31,15 +31,20 @@
                         <tr>
                             <td class="fw-medium">{{ $category->id }}</td>
                             <td>
-                                @if($category->hasMedia('category_image'))
-                                    <img
-                                        src="{{ $category->getFirstMediaUrl('category_image', 'thumb') }}"
-                                        alt="{{ $category->name }}"
-                                        height="50"
-                                    >
-                                @else
-                                    <span class="text-muted">No image</span>
-                                @endif
+                                @php
+                                            $logoUrl = null;
+                                            if ($category->media_library_logo_id) {
+                                                $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($category->media_library_logo_id);
+                                                if ($media && file_exists(storage_path('app/public/' . $media->id . '/' . $media->file_name))) {
+                                                    $logoUrl = asset('storage/' . $media->id . '/' . $media->file_name);
+                                                }
+                                            }
+                                        @endphp
+                                        @if($logoUrl)
+                                            <img src="{{ $logoUrl }}" alt= "{{ $category->name }}" style="height: 40px; width: 40px; object-fit: cover; border-radius: 4px;">
+                                        @else
+                                            <span class="badge bg-secondary">No Image</span>
+                                        @endif
                             </td>
                             <td>
                                 @if($category->parent_id)

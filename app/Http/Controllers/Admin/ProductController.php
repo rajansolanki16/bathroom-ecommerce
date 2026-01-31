@@ -131,7 +131,7 @@ class ProductController extends Controller
             try {
                 $validatedSimple = $request->validate([
                     'price'    => 'required|numeric|min:0',
-                    'product_image' => 'required|image|mimes:jpg,jpeg,png,webp',
+                    'product_image' => 'nullable|image|mimes:jpg,jpeg,png,webp',
                 ]);
                 Log::info('=== SIMPLE PRODUCT VALIDATION PASSED ===');
                 $validated = array_merge($validated, $validatedSimple);
@@ -144,29 +144,31 @@ class ProductController extends Controller
         if ($productType == ProductType::VARIANTS->value || $productType == ProductType::VARIANTS) {
             Log::info('=== VARIANTS PRODUCT VALIDATION STARTED ===');
             try {
-                $validatedVariants = $request->validate([
-                    'product_attributes' => 'required|array|min:1',
-                    // 'product_attributes.*' => 'exists:product_attributes,id',
-                    'variants' => 'required|array|min:1',
-                    'variants.*.values' => 'required|array|min:1',
-                    'variants.*.values.*' => 'exists:attribute_values,id',
-                    'variants.*.sku' => 'nullable|string|max:255',
-                    'variants.*.price' => 'nullable|numeric|min:0',
-                    'variants.*.stock' => 'nullable|integer|min:0',
-                    'variants.*.sell_price' => 'nullable|numeric|min:0',
-                    'variants.*.shipping' => 'nullable|string|max:255',
-                    'variants.*.shipping_address' => 'nullable|string|max:255',
-                    'variants.*.general_info' => 'nullable|string',
-                    'variants.*.weight' => 'nullable|numeric|min:0',
-                    'variants.*.length' => 'nullable|numeric|min:0',
-                    'variants.*.width' => 'nullable|numeric|min:0',
-                    'variants.*.height' => 'nullable|numeric|min:0',
-                    'variants.*.image' => 'nullable|image|mimes:jpg,jpeg,png,webp',
-                    'variants.*.exchangeable' => 'nullable|boolean',
-                    'variants.*.refundable' => 'nullable|boolean',
-                    'variants.*.free_shipping' => 'nullable|boolean',
+                $validated = $request->validate([
+                    'title'                     => 'required|string|max:255',
+                    'sku_number'                => 'nullable|string|max:255|unique:products,sku_number',
+                    'meta_title'                => 'nullable|string|max:160',
+                    'meta_description'          => 'nullable|string|max:160',
+                    'meta_keywords'             => 'nullable|string',
+
+                    'categories'                => 'nullable|array',
+                    'categories.*'              => 'exists:categories,id',
+
+                    'tags'                      => 'nullable|array',
+                    'tags.*'                    => 'exists:tags,id',
+
+                    'product_type'              => 'required|integer',
+                    'short_description'         => 'required|string',
+                    'product_decscription'      => 'required',
+
+                    'price'                     => 'required|numeric|min:0',
+                    'discount'                  => 'nullable|numeric|min:0',
+
+                    'media_library_main_image_id' => 'nullable|exists:media,id',
+                    'media_library_gallery_image_ids' => 'nullable|array',
+                    'media_library_gallery_image_ids.*' => 'exists:media,id',
+                    'gallery_images.*'          => 'nullable|image|mimes:jpg,jpeg,png,webp',
                 ], [
-                    'variants.*.price.numeric' => 'Price must be a valid number',
                     'variants.*.price.min' => 'Price must be greater than or equal to 0',
                     'variants.*.stock.integer' => 'Stock must be a whole number',
                     'variants.*.stock.min' => 'Stock must be greater than or equal to 0',
@@ -217,6 +219,8 @@ class ProductController extends Controller
         $product->free_shipping        = $request->boolean('free_shipping');
 
         $product->brand_id             = $request->brand_id ?? null;
+        $product->media_library_main_image_id = $validated['media_library_main_image_id'] ?? null;
+        $product->media_library_gallery_image_ids = !empty($validated['media_library_gallery_image_ids']) ? json_encode($validated['media_library_gallery_image_ids']) : null;
 
         if ($product->product_type == ProductType::SIMPLE->value || $product->product_type == ProductType::SIMPLE) {
             $product->stock                = $request->stock_status ?? 0;
@@ -440,6 +444,9 @@ class ProductController extends Controller
             'short_description' => 'required|string',
             'price'             => 'nullable|numeric',
             'stock'             => 'nullable|integer',
+            'media_library_main_image_id' => 'nullable|exists:media,id',
+            'media_library_gallery_image_ids' => 'nullable|array',
+            'media_library_gallery_image_ids.*' => 'exists:media,id',
             'product_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp',
             'gallery_images.*'  => 'nullable|image|mimes:jpg,jpeg,png,webp',
         ]);
@@ -500,6 +507,8 @@ class ProductController extends Controller
             'length'               => $request->length,
             'width'                => $request->width,
             'height'               => $request->height,
+            'media_library_main_image_id' => $validated['media_library_main_image_id'] ?? $product->media_library_main_image_id,
+            'media_library_gallery_image_ids' => !empty($validated['media_library_gallery_image_ids']) ? json_encode($validated['media_library_gallery_image_ids']) : $product->media_library_gallery_image_ids,
         ]);
 
         if ($product->product_type == ProductType::SIMPLE->value) {
