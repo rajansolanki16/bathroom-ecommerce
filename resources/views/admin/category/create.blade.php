@@ -56,7 +56,8 @@
 
                     </div>
 
-                    <div class="mb-1 text-end">
+                    <div class="mb-1 text-end d-flex gap-2 justify-content-end">
+                        <a href="{{ route('categories.index') }}" class="btn btn-danger">{{ __('category.Cancel_Button') ?? 'Back' }}</a>
                         <button type="submit" class="btn btn-primary">{{ __('category.Create_Button') }}</button>
                     </div>
                 </form>

@@ -557,9 +557,7 @@
             {{-- End Variant Section --}}
 
             <div class="hstack gap-2 justify-content-end mb-3">
-                <a href="{{ route('products.index') }}" class="btn btn-danger">
-                    <i class="ph-x align-middle"></i> Cancel
-                </a>
+                <a href="{{ route('products.index') }}" class="btn btn-danger">Back</a>
                 <button class="btn btn-primary">Submit</button>
             </div>
 

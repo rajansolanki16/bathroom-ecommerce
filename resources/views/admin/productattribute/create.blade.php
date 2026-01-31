@@ -33,13 +33,14 @@
                         <label for="attribute_name" class="form-label">{{ __('attribute.Product_Attribute_Name') }}<span class="text-danger">*</span></label>
 
                         <input type="text" name="name" id="attribute_name" class="form-control @error('name') is-invalid @enderror" placeholder="Enter product attribute name">
-
+                        
                         @error('name')
                         <div class="invalid-response" style="display:flex">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="mb-1 text-end">
+                    <div class="mb-1 text-end d-flex gap-2 justify-content-end">
+                        <a href="{{ route('product_attributes.index') }}" class="btn btn-danger">{{ __('attribute.cancel') ?? 'Back' }}</a>
                         <button type="submit" class="btn btn-primary">{{ __('attribute.Submit') }}</button>
                     </div>
                 </form>

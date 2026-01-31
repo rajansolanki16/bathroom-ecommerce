@@ -52,7 +52,8 @@
 
 
 
-                    <div class="mb-1 text-end">
+                    <div class="mb-1 text-end d-flex gap-2 justify-content-end">
+                        <a href="{{ route('paymentoptions.index') }}" class="btn btn-danger">Back</a>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>

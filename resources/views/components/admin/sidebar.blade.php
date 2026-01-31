@@ -47,16 +47,32 @@
                                 <li class="nav-item">
                                     <a href="{{ route('products.index') }}" class="nav-link">Show</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('categories.index') }}" class="nav-link">Categories</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('brands.index') }}" class="nav-link">Brands</a>
-                                </li>
                             </ul>
                         </div>
                     </li>
                     <!-- END PRODUCT -->
+
+                        <!-- BRANDS -->
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#sidebarBrands"
+                                data-bs-toggle="collapse" role="button"
+                                aria-expanded="false" aria-controls="sidebarBrands">
+                                <i class="ri-price-tag-3-line"></i>
+                                <span>Brands</span>
+                            </a>
+
+                            <div class="collapse menu-dropdown" id="sidebarBrands">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ route('brands.create') }}" class="nav-link">Create</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('brands.index') }}" class="nav-link">Show</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <!-- END BRANDS -->
 
                     <!-- Product Attribute -->
                     <li class="nav-item">
@@ -103,7 +119,7 @@
                     </li>
 
                     <!-- tags -->
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="#sidebarproduct_tags"
                             class="nav-link menu-link"
                             data-bs-toggle="collapse"
@@ -124,13 +140,15 @@
                                 </li>
                             </ul>
                         </div>
-                    </li>
+                    </li> --}}
+
+                    
 
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="#sidebarorder"
                             data-bs-toggle="collapse" role="button"
                             aria-expanded="false" aria-controls="sidebarorder">
-                            <i class="ri-folder-2-line"></i>
+                            <i class="ri-file-list-3-line"></i>
                             <span>Order</span>
                         </a>
 

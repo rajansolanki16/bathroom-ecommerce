@@ -104,6 +104,7 @@
         </div>
     </div>
     <div class="gap-2 mb-3 hstack justify-content-end">
+        <a href="{{ route('coupons.index') }}" class="btn btn-danger">{{ __('coupon.Cancel_Button') ?? 'Back' }}</a>
         <button type="submit" name="action" value="store" class="btn btn-primary">{{ __('coupon.Create_Button') }}</button>
     </div>
 </form>

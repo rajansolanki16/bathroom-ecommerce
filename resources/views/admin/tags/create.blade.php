@@ -22,7 +22,8 @@
                         @enderror
                     </div>
 
-                    <div class="mb-1 text-end">
+                    <div class="mb-1 text-end d-flex gap-2 justify-content-end">
+                        <a href="{{ route('tags.index') }}" class="btn btn-danger">{{ __('tags.cancel_button') ?? 'Back' }}</a>
                         <button type="submit" class="btn btn-primary">{{ __('tags.create_button') }}</button>
                     </div>
                 </form>
