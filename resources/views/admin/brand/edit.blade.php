@@ -35,19 +35,7 @@
                         @error('media_library_logo_id')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
-                        @if($brand->hasMedia('brand_logo'))
-                            @php $media = $brand->getFirstMedia('brand_logo'); @endphp
-                            <div class="mb-2 position-relative d-inline-block brand-logo-wrapper">
-                                <img src="{{ $media->getUrl() }}"
-                                    alt="{{ $brand->name }}"
-                                    style="height: 100px; width: 100px; object-fit: cover; border-radius: 4px;">
-                                <button type="button"
-                                    class="btn btn-sm btn-danger position-absolute top-0 end-0 delete-brand-logo"
-                                    data-url="{{ route('media.delete', $media->id) }}"
-                                    title="Delete logo">✕</button>
-                                <p class="text-muted small mt-1">Current logo</p>
-                            </div>
-                        @endif
+
                     </div>
 
                     <div class="mb-3">

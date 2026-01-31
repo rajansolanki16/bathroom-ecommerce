@@ -9,31 +9,47 @@
                 <option value="author">Sort by Author</option>
                 <option value="type">Sort by Type</option>
             </select>
-            <input type="text" id="media-search" class="form-control form-control-sm" style="width: 200px;" placeholder="Search by file name...">
-            <button id="grid-view" class="btn btn-outline-secondary btn-sm active" title="Grid view"><i class="bi bi-grid"></i></button>
-            <button id="list-view" class="btn btn-outline-secondary btn-sm" title="List view"><i class="bi bi-list"></i></button>
+            <input type="text" id="media-search" class="form-control form-control-sm" style="width: 200px;"
+                placeholder="Search by file name...">
+            <button id="grid-view" class="btn btn-outline-secondary btn-sm active" title="Grid view"><i
+                    class="bi bi-grid"></i></button>
+            <button id="list-view" class="btn btn-outline-secondary btn-sm" title="List view"><i
+                    class="bi bi-list"></i></button>
         </div>
     </div>
     <form id="media-upload-form" enctype="multipart/form-data" class="mb-4" style="max-width: 420px;">
         @csrf
         <div class="mb-3">
             <label for="file-upload" class="form-label">Upload files (images, videos, audio, PDFs, docs)</label>
-            <div id="drop-area" style="border: 2px dashed #e2e2e2; border-radius: 8px; padding: 32px; text-align: center; background: #fafafa; cursor: pointer;">
+            <div id="drop-area"
+                style="border: 2px dashed #e2e2e2; border-radius: 8px; padding: 32px; text-align: center; background: #fafafa; cursor: pointer;">
                 <span id="drop-text">Drag & drop files here or click to select</span>
-                <input type="file" id="file-upload" name="file[]" class="form-control mt-2" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar" style="display:none;">
+                <input type="file" id="file-upload" name="file[]" class="form-control mt-2" multiple
+                    accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar"
+                    style="display:none;">
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Upload</button>
     </form>
+    <div id="upload-preview"
+        style="display:grid;grid-template-columns:repeat(auto-fill,150px);gap:16px;margin-top:16px;">
+    </div>
     <div id="media-container">
-        <div class="media-grid" id="media-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 24px; margin-top: 16px;">
-            @foreach($media as $item)
-                <div class="media-thumb position-relative" data-name="{{ $item->file_name }}" data-type="{{ $item->mime_type }}" data-date="{{ $item->created_at }}" data-author="{{ $item->model_id }}" style="background: #fff; border-radius: 6px; overflow: hidden; height: 150px; width: 150px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.07); border: 1px solid #e2e2e2; margin: auto; transition: box-shadow 0.2s;"
-                    onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)';" onmouseout="this.style.boxShadow='0 1px 3px rgba(0,0,0,0.07)';">
-                    <img src="{{ $item->getUrl() }}" alt="Media" style="max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 0;">
+        <div class="media-grid" id="media-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 24px; margin-top: 16px;">
+            @foreach ($media as $item)
+                <div class="media-thumb position-relative" data-name="{{ $item->file_name }}"
+                    data-type="{{ $item->mime_type }}" data-date="{{ $item->created_at }}"
+                    data-author="{{ $item->model_id }}"
+                    style="background: #fff; border-radius: 6px; overflow: hidden; height: 150px; width: 150px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.07); border: 1px solid #e2e2e2; margin: auto; transition: box-shadow 0.2s;"
+                    onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)';"
+                    onmouseout="this.style.boxShadow='0 1px 3px rgba(0,0,0,0.07)';">
+                    <img src="{{ $item->getUrl() }}" alt="Media"
+                        style="max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 0;">
                     <form class="delete-media-form position-absolute top-0 end-0 m-1" data-id="{{ $item->id }}">
                         @csrf
-                        <button type="submit" class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 12px;">&times;</button>
+                        <button type="submit" class="btn btn-danger btn-sm"
+                            style="padding: 2px 6px; font-size: 12px;">&times;</button>
                     </form>
                 </div>
             @endforeach
@@ -51,20 +67,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($media as $item)
-                    <tr data-name="{{ $item->file_name }}" data-type="{{ $item->mime_type }}" data-date="{{ $item->created_at }}" data-author="{{ $item->model_id }}">
-                        <td><img src="{{ $item->getUrl() }}" alt="Media" style="height: 40px; width: 40px; object-fit: cover;"></td>
-                        <td>{{ $item->file_name }}</td>
-                        <td>{{ $item->mime_type }}</td>
-                        <td>{{ $item->created_at }}</td>
-                        <td>{{ $item->model_id }}</td>
-                        <td>
-                            <form class="delete-media-form" data-id="{{ $item->id }}">
-                                @csrf
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
+                    @foreach ($media as $item)
+                        <tr data-name="{{ $item->file_name }}" data-type="{{ $item->mime_type }}"
+                            data-date="{{ $item->created_at }}" data-author="{{ $item->model_id }}">
+                            <td><img src="{{ $item->getUrl() }}" alt="Media"
+                                    style="height: 40px; width: 40px; object-fit: cover;"></td>
+                            <td>{{ $item->file_name }}</td>
+                            <td>{{ $item->mime_type }}</td>
+                            <td>{{ $item->created_at }}</td>
+                            <td>{{ $item->model_id }}</td>
+                            <td>
+                                <form class="delete-media-form" data-id="{{ $item->id }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -81,7 +99,8 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3 text-center">
-                    <img id="edit-media-preview" src="" style="max-width: 200px; max-height: 200px; object-fit: contain;">
+                    <img id="edit-media-preview" src=""
+                        style="max-width: 200px; max-height: 200px; object-fit: contain;">
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -114,178 +133,180 @@
         </div>
     </div>
 </div> <br>
+
 <script>
-const dropArea = document.getElementById('drop-area');
-const fileInput = document.getElementById('file-upload');
-const dropText = document.getElementById('drop-text');
+    $(function() {
 
-// Click to open file dialog
- dropArea.addEventListener('click', () => fileInput.click());
+        const $dropArea = $('#drop-area');
+        const $fileInput = $('#file-upload');
+        const $dropText = $('#drop-text');
 
-// Drag & drop events
-['dragenter', 'dragover'].forEach(eventName => {
-    dropArea.addEventListener(eventName, e => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropArea.style.background = '#e9f5ff';
-        dropText.textContent = 'Drop files to upload';
-    });
-});
-['dragleave', 'drop'].forEach(eventName => {
-    dropArea.addEventListener(eventName, e => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropArea.style.background = '#fafafa';
-        dropText.textContent = 'Drag & drop files here or click to select';
-    });
-});
-dropArea.addEventListener('drop', e => {
-    fileInput.files = e.dataTransfer.files;
-});
-
-document.getElementById('media-upload-form').onsubmit = async function(e) {
-    e.preventDefault();
-    const formData = new FormData();
-    for (const file of fileInput.files) {
-        formData.append('file[]', file);
-    }
-    formData.append('_token', document.querySelector('input[name=_token]').value);
-    const res = await fetch("{{ route('media-library.store') }}", {
-        method: 'POST',
-        body: formData
-    });
-    if (res.ok) location.reload();
-};
-document.querySelectorAll('.delete-media-form').forEach(form => {
-    form.onsubmit = async function(e) {
-        e.preventDefault();
-        const id = form.getAttribute('data-id');
-        const url = "{{ route('media-library.destroy', ':id') }}".replace(':id', id);
-        const res = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': form.querySelector('input[name=_token]').value
-            }
+        // Click → open file picker
+        $dropArea.on('click', function(e) {
+            if ($(e.target).is('input, button')) return;
+            e.stopPropagation();
+            $fileInput.trigger('click');
         });
-        if (res.ok) location.reload();
-    };
-});
 
-// Grid/List toggle
-const gridBtn = document.getElementById('grid-view');
-const listBtn = document.getElementById('list-view');
-const grid = document.getElementById('media-grid');
-const list = document.getElementById('media-list');
-gridBtn.onclick = function() {
-    grid.classList.remove('d-none');
-    list.classList.add('d-none');
-    gridBtn.classList.add('active');
-    listBtn.classList.remove('active');
-};
-listBtn.onclick = function() {
-    grid.classList.add('d-none');
-    list.classList.remove('d-none');
-    listBtn.classList.add('active');
-    gridBtn.classList.remove('active');
-};
+        // Drag enter / over
+        $dropArea.on('dragenter dragover', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).css('background', '#e9f5ff');
+            $dropText.text('Drop files to upload');
+        });
 
-// Search
-const searchInput = document.getElementById('media-search');
-searchInput.oninput = function() {
-    const val = this.value.toLowerCase();
-    document.querySelectorAll('#media-grid .media-thumb, #media-list tbody tr').forEach(el => {
-        const name = el.getAttribute('data-name')?.toLowerCase() || '';
-        el.style.display = name.includes(val) ? '' : 'none';
-    });
-};
+        // Drag leave / drop
+        $dropArea.on('dragleave drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).css('background', '#fafafa');
+            $dropText.text('Drag & drop files here or click to select');
+        });
 
-// Sort
-const sortSelect = document.getElementById('sort-by');
-sortSelect.onchange = function() {
-    const sortBy = this.value;
-    let items = Array.from(document.querySelectorAll('#media-grid .media-thumb'));
-    items.sort((a, b) => {
-        let av = a.getAttribute('data-' + sortBy) || '';
-        let bv = b.getAttribute('data-' + sortBy) || '';
-        if (sortBy === 'date') {
-            av = new Date(av); bv = new Date(bv);
-            return bv - av;
-        }
-        return av.localeCompare(bv);
-    });
-    items.forEach(el => grid.appendChild(el));
-    // List view sort
-    let rows = Array.from(document.querySelectorAll('#media-list tbody tr'));
-    rows.sort((a, b) => {
-        let av = a.getAttribute('data-' + sortBy) || '';
-        let bv = b.getAttribute('data-' + sortBy) || '';
-        if (sortBy === 'date') {
-            av = new Date(av); bv = new Date(bv);
-            return bv - av;
-        }
-        return av.localeCompare(bv);
-    });
-    rows.forEach(el => list.querySelector('tbody').appendChild(el));
-};
+        // Drop files
+        $dropArea.on('drop', function(e) {
+            const files = e.originalEvent.dataTransfer.files;
+            $fileInput[0].files = files;
+        });
+        $('#media-upload-form').on('submit', function (e) {
+    e.preventDefault();
 
-let cropper;
-function openEditModal(mediaId, url, meta) {
-    document.getElementById('edit-media-id').value = mediaId;
-    const img = document.getElementById('edit-media-preview');
-    img.src = url;
-    document.getElementById('edit-title').value = meta.file_name || '';
-    document.getElementById('edit-title').focus();
-    document.getElementById('edit-title').select();
-    document.getElementById('edit-alt').value = meta.alt || '';
-    document.getElementById('edit-description').value = meta.description || '';
-    document.getElementById('edit-file-name').textContent = meta.file_name || '';
-    document.getElementById('edit-file-size').textContent = meta.size ? (meta.size/1024).toFixed(2) + ' KB' : '';
-    document.getElementById('edit-file-type').textContent = meta.mime_type || '';
-    document.getElementById('edit-upload-date').textContent = meta.created_at || '';
-    document.getElementById('edit-file-url').href = url;
-    new bootstrap.Modal(document.getElementById('media-edit-modal')).show();
-}
-// Save metadata and manipulated image
-const editForm = document.getElementById('media-edit-form');
-if (editForm) {
-    editForm.onsubmit = async function(e) {
-        e.preventDefault();
-        const id = document.getElementById('edit-media-id').value;
-        const formData = new FormData();
-        formData.append('title', document.getElementById('edit-title').value);
-        formData.append('alt', document.getElementById('edit-alt').value);
-        formData.append('description', document.getElementById('edit-description').value);
-        sendEditForm(id, formData);
-    };
-}
-async function sendEditForm(id, formData) {
-    formData.append('_token', document.querySelector('input[name=_token]').value);
-    const url = "{{ route('media-library.update', ':id') }}".replace(':id', id);
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'X-HTTP-Method-Override': 'PUT' },
-        body: formData
-    });
-    if (res.ok) {
-        location.reload();
-    } else {
-        alert('Failed to update media.');
+    const files = $('#file-upload')[0].files;
+
+    if (!files.length) {
+        alert('Please select at least one file.');
+        return;
     }
-}
-document.addEventListener('DOMContentLoaded', function() {
-    Array.from(document.querySelectorAll('.media-thumb')).forEach(function(thumb) {
-        thumb.onclick = async function(e) {
-            if (e.target.closest('.btn-danger')) return; // skip delete
-            const mediaId = thumb.querySelector('.delete-media-form').getAttribute('data-id');
-            // Use Laravel route helper for AJAX metadata fetch
-            const url = "{{ route('media-library.show', ':id') }}".replace(':id', mediaId);
-            const res = await fetch(url);
-            if (res.ok) {
-                const meta = await res.json();
-                openEditModal(mediaId, meta.url, meta);
-            }
-        };
+
+    const formData = new FormData(this); // ✅ includes ALL files automatically
+
+    $.ajax({
+        url: "{{ route('media-library.store') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function () {
+            location.reload();
+        },
+        error: function (xhr) {
+            console.error(xhr.responseText);
+            alert('Upload failed');
+        }
     });
 });
+        $(document).on('submit', '.delete-media-form', function(e) {
+            e.preventDefault();
+
+            const id = $(this).data('id');
+            const url = "{{ route('media-library.destroy', ':id') }}".replace(':id', id);
+
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                headers: {
+                    'X-CSRF-TOKEN': $(this).find('input[name=_token]').val()
+                },
+                success: function() {
+                    location.reload();
+                }
+            });
+        });
+
+
+        $('#grid-view').on('click', function() {
+            $('#media-grid').removeClass('d-none');
+            $('#media-list').addClass('d-none');
+            $(this).addClass('active');
+            $('#list-view').removeClass('active');
+        });
+
+        $('#list-view').on('click', function() {
+            $('#media-grid').addClass('d-none');
+            $('#media-list').removeClass('d-none');
+            $(this).addClass('active');
+            $('#grid-view').removeClass('active');
+        });
+
+        $('#media-search').on('input', function() {
+            const val = $(this).val().toLowerCase();
+
+            $('#media-grid .media-thumb, #media-list tbody tr').each(function() {
+                const name = ($(this).data('name') || '').toLowerCase();
+                $(this).toggle(name.includes(val));
+            });
+        });
+
+        $('#sort-by').on('change', function() {
+            const sortBy = $(this).val();
+
+            function sortItems(items) {
+                return items.sort(function(a, b) {
+                    let av = $(a).data(sortBy) || '';
+                    let bv = $(b).data(sortBy) || '';
+
+                    if (sortBy === 'date') {
+                        return new Date(bv) - new Date(av);
+                    }
+                    return av.toString().localeCompare(bv.toString());
+                });
+            }
+
+            const gridItems = sortItems($('#media-grid .media-thumb').toArray());
+            $('#media-grid').append(gridItems);
+
+            const listRows = sortItems($('#media-list tbody tr').toArray());
+            $('#media-list tbody').append(listRows);
+        });
+
+        $(document).on('click', '.media-thumb', function(e) {
+            if ($(e.target).closest('.btn-danger').length) return;
+
+            const mediaId = $(this).find('.delete-media-form').data('id');
+            const url = "{{ route('media-library.show', ':id') }}".replace(':id', mediaId);
+
+            $.get(url, function(meta) {
+                $('#edit-media-id').val(mediaId);
+                $('#edit-media-preview').attr('src', meta.url);
+                $('#edit-title').val(meta.file_name).focus().select();
+                $('#edit-alt').val(meta.alt || '');
+                $('#edit-description').val(meta.description || '');
+                $('#edit-file-name').text(meta.file_name);
+                $('#edit-file-size').text((meta.size / 1024).toFixed(2) + ' KB');
+                $('#edit-file-type').text(meta.mime_type);
+                $('#edit-upload-date').text(meta.created_at);
+                $('#edit-file-url').attr('href', meta.url);
+
+                new bootstrap.Modal('#media-edit-modal').show();
+            });
+        });
+
+        $('#media-edit-form').on('submit', function(e) {
+            e.preventDefault();
+
+            const id = $('#edit-media-id').val();
+            const formData = new FormData(this);
+            formData.append('_token', $('input[name=_token]').val());
+
+            $.ajax({
+                url: "{{ route('media-library.update', ':id') }}".replace(':id', id),
+                type: "POST",
+                headers: {
+                    'X-HTTP-Method-Override': 'PUT'
+                },
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function() {
+                    location.reload();
+                },
+                error: function() {
+                    alert('Failed to update media.');
+                }
+            });
+        });
+
+    });
 </script>
 <x-admin.footer />

@@ -21,6 +21,7 @@ class Brand extends Model  implements HasMedia
         'logo',
         'description',
         'is_active',
+        'media_library_logo_id',
     ];
 
     protected $casts = [
