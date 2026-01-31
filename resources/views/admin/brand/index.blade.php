@@ -32,10 +32,17 @@
                                 <tr>
                                     <td>#{{ $brand->id }}</td>
                                     <td>
-                                        @if($brand->hasMedia('brand_logo'))
-                                            <img src="{{ $brand->getFirstMediaUrl('brand_logo') }}"
-                                                alt="{{ $brand->name }}"
-                                                style="height: 40px; width: 40px; object-fit: cover; border-radius: 4px;">
+                                        @php
+                                            $logoUrl = null;
+                                            if ($brand->media_library_logo_id) {
+                                                $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($brand->media_library_logo_id);
+                                                if ($media && file_exists(storage_path('app/public/' . $media->id . '/' . $media->file_name))) {
+                                                    $logoUrl = asset('storage/' . $media->id . '/' . $media->file_name);
+                                                }
+                                            }
+                                        @endphp
+                                        @if($logoUrl)
+                                            <img src="{{ $logoUrl }}" alt="{{ $brand->name }}" style="height: 40px; width: 40px; object-fit: cover; border-radius: 4px;">
                                         @else
                                             <span class="badge bg-secondary">No Image</span>
                                         @endif

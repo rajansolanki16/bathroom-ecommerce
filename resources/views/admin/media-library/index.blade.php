@@ -2,7 +2,6 @@
 <div class="container-fluid" style="background: #fff; padding: 32px 24px; border-radius: 8px; min-height: 80vh;">
     <div class="d-flex align-items-center mb-4" style="gap: 16px;">
         <h2 style="font-size: 1.5rem; font-weight: 500; margin-bottom: 0;">Media Library</h2>
-        <button class="btn btn-primary ms-3">Add New</button>
         <div class="ms-auto d-flex gap-2 align-items-center">
             <select id="sort-by" class="form-select form-select-sm" style="width: 140px;">
                 <option value="date">Sort by Date</option>
@@ -44,8 +43,39 @@
                     style="background: #fff; border-radius: 6px; overflow: hidden; height: 150px; width: 150px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.07); border: 1px solid #e2e2e2; margin: auto; transition: box-shadow 0.2s;"
                     onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)';"
                     onmouseout="this.style.boxShadow='0 1px 3px rgba(0,0,0,0.07)';">
-                    <img src="{{ $item->getUrl() }}" alt="Media"
-                        style="max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 0;">
+                    @php
+                        $mime = $item->mime_type;
+                        $icon = null;
+                        if(Str::startsWith($mime, 'image/')) {
+                            $icon = null; // will show image
+                        } elseif(Str::startsWith($mime, 'video/')) {
+                            $icon = 'bi bi-file-earmark-play text-primary';
+                        } elseif(Str::startsWith($mime, 'audio/')) {
+                            $icon = 'bi bi-file-earmark-music text-success';
+                        } elseif(Str::contains($mime, 'pdf')) {
+                            $icon = 'bi bi-file-earmark-pdf text-danger';
+                        } elseif(Str::contains($mime, ['excel', 'spreadsheet', 'xls', 'xlsx'])) {
+                            $icon = 'bi bi-file-earmark-excel text-success';
+                        } elseif(Str::contains($mime, ['word', 'doc', 'docx'])) {
+                            $icon = 'bi bi-file-earmark-word text-primary';
+                        } elseif(Str::contains($mime, ['powerpoint', 'ppt', 'pptx'])) {
+                            $icon = 'bi bi-file-earmark-ppt text-warning';
+                        } elseif(Str::contains($mime, ['zip', 'rar'])) {
+                            $icon = 'bi bi-file-earmark-zip text-secondary';
+                        } else {
+                            $icon = 'bi bi-file-earmark text-muted';
+                        }
+                    @endphp
+                    @if(Str::startsWith($mime, 'image/'))
+                        <img src="{{ $item->getUrl() }}" alt="Media"
+                            style="max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 0;">
+                    @else
+                        <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100" style="height:100%;">
+                            <i class="{{ $icon }}" style="font-size: 2.5rem;"></i>
+                            <span class="small mt-1">{{ strtoupper($item->getExtensionAttribute ? $item->getExtensionAttribute() : pathinfo($item->file_name, PATHINFO_EXTENSION)) }}</span>
+                            <span class="text-truncate small mt-1" style="max-width: 110px;" title="{{ $item->file_name }}">{{ \Illuminate\Support\Str::limit($item->file_name, 18) }}</span>
+                        </div>
+                    @endif
                     <form class="delete-media-form position-absolute top-0 end-0 m-1" data-id="{{ $item->id }}">
                         @csrf
                         <button type="submit" class="btn btn-danger btn-sm"
@@ -70,8 +100,40 @@
                     @foreach ($media as $item)
                         <tr data-name="{{ $item->file_name }}" data-type="{{ $item->mime_type }}"
                             data-date="{{ $item->created_at }}" data-author="{{ $item->model_id }}">
-                            <td><img src="{{ $item->getUrl() }}" alt="Media"
-                                    style="height: 40px; width: 40px; object-fit: cover;"></td>
+                            <td>
+                                @php
+                                    $mime = $item->mime_type;
+                                    $icon = null;
+                                    if(Str::startsWith($mime, 'image/')) {
+                                        $icon = null;
+                                    } elseif(Str::startsWith($mime, 'video/')) {
+                                        $icon = 'bi bi-file-earmark-play text-primary';
+                                    } elseif(Str::startsWith($mime, 'audio/')) {
+                                        $icon = 'bi bi-file-earmark-music text-success';
+                                    } elseif(Str::contains($mime, 'pdf')) {
+                                        $icon = 'bi bi-file-earmark-pdf text-danger';
+                                    } elseif(Str::contains($mime, ['excel', 'spreadsheet', 'xls', 'xlsx'])) {
+                                        $icon = 'bi bi-file-earmark-excel text-success';
+                                    } elseif(Str::contains($mime, ['word', 'doc', 'docx'])) {
+                                        $icon = 'bi bi-file-earmark-word text-primary';
+                                    } elseif(Str::contains($mime, ['powerpoint', 'ppt', 'pptx'])) {
+                                        $icon = 'bi bi-file-earmark-ppt text-warning';
+                                    } elseif(Str::contains($mime, ['zip', 'rar'])) {
+                                        $icon = 'bi bi-file-earmark-zip text-secondary';
+                                    } else {
+                                        $icon = 'bi bi-file-earmark text-muted';
+                                    }
+                                @endphp
+                                @if(Str::startsWith($mime, 'image/'))
+                                    <img src="{{ $item->getUrl() }}" alt="Media"
+                                        style="height: 40px; width: 40px; object-fit: cover;">
+                                @else
+                                    <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100">
+                                        <i class="{{ $icon }}" style="font-size: 1.5rem;"></i>
+                                        <span class="small mt-1">{{ strtoupper($item->getExtensionAttribute ? $item->getExtensionAttribute() : pathinfo($item->file_name, PATHINFO_EXTENSION)) }}</span>
+                                    </div>
+                                @endif
+                            </td>
                             <td>{{ $item->file_name }}</td>
                             <td>{{ $item->mime_type }}</td>
                             <td>{{ $item->created_at }}</td>
@@ -169,33 +231,32 @@
             const files = e.originalEvent.dataTransfer.files;
             $fileInput[0].files = files;
         });
-        $('#media-upload-form').on('submit', function (e) {
-    e.preventDefault();
+        $('#media-upload-form').on('submit', function(e) {
+            e.preventDefault();
 
-    const files = $('#file-upload')[0].files;
+            const files = $('#file-upload')[0].files;
 
-    if (!files.length) {
-        alert('Please select at least one file.');
-        return;
-    }
+            if (!files.length) {
+                alert('Please select at least one file.');
+                return;
+            }
 
-    const formData = new FormData(this); // ✅ includes ALL files automatically
-
-    $.ajax({
-        url: "{{ route('media-library.store') }}",
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function () {
-            location.reload();
-        },
-        error: function (xhr) {
-            console.error(xhr.responseText);
-            alert('Upload failed');
-        }
-    });
-});
+            const formData = new FormData(this); 
+            $.ajax({
+                url: "{{ route('media-library.store') }}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function() {
+                    location.reload();
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    alert('Upload failed');
+                }
+            });
+        });
         $(document).on('submit', '.delete-media-form', function(e) {
             e.preventDefault();
 

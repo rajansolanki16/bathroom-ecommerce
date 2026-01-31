@@ -30,6 +30,7 @@
                     <div class="mb-3">
                         <label for="logo" class="form-label">Brand Logo</label>
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModal">Choose from Media Library</button>
+                        <input type="hidden" name="media_library_logo_id" id="media_library_logo_id" value="{{ old('media_library_logo_id', '') }}">
                         <div id="selected-media-preview" class="mt-2"></div>
                         @error('media_library_logo_id')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -80,54 +81,15 @@
     </div>
 </div>
 <script>
-// Media Picker Modal logic
-let selectedMediaId = null;
-function openMediaPicker() {
-        fetch("{{ route('media-library.picker') }}")
-                .then(res => res.text())
-                .then(html => {
-                        document.getElementById('mediaPickerModalBody').innerHTML = html;
-                        document.querySelectorAll('#mediaPickerModalBody .media-thumb').forEach(item => {
-                                item.onclick = function() {
-                                        selectedMediaId = item.getAttribute('data-id');
-                                        const imgUrl = item.querySelector('img').src;
-                                        document.getElementById('selected-media-preview').innerHTML = `<img src='${imgUrl}' style='height:100px;width:100px;object-fit:cover;border-radius:4px;'>`;
-                                        document.getElementById('mediaPickerModal').querySelector('.btn-close').click();
-                                };
-                        });
-                });
-}
-document.querySelector('[data-bs-target="#mediaPickerModal"]').addEventListener('click', openMediaPicker);
-// Always keep a hidden input in sync with selectedMediaId
-const form = document.querySelector('form[action*="brands.store"]');
-let mediaInput = document.createElement('input');
-mediaInput.type = 'hidden';
-mediaInput.name = 'media_library_logo_id';
-form.appendChild(mediaInput);
-
-function updateMediaInput() {
-    mediaInput.value = selectedMediaId || '';
-}
-
-// Update hidden input whenever a media is selected
-function openMediaPicker() {
-    fetch("{{ route('media-library.picker') }}")
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById('mediaPickerModalBody').innerHTML = html;
-            document.querySelectorAll('#mediaPickerModalBody .media-thumb').forEach(item => {
-                item.onclick = function() {
-                    selectedMediaId = item.getAttribute('data-id');
-                    updateMediaInput();
-                    const imgUrl = item.querySelector('img').src;
-                    document.getElementById('selected-media-preview').innerHTML = `<img src='${imgUrl}' style='height:100px;width:100px;object-fit:cover;border-radius:4px;'>`;
-                    document.getElementById('mediaPickerModal').querySelector('.btn-close').click();
-                };
-            });
-        });
-}
-document.querySelector('[data-bs-target="#mediaPickerModal"]').addEventListener('click', openMediaPicker);
-form.addEventListener('submit', function(e) {
-    updateMediaInput();
+$(document).ready(function () {
+    window.initMediaPicker({
+        pickerBtnSelector: '[data-bs-target="#mediaPickerModal"]',
+        modalBodySelector: '#mediaPickerModalBody',
+        modalSelector: '#mediaPickerModal',
+        hiddenInputSelector: '#media_library_logo_id',
+        previewSelector: '#selected-media-preview',
+        pickerUrl: "{{ route('media-library.picker') }}",
+        formSelector: 'form[action*="brands.store"]'
+    });
 });
 </script>

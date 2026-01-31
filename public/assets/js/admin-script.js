@@ -1,3 +1,37 @@
+// Reusable Media Picker Logic
+window.initMediaPicker = function(options) {
+    var pickerBtn = $(options.pickerBtnSelector);
+    var modalBody = $(options.modalBodySelector);
+    var modal = $(options.modalSelector);
+    var hiddenInput = $(options.hiddenInputSelector);
+    var previewDiv = $(options.previewSelector);
+    var selectedMediaId = hiddenInput.val() || null;
+
+    function openMediaPicker() {
+        $.ajax({
+            url: options.pickerUrl,
+            type: "GET",
+            success: function (html) {
+                modalBody.html(html);
+                modalBody.find('.media-thumb').on('click', function () {
+                    selectedMediaId = $(this).data('id');
+                    hiddenInput.val(selectedMediaId);
+                    var imgUrl = $(this).find('img').attr('src');
+                    previewDiv.html(`<img src="${imgUrl}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`);
+                    modal.find('.btn-close').trigger('click');
+                });
+            }
+        });
+    }
+
+    pickerBtn.on('click', function () {
+        openMediaPicker();
+    });
+
+    $(options.formSelector).on('submit', function () {
+        hiddenInput.val(selectedMediaId || '');
+    });
+};
 // Admin JS
 function setDeleteFormAction(element) {
     let deleteUrl = element.getAttribute("data-delete-url");
@@ -785,4 +819,5 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
 

@@ -18,7 +18,6 @@ class Setting extends Model implements HasMedia
 
     protected $fillable = [
         'page',
-        'page',
         'slug',
         'type',
         'value',
@@ -43,4 +42,9 @@ class Setting extends Model implements HasMedia
             ->width(1200)
             ->height(1200);
     }
+
+    public function registerMediaCollections(): void
+{
+    $this->addMediaCollection('brand')->singleFile();
+}
 }

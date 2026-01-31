@@ -38,7 +38,7 @@ class BrandController extends Controller
         $request->validate([
             'name' => 'required|string|min:3|unique:brands,name',
             'description' => 'nullable|string|max:1000',
-             'media_library_logo_id' => 'required|exists:media,id',
+            'media_library_logo_id' => 'required|exists:media,id',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -47,18 +47,8 @@ class BrandController extends Controller
             'slug'        => Str::slug($request->name),
             'description' => $request->description,
             'is_active'   => $request->boolean('is_active'),
+            'media_library_logo_id' => $request->media_library_logo_id,
         ]);
-
-        if ($request->filled('media_library_logo_id')) {
-            // Set logo from media library picker
-            $mediaId = $request->input('media_library_logo_id');
-            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($mediaId);
-            if ($media) {
-                $brand->addMediaFromDisk($media->getPath(), $media->disk)
-                    ->preservingOriginal()
-                    ->toMediaCollection('brand_logo');
-            }
-        }
 
         return redirect()->route('brands.index')
             ->with('success', 'Brand created successfully');
@@ -103,20 +93,8 @@ class BrandController extends Controller
             'slug'        => Str::slug($request->name),
             'description' => $request->description,
             'is_active'   => $request->boolean('is_active'),
+            'media_library_logo_id' => $request->media_library_logo_id,
         ]);
-
-        if ($request->filled('media_library_logo_id')) {
-            // Set logo from media library picker
-            $mediaId = $request->input('media_library_logo_id');
-            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($mediaId);
-            if ($media) {
-                $brand->clearMediaCollection('brand_logo');
-                // Copy media to brand_logo collection
-                $brand->addMediaFromDisk($media->getPath(), $media->disk)
-                    ->preservingOriginal()
-                    ->toMediaCollection('brand_logo');
-            }
-        }
 
         return redirect()->route('brands.index')
             ->with('success', 'Brand updated successfully');

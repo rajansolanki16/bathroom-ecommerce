@@ -31,11 +31,26 @@
                     <div class="mb-3">
                         <label for="logo" class="form-label">Brand Logo</label>
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModal">Choose from Media Library</button>
-                        <div id="selected-media-preview" class="mt-2"></div>
+                        <input type="hidden" name="media_library_logo_id" id="media_library_logo_id" value="{{ old('media_library_logo_id', $brand->media_library_logo_id ?? '') }}">
+                        <div id="selected-media-preview" class="mt-2">
+                            @php
+                                $logoUrl = null;
+                                if ($brand->media_library_logo_id) {
+                                    $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($brand->media_library_logo_id);
+                                    if ($media && file_exists(storage_path('app/public/' . $media->id . '/' . $media->file_name))) {
+                                        $logoUrl = asset('storage/' . $media->id . '/' . $media->file_name);
+                                    }
+                                }
+                            @endphp
+                            @if($logoUrl)
+                                <img src="{{ $logoUrl }}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">
+                            @else
+                                <span class="badge bg-secondary">No Image</span>
+                            @endif
+                        </div>
                         @error('media_library_logo_id')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
-
                     </div>
 
                     <div class="mb-3">
@@ -65,52 +80,7 @@
         </div>
     </div>
 </div>
-<script>
-// Media Picker Modal logic
-let selectedMediaId = null;
-function openMediaPicker() {
-    fetch("{{ route('media-library.picker') }}")
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById('mediaPickerModalBody').innerHTML = html;
-            document.querySelectorAll('#mediaPickerModalBody .media-thumb').forEach(item => {
-                item.onclick = function() {
-                    selectedMediaId = item.getAttribute('data-id');
-                    const imgUrl = item.querySelector('img').src;
-                    document.getElementById('selected-media-preview').innerHTML = `<img src='${imgUrl}' style='height:100px;width:100px;object-fit:cover;border-radius:4px;'>`;
-                    document.getElementById('mediaPickerModal').querySelector('.btn-close').click();
-                };
-            });
-        });
-}
-document.querySelector('[data-bs-target="#mediaPickerModal"]').addEventListener('click', openMediaPicker);
-document.querySelector('form[action*="brands.update"]').addEventListener('submit', function(e) {
-    if (selectedMediaId) {
-        let input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'media_library_logo_id';
-        input.value = selectedMediaId;
-        this.appendChild(input);
-    }
-});
-$(document).on('click', '.delete-brand-logo', function () {
-    const mediaId = $(this).data('id');
 
-    let url = "{{ route('media.delete', ':id') }}";
-    url = url.replace(':id', mediaId);
-
-    $.ajax({
-        url: url,
-        type: "POST",
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function () {
-            location.reload(); 
-        }
-    });
-});
-</script>
 
 <x-admin.footer />
 <!-- Media Picker Modal -->
@@ -127,3 +97,17 @@ $(document).on('click', '.delete-brand-logo', function () {
         </div>
     </div>
 </div>
+
+<script>
+$(document).ready(function () {
+    window.initMediaPicker({
+        pickerBtnSelector: '[data-bs-target="#mediaPickerModal"]',
+        modalBodySelector: '#mediaPickerModalBody',
+        modalSelector: '#mediaPickerModal',
+        hiddenInputSelector: '#media_library_logo_id',
+        previewSelector: '#selected-media-preview',
+        pickerUrl: "{{ route('media-library.picker') }}",
+        formSelector: 'form[action*="brands.update"]'
+    });
+});
+</script>
