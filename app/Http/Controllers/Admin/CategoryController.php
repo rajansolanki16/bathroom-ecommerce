@@ -47,7 +47,7 @@ class CategoryController extends Controller
                     $q->where('parent_id', $request->parent_id)
                 ),
             ],
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'media_library_logo_id' => 'nullable|exists:media,id',
         ];
 
         $messages = [
@@ -63,17 +63,8 @@ class CategoryController extends Controller
             'slug'       => Str::slug($validated['name']),
             'parent_id'  => $request->parent_id,
             'is_visible' => $request->boolean('is_visible'),
+            'media_library_logo_id' => $request->media_library_logo_id,
         ]);
-
-        /* ===============================
-        CATEGORY IMAGE (Spatie)
-        =============================== */
-        if ($request->hasFile('image')) {
-            $category
-                ->clearMediaCollection('category_image')
-                ->addMediaFromRequest('image')
-                ->toMediaCollection('category_image');
-        }
 
         return redirect()->route('categories.index')
             ->with('success', 'Category created successfully');
@@ -116,7 +107,7 @@ class CategoryController extends Controller
                         $q->where('parent_id', $request->parent_id)
                     ),
             ],
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'media_library_logo_id' => 'nullable|exists:media,id',
         ];
 
         $validated = $request->validate($rules);
@@ -126,17 +117,8 @@ class CategoryController extends Controller
             'slug'       => Str::slug($validated['name']),
             'parent_id'  => $request->parent_id,
             'is_visible' => $request->boolean('is_visible'),
+            'media_library_logo_id' => $request->media_library_logo_id,
         ]);
-
-        /* ===============================
-        UPDATE IMAGE (Spatie)
-        =============================== */
-        if ($request->hasFile('image')) {
-            $category
-                ->clearMediaCollection('category_image')
-                ->addMediaFromRequest('image')
-                ->toMediaCollection('category_image');
-        }
 
         return redirect()->route('categories.index')
             ->with('success', 'Category updated successfully');

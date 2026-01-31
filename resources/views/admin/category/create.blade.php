@@ -83,25 +83,15 @@
     </div>
 </div>
 <script>
-let selectedMediaId = document.getElementById('media_library_logo_id').value || null;
-function openMediaPicker() {
-    fetch("{{ route('media-library.picker') }}")
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById('mediaPickerModalBody').innerHTML = html;
-            document.querySelectorAll('#mediaPickerModalBody .media-thumb').forEach(item => {
-                item.onclick = function() {
-                    selectedMediaId = item.getAttribute('data-id');
-                    document.getElementById('media_library_logo_id').value = selectedMediaId;
-                    const imgUrl = item.querySelector('img').src;
-                    document.getElementById('selected-media-preview').innerHTML = `<img src='${imgUrl}' style='height:100px;width:100px;object-fit:cover;border-radius:4px;'>`;
-                    document.getElementById('mediaPickerModal').querySelector('.btn-close').click();
-                };
-            });
-        });
-}
-document.querySelector('[data-bs-target="#mediaPickerModal"]').addEventListener('click', openMediaPicker);
-document.querySelector('form[action*="categories.store"]').addEventListener('submit', function(e) {
-    document.getElementById('media_library_logo_id').value = selectedMediaId || '';
+$(document).ready(function () {
+    window.initMediaPicker({
+        pickerBtnSelector: '[data-bs-target="#mediaPickerModal"]',
+        modalBodySelector: '#mediaPickerModalBody',
+        modalSelector: '#mediaPickerModal',
+        hiddenInputSelector: '#media_library_logo_id',
+        previewSelector: '#selected-media-preview',
+        pickerUrl: "{{ route('media-library.picker') }}",
+        formSelector: 'form[action*="categories.store"]'
+    });
 });
 </script>

@@ -45,33 +45,25 @@
 
                     <div class="mb-3">
                         <label class="form-label">Category Image</label>
-
-                        @if($category->hasMedia('category_image'))
-                            <div class="mb-2 position-relative d-inline-block">
-                                <img
-                                    src="{{ $category->getFirstMediaUrl('category_image') }}"
-                                    alt="{{ $category->name }}"
-                                    height="100"
-                                    class="rounded border"
-                                >
-
-                                <button
-                                    type="button"
-                                    class="btn btn-sm btn-danger position-absolute top-0 end-0 delete-category-image"
-                                    data-id="{{ $category->getFirstMedia('category_image')->id }}">
-                                    ✕
-                                </button>
-                            </div>
-                        @endif
-
-                        <input
-                            type="file"
-                            name="image"
-                            class="form-control @error('image') is-invalid @enderror"
-                            accept="image/*"
-                        >
-
-                        @error('image')
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModal">Choose from Media Library</button>
+                        <input type="hidden" name="media_library_logo_id" id="media_library_logo_id" value="{{ old('media_library_logo_id', $category->media_library_logo_id ?? '') }}">
+                        <div id="selected-media-preview" class="mt-2">
+                            @php
+                                $logoUrl = null;
+                                if (!empty($category->media_library_logo_id)) {
+                                    $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($category->media_library_logo_id);
+                                    if ($media && file_exists(storage_path('app/public/' . $media->id . '/' . $media->file_name))) {
+                                        $logoUrl = asset('storage/' . $media->id . '/' . $media->file_name);
+                                    }
+                                }
+                            @endphp
+                            @if($logoUrl)
+                                <img src="{{ $logoUrl }}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">
+                            @else
+                                <span class="badge bg-secondary">No Image</span>
+                            @endif
+                        </div>
+                        @error('media_library_logo_id')
                             <div class="invalid-response">{{ $message }}</div>
                         @enderror
                     </div>
@@ -108,22 +100,30 @@
     </div>
 </div>
 <script>
-$(document).on('click', '.delete-category-image', function () {
-    const mediaId = $(this).data('id');
-
-    let url = "{{ route('media.delete', ':id') }}";
-    url = url.replace(':id', mediaId);
-
-    $.ajax({
-        url: url,
-        type: "POST",
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function () {
-            location.reload(); 
-        }
+$(document).ready(function () {
+    window.initMediaPicker({
+        pickerBtnSelector: '[data-bs-target="#mediaPickerModal"]',
+        modalBodySelector: '#mediaPickerModalBody',
+        modalSelector: '#mediaPickerModal',
+        hiddenInputSelector: '#media_library_logo_id',
+        previewSelector: '#selected-media-preview',
+        pickerUrl: "{{ route('media-library.picker') }}",
+        formSelector: 'form[action*="categories.update"]'
     });
 });
 </script>
+<!-- Media Picker Modal -->
+<div class="modal fade" id="mediaPickerModal" tabindex="-1" aria-labelledby="mediaPickerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mediaPickerModalLabel">Select Media</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mediaPickerModalBody">
+                <!-- Media grid will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
 <x-admin.footer />

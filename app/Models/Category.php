@@ -15,7 +15,8 @@ class Category extends Model implements HasMedia
         'slug',
         'parent_id',
         'image',
-        'is_visible'
+        'is_visible',
+        'media_library_logo_id',
     ];
 
     public function parentCategory()
