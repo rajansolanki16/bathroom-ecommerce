@@ -79,7 +79,16 @@ Route::get('/user/orders/{order}', [OrderController::class, 'show'])
 //admin panel
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
+                    // Media Library Picker (returns only grid/list for modal)
+                    Route::get('/media-library/picker', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'picker'])->name('media-library.picker');
         Route::get('/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard');
+
+            // Media Library
+            Route::get('/media-library', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'index'])->name('media-library.index');
+            Route::get('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'show'])->name('media-library.show');
+            Route::post('/media-library', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'store'])->name('media-library.store');
+            Route::delete('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'destroy'])->name('media-library.destroy');
+            Route::put('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'update'])->name('media-library.update');
 
         Route::post('/products/{product}/variants/update', [ProductController::class, 'updateVariants'])->name('products.variants.update');
         Route::post('/products/{product}/variants/remove', [ProductController::class, 'removeVariant'])->name('products.variants.remove');

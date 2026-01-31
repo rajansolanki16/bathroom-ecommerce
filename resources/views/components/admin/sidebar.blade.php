@@ -28,24 +28,37 @@
                         </a>
                     </li>
 
+                        <!-- MEDIA LIBRARY -->
+                        <li class="nav-item">
+                            @php
+                                $mediaActive = Route::is('media-library.index');
+                            @endphp
+                            <a href="{{ route('media-library.index') }}" class="nav-link menu-link @if($mediaActive) active @endif">
+                                <i class="ri-image-line"></i><span>Media Library</span>
+                            </a>
+                        </li>
+                        <!-- END MEDIA LIBRARY -->
+
 
 
                     <!-- PRODUCT -->
                     <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarProduct"
+                        @php
+                            $productActive = Route::is('products.create') || Route::is('products.index');
+                        @endphp
+                        <a class="nav-link menu-link @if($productActive)""@else collapsed @endif" href="#sidebarProduct"
                             data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sidebarProduct">
+                            aria-expanded="{{ $productActive ? 'true' : 'false' }}" aria-controls="sidebarProduct">
                             <i class="ri-shopping-bag-3-line"></i>
                             <span>Product</span>
                         </a>
-
-                        <div class="collapse menu-dropdown" id="sidebarProduct">
+                        <div class="menu-dropdown collapse @if($productActive) show @endif" id="sidebarProduct">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item">
-                                    <a href="{{ route('products.create') }}" class="nav-link">Create</a>
+                                    <a href="{{ route('products.create') }}" class="nav-link @if(Route::is('products.create')) active @endif">Create</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('products.index') }}" class="nav-link">Show</a>
+                                    <a href="{{ route('products.index') }}" class="nav-link @if(Route::is('products.index')) active @endif">Show</a>
                                 </li>
                             </ul>
                         </div>
@@ -54,20 +67,22 @@
 
                         <!-- BRANDS -->
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="#sidebarBrands"
+                            @php
+                                $brandsActive = Route::is('brands.create') || Route::is('brands.index');
+                            @endphp
+                            <a class="nav-link menu-link @if($brandsActive)""@else collapsed @endif" href="#sidebarBrands"
                                 data-bs-toggle="collapse" role="button"
-                                aria-expanded="false" aria-controls="sidebarBrands">
+                                aria-expanded="{{ $brandsActive ? 'true' : 'false' }}" aria-controls="sidebarBrands">
                                 <i class="ri-price-tag-3-line"></i>
                                 <span>Brands</span>
                             </a>
-
-                            <div class="collapse menu-dropdown" id="sidebarBrands">
+                            <div class="collapse menu-dropdown @if($brandsActive) show @endif" id="sidebarBrands">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{ route('brands.create') }}" class="nav-link">Create</a>
+                                        <a href="{{ route('brands.create') }}" class="nav-link @if(Route::is('brands.create')) active @endif">Create</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ route('brands.index') }}" class="nav-link">Show</a>
+                                        <a href="{{ route('brands.index') }}" class="nav-link @if(Route::is('brands.index')) active @endif">Show</a>
                                     </li>
                                 </ul>
                             </div>
@@ -76,20 +91,22 @@
 
                     <!-- Product Attribute -->
                     <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarProductAttribute"
+                        @php
+                            $productAttributeActive = Route::is('product_attributes.create') || Route::is('product_attributes.index');
+                        @endphp
+                        <a class="nav-link menu-link @if($productAttributeActive)""@else collapsed @endif" href="#sidebarProductAttribute"
                             data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sidebarProductAttribute">
+                            aria-expanded="{{ $productAttributeActive ? 'true' : 'false' }}" aria-controls="sidebarProductAttribute">
                             <i class="ri-list-settings-line"></i>
                             <span>Product Attribute</span>
                         </a>
-
-                        <div class="collapse menu-dropdown" id="sidebarProductAttribute">
+                        <div class="collapse menu-dropdown @if($productAttributeActive) show @endif" id="sidebarProductAttribute">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item">
-                                    <a href="{{ route('product_attributes.create') }}" class="nav-link">Create</a>
+                                    <a href="{{ route('product_attributes.create') }}" class="nav-link @if(Route::is('product_attributes.create')) active @endif">Create</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('product_attributes.index') }}" class="nav-link">Show</a>
+                                    <a href="{{ route('product_attributes.index') }}" class="nav-link @if(Route::is('product_attributes.index')) active @endif">Show</a>
                                 </li>
                             </ul>
                         </div>
@@ -99,20 +116,22 @@
 
                     <!-- Category -->
                     <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarCategory"
+                        @php
+                            $categoryActive = Route::is('categories.create') || Route::is('categories.index');
+                        @endphp
+                        <a class="nav-link menu-link @if($categoryActive)""@else collapsed @endif" href="#sidebarCategory"
                             data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sidebarCategory">
+                            aria-expanded="{{ $categoryActive ? 'true' : 'false' }}" aria-controls="sidebarCategory">
                             <i class="ri-folder-2-line"></i>
                             <span>Category</span>
                         </a>
-
-                        <div class="collapse menu-dropdown" id="sidebarCategory">
+                        <div class="collapse menu-dropdown @if($categoryActive) show @endif" id="sidebarCategory">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item">
-                                    <a href="{{ route('categories.create') }}" class="nav-link">Create</a>
+                                    <a href="{{ route('categories.create') }}" class="nav-link @if(Route::is('categories.create')) active @endif">Create</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('categories.index') }}" class="nav-link">Show</a>
+                                    <a href="{{ route('categories.index') }}" class="nav-link @if(Route::is('categories.index')) active @endif">Show</a>
                                 </li>
                             </ul>
                         </div>
@@ -145,17 +164,19 @@
                     
 
                     <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarorder"
+                        @php
+                            $orderActive = Route::is('orders.show');
+                        @endphp
+                        <a class="nav-link menu-link @if($orderActive)""@else collapsed @endif" href="#sidebarorder"
                             data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sidebarorder">
+                            aria-expanded="{{ $orderActive ? 'true' : 'false' }}" aria-controls="sidebarorder">
                             <i class="ri-file-list-3-line"></i>
                             <span>Order</span>
                         </a>
-
-                        <div class="collapse menu-dropdown" id="sidebarorder">
+                        <div class="collapse menu-dropdown @if($orderActive) show @endif" id="sidebarorder">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item">
-                                    <a href="{{ route('orders.show') }}" class="nav-link">Show</a>
+                                    <a href="{{ route('orders.show') }}" class="nav-link @if(Route::is('orders.show')) active @endif">Show</a>
                                 </li>
                             </ul>
                         </div>

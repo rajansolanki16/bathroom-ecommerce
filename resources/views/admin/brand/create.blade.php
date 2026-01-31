@@ -29,10 +29,9 @@
 
                     <div class="mb-3">
                         <label for="logo" class="form-label">Brand Logo</label>
-                        <input type="file" class="form-control @error('logo') is-invalid @enderror"
-                            id="logo" name="logo" accept="image/*">
-                        <small class="text-muted">Accepted formats: jpeg, png, jpg, gif (Max: 2MB)</small>
-                        @error('logo')
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModal">Choose from Media Library</button>
+                        <div id="selected-media-preview" class="mt-2"></div>
+                        @error('media_library_logo_id')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
@@ -66,3 +65,69 @@
 </div>
 
 <x-admin.footer />
+<!-- Media Picker Modal -->
+<div class="modal fade" id="mediaPickerModal" tabindex="-1" aria-labelledby="mediaPickerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mediaPickerModalLabel">Select Media</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mediaPickerModalBody">
+                <!-- Media grid will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+// Media Picker Modal logic
+let selectedMediaId = null;
+function openMediaPicker() {
+        fetch("{{ route('media-library.picker') }}")
+                .then(res => res.text())
+                .then(html => {
+                        document.getElementById('mediaPickerModalBody').innerHTML = html;
+                        document.querySelectorAll('#mediaPickerModalBody .media-thumb').forEach(item => {
+                                item.onclick = function() {
+                                        selectedMediaId = item.getAttribute('data-id');
+                                        const imgUrl = item.querySelector('img').src;
+                                        document.getElementById('selected-media-preview').innerHTML = `<img src='${imgUrl}' style='height:100px;width:100px;object-fit:cover;border-radius:4px;'>`;
+                                        document.getElementById('mediaPickerModal').querySelector('.btn-close').click();
+                                };
+                        });
+                });
+}
+document.querySelector('[data-bs-target="#mediaPickerModal"]').addEventListener('click', openMediaPicker);
+// Always keep a hidden input in sync with selectedMediaId
+const form = document.querySelector('form[action*="brands.store"]');
+let mediaInput = document.createElement('input');
+mediaInput.type = 'hidden';
+mediaInput.name = 'media_library_logo_id';
+form.appendChild(mediaInput);
+
+function updateMediaInput() {
+    mediaInput.value = selectedMediaId || '';
+}
+
+// Update hidden input whenever a media is selected
+function openMediaPicker() {
+    fetch("{{ route('media-library.picker') }}")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('mediaPickerModalBody').innerHTML = html;
+            document.querySelectorAll('#mediaPickerModalBody .media-thumb').forEach(item => {
+                item.onclick = function() {
+                    selectedMediaId = item.getAttribute('data-id');
+                    updateMediaInput();
+                    const imgUrl = item.querySelector('img').src;
+                    document.getElementById('selected-media-preview').innerHTML = `<img src='${imgUrl}' style='height:100px;width:100px;object-fit:cover;border-radius:4px;'>`;
+                    document.getElementById('mediaPickerModal').querySelector('.btn-close').click();
+                };
+            });
+        });
+}
+document.querySelector('[data-bs-target="#mediaPickerModal"]').addEventListener('click', openMediaPicker);
+form.addEventListener('submit', function(e) {
+    updateMediaInput();
+});
+</script>

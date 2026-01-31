@@ -38,7 +38,7 @@ class BrandController extends Controller
         $request->validate([
             'name' => 'required|string|min:3|unique:brands,name',
             'description' => 'nullable|string|max:1000',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+             'media_library_logo_id' => 'required|exists:media,id',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -49,9 +49,15 @@ class BrandController extends Controller
             'is_active'   => $request->boolean('is_active'),
         ]);
 
-        if ($request->hasFile('logo')) {
-            $brand->addMedia($request->file('logo'))
-                ->toMediaCollection('brand_logo');
+        if ($request->filled('media_library_logo_id')) {
+            // Set logo from media library picker
+            $mediaId = $request->input('media_library_logo_id');
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($mediaId);
+            if ($media) {
+                $brand->addMediaFromDisk($media->getPath(), $media->disk)
+                    ->preservingOriginal()
+                    ->toMediaCollection('brand_logo');
+            }
         }
 
         return redirect()->route('brands.index')
@@ -88,9 +94,9 @@ class BrandController extends Controller
                 Rule::unique('brands')->ignore($brand->id),
             ],
             'description' => 'nullable|string|max:1000',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'media_library_logo_id' => 'required|exists:media,id',
             'is_active' => 'nullable|boolean',
-        ]);
+        ]); 
 
         $brand->update([
             'name'        => $request->name,
@@ -99,10 +105,17 @@ class BrandController extends Controller
             'is_active'   => $request->boolean('is_active'),
         ]);
 
-        if ($request->hasFile('logo')) {
-            $brand->clearMediaCollection('brand_logo');
-            $brand->addMedia($request->file('logo'))
-                ->toMediaCollection('brand_logo');
+        if ($request->filled('media_library_logo_id')) {
+            // Set logo from media library picker
+            $mediaId = $request->input('media_library_logo_id');
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($mediaId);
+            if ($media) {
+                $brand->clearMediaCollection('brand_logo');
+                // Copy media to brand_logo collection
+                $brand->addMediaFromDisk($media->getPath(), $media->disk)
+                    ->preservingOriginal()
+                    ->toMediaCollection('brand_logo');
+            }
         }
 
         return redirect()->route('brands.index')
