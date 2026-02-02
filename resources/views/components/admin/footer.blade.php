@@ -22,6 +22,7 @@
 <script src="{{ asset('assets/js/admin-script.js') }}"></script>
 <script src="{{ asset('admin/js/app.js') }}"></script>
 
+
 <!-- Plugins -->
 <script src="{{ asset('admin/libs/list.js/list.min.js') }}"></script>
 <script src="{{ asset('admin/libs/list.pagination.js/list.pagination.min.js') }}"></script>

@@ -3,11 +3,6 @@
 <div class="container-fluid">
     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
         <h4 class="mb-sm-0">Edit Brand</h4>
-        <div class="page-title-right">
-            <a href="{{ route('brands.index') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back
-            </a>
-        </div>
     </div>
 </div>
 
@@ -63,9 +58,14 @@
                     </div>
 
                     <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" value="1" {{ $brand->is_active ? 'checked' : '' }}>
-                        <label class="form-check-label" for="is_active">
-                            Active
+                        <input type="checkbox"
+                            class="form-check-input"
+                            id="show_on_home"
+                            name="show_on_home"
+                            value="1"
+                            {{ old('show_on_home', $brand->show_on_home) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="show_on_home">
+                            Show on Home Page
                         </label>
                     </div>
 

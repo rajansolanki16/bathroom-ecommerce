@@ -22,10 +22,12 @@ class Brand extends Model  implements HasMedia
         'description',
         'is_active',
         'media_library_logo_id',
+        'show_on_home',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'show_on_home' => 'boolean',
     ];
 
     // Relationships

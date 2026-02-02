@@ -544,6 +544,33 @@
 
     </form>
 </div>
+<!-- Media Picker Modals -->
+<div class="modal fade" id="mediaPickerModalMain" tabindex="-1" aria-labelledby="mediaPickerModalMainLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mediaPickerModalMainLabel">Select Main Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mediaPickerModalMainBody">
+                <!-- Media grid will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="mediaPickerModalGallery" tabindex="-1" aria-labelledby="mediaPickerModalGalleryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mediaPickerModalGalleryLabel">Select Gallery Images</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mediaPickerModalGalleryBody">
+                <!-- Media grid will be loaded here -->
+            </div>
+        </div>          
+    </div>
+</div>
 <script>
     window.attributesData = {
         !!$attributesJson!!
@@ -728,33 +755,7 @@
     });
 </script>
 <script src="{{ asset('admin/js/pages/ecommerce-create-product.init.js') }}"></script>
-<!-- Media Picker Modals -->
-<div class="modal fade" id="mediaPickerModalMain" tabindex="-1" aria-labelledby="mediaPickerModalMainLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="mediaPickerModalMainLabel">Select Main Image</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="mediaPickerModalMainBody">
-                <!-- Media grid will be loaded here -->
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="mediaPickerModalGallery" tabindex="-1" aria-labelledby="mediaPickerModalGalleryLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="mediaPickerModalGalleryLabel">Select Gallery Images</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="mediaPickerModalGalleryBody">
-                <!-- Media grid will be loaded here -->
-            </div>
-        </div>          
-    </div>
-</div>
+
 <script>
 $(document).ready(function () {
     // Main image picker

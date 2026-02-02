@@ -16,12 +16,23 @@ class BrandController extends Controller
     /**
      * Display a listing of brands.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $brands = Brand::paginate(10);
+        $brands = Brand::when($request->filled('search'), function ($query) use ($request) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('slug', 'like', '%' . $request->search . '%');
+            });
+        })
+            ->when($request->has('enabled'), function ($query) {
+                $query->where('is_active', 1);
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.brand.index', compact('brands'));
     }
-
     /**
      * Show the form for creating a new brand.
      */
@@ -39,15 +50,16 @@ class BrandController extends Controller
             'name' => 'required|string|min:3|unique:brands,name',
             'description' => 'nullable|string|max:1000',
             'media_library_logo_id' => 'required|exists:media,id',
-            'is_active' => 'nullable|boolean',
+            'show_on_home' => 'nullable|boolean',
         ]);
 
         $brand = Brand::create([
             'name'        => $request->name,
             'slug'        => Str::slug($request->name),
             'description' => $request->description,
-            'is_active'   => $request->boolean('is_active'),
             'media_library_logo_id' => $request->media_library_logo_id,
+            'show_on_home' => $request->boolean('show_on_home'),
+
         ]);
 
         return redirect()->route('brands.index')
@@ -84,9 +96,8 @@ class BrandController extends Controller
                 Rule::unique('brands')->ignore($brand->id),
             ],
             'description' => 'nullable|string|max:1000',
-            // 'media_library_logo_id' => 'required|exists:media,id',
-            'is_active' => 'nullable|boolean',
-        ]); 
+            'show_on_home' => 'nullable|boolean',
+        ]);
 
         $brand->update([
             'name'        => $request->name,
@@ -94,6 +105,7 @@ class BrandController extends Controller
             'description' => $request->description,
             'is_active'   => $request->boolean('is_active'),
             'media_library_logo_id' => $request->media_library_logo_id,
+            'show_on_home' => $request->boolean('show_on_home'),
         ]);
 
         return redirect()->route('brands.index')
@@ -113,5 +125,23 @@ class BrandController extends Controller
         $brand->delete();
         return redirect()->route('brands.index')
             ->with('success', 'Brand deleted successfully');
+    }
+
+    public function toggleHome(Request $request)
+    {
+        $request->validate([
+            'brand_id' => 'required|exists:brands,id',
+        ]);
+
+        $brand = Brand::findOrFail($request->brand_id);
+
+        $brand->update([
+            'show_on_home' => ! $brand->show_on_home
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'show_on_home' => $brand->show_on_home
+        ]);
     }
 }

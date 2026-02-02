@@ -1,6 +1,4 @@
 <x-admin.header :title="'Product Categories'" />
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css">
 
 <x-page-title title="Category Create" :breadcrumbs="['Category', 'Create']" />
 

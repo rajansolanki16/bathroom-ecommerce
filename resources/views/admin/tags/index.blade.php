@@ -1,92 +1,161 @@
-<x-admin.header :title="'product tags Listings'" />
-<!--datatable css-->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css">
+<x-admin.header :title="'Product Tags'" />
 
+<style>
+    /* Same fix as Users to avoid dropdown scrollbar issue */
+    .table-responsive {
+        overflow: visible !important;
+    }
+</style>
 
-<div class="col-xl-12">
-    <div class="card">
-         <div class="card-header d-flex align-items-center justify-content-between flex-nowrap">
-            <h4 class="mb-0 card-title">Tags list</h4>
+<div class="container-fluid">
 
-            <a href="{{ route('tags.create') }}" class="btn btn-primary add-btn">
-                <i class="align-baseline bi bi-plus-circle me-1"></i>
-                Add Tag
-            </a>
-        </div>
-        <div class="card-body">
-            <p class="text-muted">{{ __('tags.tag_list_Description') }} </p>
-            <div class="table-responsive">
-                <table id="fixed-header" class="table align-middle table-bordered dt-responsive nowrap table-striped" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">slug</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+    <!-- Page Title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0">Product Tags</h4>
 
-                        @foreach ($tags as $tag)
-                        <tr>
-                            <td>{{ $tag->id }}</td>
-                            <td> {{ $tag->name }}</td>
-                            <td>{{ $tag->slug }}</td>
-                            <td>
-                                <div class="dropdown position-static">
-                                    <button class="btn btn-subtle-secondary btn-sm btn-icon" role="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-three-dots-vertical"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a href="{{ route('tags.edit', $tag->id) }}" class="dropdown-item edit-item-btn"><i class="align-middle ph-pencil me-1"></i>Edit</a></li>
-                                        <li>
-                                            <a class="dropdown-item remove-item-btn" href="javascript:void(0);"
-                                                data-delete-url="{{ route('tags.destroy', $tag->id) }}"
-                                                onclick="setDeleteFormAction(this)">
-                                                <i class="align-middle ph-trash me-1"></i> Remove
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Delete Confirmation Modal -->
-<div id="deleteRecordModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-md-5">
-                <div class="text-center">
-                    <div class="text-danger">
-                        <i class="bi bi-trash display-4"></i>
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="mb-2">Are you sure?</h3>
-                        <p class="mx-3 mb-0 text-muted fs-lg">Are you sure you want to remove this product category<b>permanently</b>?</p>
-                    </div>
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Products</a></li>
+                        <li class="breadcrumb-item active">Tags</li>
+                    </ol>
                 </div>
-                <form id="deleteForm" method="POST" action="">
-                    @csrf
-                    @method('DELETE')
-                    <div class="gap-2 mt-4 mb-2 d-flex justify-content-center">
-                        <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">No</button>
-                        <button type="submit" class="btn w-sm btn-danger">Yes!</button>
+            </div>
+        </div>
+    </div>
+
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <!-- Header Actions -->
+                    <div class="row g-4 mb-3">
+                        <div class="col-sm-auto">
+                            <a href="{{ route('tags.create') }}" class="btn btn-success add-btn">
+                                <i class="ri-add-line align-bottom me-1"></i> Add
+                            </a>
+                        </div>
+
+                        <div class="col-sm">
+                            <div class="d-flex justify-content-sm-end">
+                                <div class="search-box ms-2">
+                                    <input type="text" class="form-control" id="searchTags" placeholder="Search...">
+                                    <i class="ri-search-line search-icon"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </form>
+
+                    <!-- Table -->
+                    <div class="table-responsive table-card mt-3 mb-1">
+                        <table class="table align-middle table-nowrap" id="tagTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Slug</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @forelse($tags as $tag)
+                                    <tr>
+                                        <td>#{{ $tag->id }}</td>
+                                        <td>{{ $tag->name }}</td>
+                                        <td>
+                                            <span class="badge bg-info">{{ $tag->slug }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-subtle-secondary btn-icon"
+                                                    data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a href="{{ route('tags.edit', $tag->id) }}" class="dropdown-item">
+                                                            <i class="ph-pencil me-1"></i> Edit
+                                                        </a>
+                                                    </li>
+
+                                                    <li><hr class="dropdown-divider"></li>
+
+                                                    <li>
+                                                        <a href="javascript:void(0);"
+                                                            class="dropdown-item text-danger"
+                                                            data-delete-url="{{ route('tags.destroy', $tag->id) }}"
+                                                            onclick="setDeleteFormAction(this)"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteRecordModal">
+                                                            <i class="ph-trash me-1"></i> Remove
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4 text-muted">
+                                            No tags found
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+
+                        <div class="noresult" style="display:none">
+                            <div class="text-center py-4">
+                                <h5>No results found</h5>
+                                <p class="text-muted mb-0">Try a different search</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-end" id="paginationWrapper">
+                        <div class="gap-2 pagination-wrap hstack">
+                            <a href="#" class="page-item pagination-prev disabled" id="prevTagPage">
+                                Previous
+                            </a>
+
+                            <ul class="mb-0 pagination" id="tagPagination"></ul>
+
+                            <a href="#" class="page-item pagination-next" id="nextTagPage">
+                                Next
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@include('partials.delete-modal')
+
+<script>
+    setupPaginatedTable({
+        searchInputId: "searchTags",
+        tableId: "tagTable",
+        paginationWrapperId: "paginationWrapper",
+        paginationListId: "tagPagination",
+        prevBtnId: "prevTagPage",
+        nextBtnId: "nextTagPage",
+        noResultClass: "noresult"
+    });
+</script>
+
 <x-admin.footer />

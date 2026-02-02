@@ -29,6 +29,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{ asset('admin/js/layout.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js"></script>
+    <script src="{{ asset('assets/js/paginationHelper.js') }}"></script>  
     @stack('scripts');
 </head>
 <body>

@@ -96,6 +96,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/products', ProductController::class)->names('products');
         Route::resource('/categories', CategoryController::class)->names('categories');
         Route::resource('/brands', BrandController::class)->names('brands');
+        Route::post('/brands/toggle-home', [BrandController::class, 'toggleHome'])->name('brands.toggle-home');
         Route::resource('/tags', TagsController::class)->names('tags');
         Route::resource('/coupons', CouponController::class)->names('coupons');
         // Route::resource('/payment-options', PaymentOptionsController::class)->names('paymentoptions');

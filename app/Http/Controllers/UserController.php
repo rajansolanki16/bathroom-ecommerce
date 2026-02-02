@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::paginate(10);
+        $users = User::get();
         return view('users.index', compact('users'));
     }
 
@@ -25,7 +25,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $roles = \Spatie\Permission\Models\Role::pluck('name', 'id');
+        return view('users.create', compact('roles'));
     }
 
     /**
@@ -105,11 +106,12 @@ class UserController extends Controller
             'state' => $request->state,
             'password' => Hash::make($password),
         ]);
+        $user->assignRole($request->role);
 
         // Send credentials email
         Mail::to($user->email)->send(new UserCredentialsMail($user, $username, $password));
 
-        return redirect()->route('users.show', $user)->with('success', 'User created successfully. Credentials have been sent to their email.');
+        return redirect()->route('users.index', $user)->with('success', 'User created successfully. Credentials have been sent to their email.');
     }
 
     /**
@@ -123,11 +125,12 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified user.
      */
-    public function edit(User $user)
+   public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        $roles = \Spatie\Permission\Models\Role::pluck('name', 'id');
+        $userRole = $user->roles->pluck('id')->first(); // single role
+        return view('users.edit', compact('user', 'roles', 'userRole'));
     }
-
     /**
      * Update the specified user in storage.
      */
@@ -205,7 +208,8 @@ class UserController extends Controller
             ]
         ));
 
-        return redirect()->route('users.show', $user)->with('success', 'User updated successfully.');
+        $user->syncRoles([$request->role]);
+        return redirect()->route('users.index', $user)->with('success', 'User updated successfully.');
     }
 
     /**

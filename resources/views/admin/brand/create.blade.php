@@ -47,9 +47,14 @@
                     </div>
 
                     <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" value="1" checked>
-                        <label class="form-check-label" for="is_active">
-                            Active
+                        <input type="checkbox"
+                            class="form-check-input"
+                            id="show_on_home"
+                            name="show_on_home"
+                            value="1"
+                            {{ old('show_on_home') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="show_on_home">
+                            Show on Home Page
                         </label>
                     </div>
 
