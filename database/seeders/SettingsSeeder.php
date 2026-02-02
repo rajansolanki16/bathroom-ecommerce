@@ -22,14 +22,11 @@ class SettingsSeeder extends Seeder
             ['page' => 'general', "type" => "text", 'name' => 'Site title', 'slug' => 'site_title', 'value' => 'null'],
             ['page' => 'general', "type" => "social", 'name' => 'Site Social link', 'slug' => 'site_social_links', 'value' => '[]'],
             ['page' => 'general', "type" => "text", 'name' => 'Site copyright text', 'slug' => 'site_copyright_text', 'value' => 'null'],
-            ['page' => 'general', "type" => "text", 'name' => 'Hotel address', 'slug' => 'admin_address', 'value' => 'null'],
             ['page' => 'general', "type" => "text", 'name' => 'Admin phone', 'slug' => 'admin_phone', 'value' => 'null'],
             ['page' => 'general', "type" => "text", 'name' => 'Admin email', 'slug' => 'admin_email', 'value' => 'null'],
             ['page' => 'general', "type" => "text", 'name' => 'OTP Expiry Time (minutes)', 'slug' => 'otp_expiry_time', 'value' => '30'],
             ['page' => 'general', "type" => "text", 'name' => 'OTP Max Attempts', 'slug' => 'otp_max_attempts', 'value' => '5'],
             ['page' => 'general', "type" => "map_link", 'name' => 'Admin Location Link', 'slug' => 'map_link', 'value' => 'null'],
-            ['page' => 'general', "type" => "textarea", 'name' => 'Hotel surroundings', 'slug' => 'hotel_surroundings', 'value' => 'null'],
-            ['page' => 'general', "type" => "textarea", 'name' => 'Hotel Rules', 'slug' => 'hotel_rules', 'value' => 'null'],
             ['page' => 'about',   "type" => "text", 'name' => 'Welcome title', 'slug' => 'about_welcome_title', 'value' => 'null'],
             ['page' => 'about',   "type" => "textarea", 'name' => 'Welcome description', 'slug' => 'about_welcome_description', 'value' => 'null'],
             ['page' => 'about',   "type" => "img", 'name' => 'Welcome Image 1', 'slug' => 'about_welcome_img_1', 'value' => 'null'],
@@ -66,12 +63,6 @@ class SettingsSeeder extends Seeder
             ['page' => 'user-all',   "type" => "text", 'name' => 'Single Blog Meta Title', 'slug' => 'page_blog_meta_title', 'value' => 'null'],
             ['page' => 'user-all',   "type" => "text", 'name' => 'Single Blog Meta Description', 'slug' => 'page_blog_meta_description', 'value' => 'null'],
 
-            ['page' => 'user-all',   "type" => "text", 'name' => 'Single Room meta Description', 'slug' => 'page_room_meta_description', 'value' => 'null'],
-            ['page' => 'user-all',   "type" => "textarea", 'name' => 'Single Room Page Description', 'slug' => 'page_room_description', 'value' => 'null'],
-            
-            ['page' => 'user-all',   "type" => "text", 'name' => 'Rooms Meta Title', 'slug' => 'page_rooms_meta_title', 'value' => 'null'],
-            ['page' => 'user-all',   "type" => "text", 'name' => 'Rooms Meta Description', 'slug' => 'page_rooms_meta_description', 'value' => 'null'],
-            ['page' => 'user-all',   "type" => "textarea", 'name' => 'Rooms Page Description', 'slug' => 'page_rooms_description', 'value' => 'null'],
 
             ['page' => 'user-all',   "type" => "text", 'name' => 'Cart Meta Title', 'slug' => 'page_cart_meta_title', 'value' => 'null'],
             ['page' => 'user-all',   "type" => "text", 'name' => 'Cart Meta Description', 'slug' => 'page_cart_meta_description', 'value' => 'null'],

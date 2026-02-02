@@ -8,7 +8,6 @@ window.initMediaPicker = function(options) {
     var selectedMediaId = hiddenInput.val() || null;
 
     function openMediaPicker() {
-        // mark modal with multi flag so picker template can adjust behavior
         modal.attr('data-multi', options.multi ? '1' : '0');
 
         $.ajax({
@@ -17,7 +16,6 @@ window.initMediaPicker = function(options) {
             success: function (html) {
                 modalBody.html(html);
 
-                // Multi-select mode
                 if (options.multi) {
                     var selectedIds = [];
                     var existing = (hiddenInput.val() || '');
@@ -58,8 +56,6 @@ window.initMediaPicker = function(options) {
 
                     $confirm.on('click', function () {
                         hiddenInput.val(selectedIds.join(','));
-
-                        // update previewDiv with thumbnails (include remove button markup so page remove handler works)
                         previewDiv.empty();
                         if (selectedIds.length === 0) {
                             previewDiv.html('<div class="text-muted">No images selected</div>');
@@ -79,9 +75,6 @@ window.initMediaPicker = function(options) {
                     });
 
                 } else {
-                    // Single select behavior: do NOT close on thumb click. Use a Select/Cancel footer.
-
-                    // Pre-select existing hidden input value if present
                     var existing = hiddenInput.val() || '';
                     if (existing) {
                         modalBody.find('.media-thumb').each(function() {
@@ -103,16 +96,13 @@ window.initMediaPicker = function(options) {
                     var $cancelBtn = $('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>');
                     $footer.append($cancelBtn).append($selectBtn);
 
-                    // When user clicks Select, read selected id stored in modal data (set by delegated click handler)
                     $selectBtn.on('click', function () {
                         var sel = modal.data('picker-selected-id') || null;
                         if (!sel) {
-                            // nothing explicitly selected, fallback to first available
                             var $first = modalBody.find('.media-thumb').first();
                             if ($first.length) sel = $first.data('id');
                         }
                         if (!sel) {
-                            // nothing to select
                             return;
                         }
 
@@ -133,7 +123,6 @@ window.initMediaPicker = function(options) {
         openMediaPicker();
     });
 
-    // Clean up modal state when it's closed
     modal.on('hidden.bs.modal', function () {
         modal.removeData('picker-selected-id');
         modal.find('.picker-temp-preview').remove();
