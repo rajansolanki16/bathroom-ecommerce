@@ -179,7 +179,7 @@ $(document).on('click', '.add-to-cart', function (e) {
 
     let productId = $(this).data('id');
     $.ajax({
-        url: '/cart/add',
+        url: window.cartAddUrl,
         type: 'POST',
         data: {
             product_id: productId,
@@ -210,7 +210,7 @@ $(document).on('click', '.remove-from-cart', function(e) {
     var rowId = button.data('row');
     
     $.ajax({
-        url: '/cart/remove/' + productId,
+        url: window.cartRemoveUrl.replace(':id', productId),
         type: 'POST',
         data: {
             _token: $('meta[name="csrf-token"]').attr('content')
@@ -274,7 +274,7 @@ function updateCartQuantity(productId, quantity, input) {
     input.prop('disabled', true);
     
     $.ajax({
-        url: '/cart/update/' + productId,
+        url: window.cartUpdateUrl.replace(':id', productId),
         type: 'POST',
         data: {
             quantity: quantity,

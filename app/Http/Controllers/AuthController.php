@@ -230,7 +230,6 @@ class AuthController extends Controller
                     $user->otp_expires_at = Carbon::now()->addMinutes((int) getSetting('otp_expiry_time') ?? 30);
                     $user->otp_attempts = 0;
                     $user->save();
-                    
                     // Store verification type in session
                     session(['otp_verification_type' => 'vendor']);
                     

@@ -131,5 +131,10 @@
         </div>
     </section>
 </main>
+<script>
+    window.cartAddUrl = "{{ route('cart.add') }}";
+    window.cartRemoveUrl = "{{ route('cart.remove', ':id') }}";
+    window.cartUpdateUrl = "{{ route('cart.update', ':id') }}";
+</script>
 
 <x-footer />

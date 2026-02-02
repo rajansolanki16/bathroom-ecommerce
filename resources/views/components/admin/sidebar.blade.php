@@ -1,4 +1,4 @@
-    <div class="app-menu navbar-menu">
+<div class="app-menu navbar-menu">
         <!-- LOGO -->
         <div class="navbar-brand-box">
             <a href="{{ route('admin.dashboard') }}" class="logo logo-light">
@@ -227,6 +227,14 @@
                         <i class="ph-user-circle"></i><span>Users</span>
                     </a>
                 </li>
+
+                <!-- Active Users -->
+                <li class="nav-item">
+                    <a href="{{ route('admin.active_users.index') }}" class="nav-link menu-link collapsed">
+                        <i class="ri-user-shared-line"></i><span>Active Users</span>
+                    </a>
+                </li>
+
 
         </ul>
     </div>

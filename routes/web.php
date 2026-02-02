@@ -27,6 +27,7 @@ use App\Http\Controllers\User\WishListController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProductReviewController;
+use App\Http\Controllers\Admin\ActiveUserController;
 
 //Auth
 Route::get('/login', [RedirectController::class, 'login'])->name('login');
@@ -146,5 +147,7 @@ Route::middleware(['auth'])->group(function () {
 
             return response()->json(['success' => true]);
         })->name('media.delete');
+
+        Route::get('/active-users', [ActiveUserController::class, 'index'])->name('admin.active_users.index');
     });
 });

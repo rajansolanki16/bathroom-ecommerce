@@ -113,7 +113,9 @@
 
 </main>
 <script>
-   const guestMergeUrl = "{{ route('guest.merge') }}";
+    window.guestMergeUrl = "{{ route('guest.merge') }}";
+   window.cartAddUrl = "{{ route('cart.add') }}";
+
 </script>
 
 <x-footer />
