@@ -81,7 +81,7 @@
                         <button type="submit" class="btn btn-danger btn-sm"
                             style="padding: 2px 6px; font-size: 12px;">&times;</button>
                     </form>
-                </div>
+                </div>  
             @endforeach
         </div>
         <div class="media-list d-none" id="media-list" style="margin-top: 16px;">
@@ -230,7 +230,53 @@
         $dropArea.on('drop', function(e) {
             const files = e.originalEvent.dataTransfer.files;
             $fileInput[0].files = files;
+            updateUploadPreview(files);
         });
+
+        // Show preview when user selects files via file picker
+        $fileInput.on('change', function() {
+            updateUploadPreview(this.files);
+        });
+
+        function updateUploadPreview(files) {
+            const $preview = $('#upload-preview');
+            $preview.empty();
+
+            if (!files || files.length === 0) {
+                $preview.html('<div class="text-muted">No files selected</div>');
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const $item = $('<div>').css({
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '8px',
+                    border: '1px solid #eaeaea',
+                    borderRadius: '6px',
+                    width: '150px'
+                });
+
+                if (file.type && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const $img = $('<img>').attr('src', e.target.result).css({width: '100%', height: '100px', objectFit: 'cover', borderRadius: '4px'});
+                        $item.prepend($img);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    const $icon = $('<div>').html('<i class="bi bi-file-earmark" style="font-size:2rem;"></i>').css({height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center'});
+                    $item.prepend($icon);
+                }
+
+                $item.append($('<div>').text(file.name).css({fontSize: '12px', textAlign: 'center', wordBreak: 'break-word'}));
+                $preview.append($item);
+            }
+        }
+
         $('#media-upload-form').on('submit', function(e) {
             e.preventDefault();
 

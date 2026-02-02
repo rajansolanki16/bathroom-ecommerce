@@ -144,7 +144,7 @@ class ProductController extends Controller
         if ($productType == ProductType::VARIANTS->value || $productType == ProductType::VARIANTS) {
             Log::info('=== VARIANTS PRODUCT VALIDATION STARTED ===');
             try {
-                $validated = $request->validate([
+                $validatedVariants = $request->validate([
                     'title'                     => 'required|string|max:255',
                     'sku_number'                => 'nullable|string|max:255|unique:products,sku_number',
                     'meta_title'                => 'nullable|string|max:160',
@@ -219,8 +219,17 @@ class ProductController extends Controller
         $product->free_shipping        = $request->boolean('free_shipping');
 
         $product->brand_id             = $request->brand_id ?? null;
-        $product->media_library_main_image_id = $validated['media_library_main_image_id'] ?? null;
-        $product->media_library_gallery_image_ids = !empty($validated['media_library_gallery_image_ids']) ? json_encode($validated['media_library_gallery_image_ids']) : null;
+        // Main and gallery IDs can come as CSV string (from JS) or array; normalize here
+        $product->media_library_main_image_id = $request->input('media_library_main_image_id') ?? null;
+        $galleryIds = $request->input('media_library_gallery_image_ids');
+        if (is_string($galleryIds) && strlen($galleryIds)) {
+            $galleryArr = array_values(array_filter(array_map('trim', explode(',', $galleryIds))));
+        } elseif (is_array($galleryIds)) {
+            $galleryArr = $galleryIds;
+        } else {
+            $galleryArr = [];
+        }
+        $product->media_library_gallery_image_ids = !empty($galleryArr) ? json_encode($galleryArr) : null;
 
         if ($product->product_type == ProductType::SIMPLE->value || $product->product_type == ProductType::SIMPLE) {
             $product->stock                = $request->stock_status ?? 0;
@@ -270,6 +279,31 @@ class ProductController extends Controller
         try {
             $product->save();
             Log::info('=== PRODUCT SAVED SUCCESSFULLY ===', ['product_id' => $product->id]);
+
+            // If media library selections were used, copy those media to this product's collections
+            if ($product->media_library_main_image_id) {
+                $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($product->media_library_main_image_id);
+                if ($media) {
+                    // ensure single file collection is cleared and then copy
+                    $product->clearMediaCollection('main_image');
+                    $media->copy($product, 'main_image');
+                }
+            }
+
+            if ($product->media_library_gallery_image_ids) {
+                $galleryIds = is_string($product->media_library_gallery_image_ids) ? json_decode($product->media_library_gallery_image_ids, true) : $product->media_library_gallery_image_ids;
+                if (is_array($galleryIds)) {
+                    // optional: clear existing gallery
+                    // $product->clearMediaCollection('gallery');
+                    foreach ($galleryIds as $gid) {
+                        $m = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($gid);
+                        if ($m) {
+                            $m->copy($product, 'gallery');
+                        }
+                    }
+                }
+            }
+
         } catch (\Exception $e) {
             Log::error('=== PRODUCT SAVE FAILED ===', [
                 'error' => $e->getMessage(),
@@ -510,7 +544,26 @@ class ProductController extends Controller
             'media_library_main_image_id' => $validated['media_library_main_image_id'] ?? $product->media_library_main_image_id,
             'media_library_gallery_image_ids' => !empty($validated['media_library_gallery_image_ids']) ? json_encode($validated['media_library_gallery_image_ids']) : $product->media_library_gallery_image_ids,
         ]);
+        // If media library selections provided, copy those media to this product's collections
+        if (!empty($validated['media_library_main_image_id'])) {
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($validated['media_library_main_image_id']);
+            if ($media) {
+                $product->clearMediaCollection('main_image');
+                $media->copy($product, 'main_image');
+            }
+        }
 
+        if (!empty($validated['media_library_gallery_image_ids'])) {
+            $gids = is_array($validated['media_library_gallery_image_ids']) ? $validated['media_library_gallery_image_ids'] : (is_string($validated['media_library_gallery_image_ids']) ? explode(',', $validated['media_library_gallery_image_ids']) : []);
+            // replace existing gallery with selected ones
+            $product->clearMediaCollection('gallery');
+            foreach ($gids as $gid) {
+                $m = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($gid);
+                if ($m) {
+                    $m->copy($product, 'gallery');
+                }
+            }
+        }
         if ($product->product_type == ProductType::SIMPLE->value) {
             $product->update([
                 'stock'    => $validated['stock'],

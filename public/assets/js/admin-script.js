@@ -8,24 +8,136 @@ window.initMediaPicker = function(options) {
     var selectedMediaId = hiddenInput.val() || null;
 
     function openMediaPicker() {
+        // mark modal with multi flag so picker template can adjust behavior
+        modal.attr('data-multi', options.multi ? '1' : '0');
+
         $.ajax({
             url: options.pickerUrl,
             type: "GET",
             success: function (html) {
                 modalBody.html(html);
-                modalBody.find('.media-thumb').on('click', function () {
-                    selectedMediaId = $(this).data('id');
-                    hiddenInput.val(selectedMediaId);
-                    var imgUrl = $(this).find('img').attr('src');
-                    previewDiv.html(`<img src="${imgUrl}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`);
-                    modal.find('.btn-close').trigger('click');
-                });
+
+                // Multi-select mode
+                if (options.multi) {
+                    var selectedIds = [];
+                    var existing = (hiddenInput.val() || '');
+                    if (existing) {
+                        selectedIds = existing.split(',').filter(Boolean);
+                    }
+
+                    modalBody.find('.media-thumb').each(function() {
+                        var id = String($(this).data('id'));
+                        if (selectedIds.indexOf(id) !== -1) {
+                            $(this).addClass('picker-selected').css('outline', '3px solid #0d6efd');
+                        }
+                    });
+
+                    modalBody.on('click', '.media-thumb', function (e) {
+                        var $thumb = $(this);
+                        var id = String($thumb.data('id'));
+                        var idx = selectedIds.indexOf(id);
+                        if (idx === -1) {
+                            selectedIds.push(id);
+                            $thumb.addClass('picker-selected').css('outline', '3px solid #0d6efd');
+                        } else {
+                            selectedIds.splice(idx, 1);
+                            $thumb.removeClass('picker-selected').css('outline', '');
+                        }
+                    });
+
+                    // ensure modal footer has confirm button
+                    var $footer = modal.find('.modal-footer');
+                    if (!$footer.length) {
+                        $footer = $('<div class="modal-footer"></div>');
+                        modal.find('.modal-content').append($footer);
+                    }
+                    $footer.html('');
+                    var $confirm = $('<button type="button" class="btn btn-primary">Confirm selection</button>');
+                    var $cancel = $('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>');
+                    $footer.append($cancel).append($confirm);
+
+                    $confirm.on('click', function () {
+                        hiddenInput.val(selectedIds.join(','));
+
+                        // update previewDiv with thumbnails (include remove button markup so page remove handler works)
+                        previewDiv.empty();
+                        if (selectedIds.length === 0) {
+                            previewDiv.html('<div class="text-muted">No images selected</div>');
+                        } else {
+                            selectedIds.forEach(function(id) {
+                                var $thumb = modalBody.find('.media-thumb[data-id="' + id + '"]');
+                                var img = $thumb.find('img').attr('src') || '';
+                                var $card = $('<div class="position-relative me-2 mb-2" style="width:100px;height:100px;border:1px solid #e9e9e9;border-radius:6px;overflow:hidden">');
+                                if (img) $card.append($('<img>').attr('src', img).css({width: '100%', height: '100%', objectFit: 'cover'}));
+                                var $btn = $('<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-gallery-image" data-id="'+id+'">✕</button>');
+                                $card.append($btn);
+                                previewDiv.append($card);
+                            });
+                        }
+
+                        modal.find('.btn-close').trigger('click');
+                    });
+
+                } else {
+                    // Single select behavior: do NOT close on thumb click. Use a Select/Cancel footer.
+
+                    // Pre-select existing hidden input value if present
+                    var existing = hiddenInput.val() || '';
+                    if (existing) {
+                        modalBody.find('.media-thumb').each(function() {
+                            if (String($(this).data('id')) === String(existing)) {
+                                $(this).addClass('picker-selected').css('outline', '3px solid #0d6efd');
+                                modal.data('picker-selected-id', existing);
+                            }
+                        });
+                    }
+
+                    // Clean previous footer and add Select/Cancel
+                    var $footer = modal.find('.modal-footer');
+                    if (!$footer.length) {
+                        $footer = $('<div class="modal-footer"></div>');
+                        modal.find('.modal-content').append($footer);
+                    }
+                    $footer.html('');
+                    var $selectBtn = $('<button type="button" class="btn btn-primary">Select</button>');
+                    var $cancelBtn = $('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>');
+                    $footer.append($cancelBtn).append($selectBtn);
+
+                    // When user clicks Select, read selected id stored in modal data (set by delegated click handler)
+                    $selectBtn.on('click', function () {
+                        var sel = modal.data('picker-selected-id') || null;
+                        if (!sel) {
+                            // nothing explicitly selected, fallback to first available
+                            var $first = modalBody.find('.media-thumb').first();
+                            if ($first.length) sel = $first.data('id');
+                        }
+                        if (!sel) {
+                            // nothing to select
+                            return;
+                        }
+
+                        hiddenInput.val(sel);
+                        var $thumb = modalBody.find('.media-thumb[data-id="' + sel + '"]');
+                        var imgUrl = $thumb.find('img').attr('src');
+                        if (imgUrl) previewDiv.html(`<img src="${imgUrl}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`);
+                        else previewDiv.html('<span class="badge bg-secondary">No Image</span>');
+                        modal.find('.btn-close').trigger('click');
+                    });
+                }
+
             }
         });
     }
 
     pickerBtn.on('click', function () {
         openMediaPicker();
+    });
+
+    // Clean up modal state when it's closed
+    modal.on('hidden.bs.modal', function () {
+        modal.removeData('picker-selected-id');
+        modal.find('.picker-temp-preview').remove();
+        modal.find('.modal-footer').html('');
     });
 
     $(options.formSelector).on('submit', function () {

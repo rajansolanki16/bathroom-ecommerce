@@ -138,14 +138,14 @@
                     </li>
 
                     <!-- tags -->
-                    {{-- <li class="nav-item">
+                    <li class="nav-item">
                         <a href="#sidebarproduct_tags"
                             class="nav-link menu-link"
                             data-bs-toggle="collapse"
                             role="button"
                             aria-expanded="false"
                             aria-controls="sidebarproduct_tags">
-                            <i class="ri-price-tag-3-line"></i>
+                            <i class="ri-hashtag"></i>
                             <span>Tags</span>
                         </a>
 
@@ -159,7 +159,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </li> --}}
+                    </li>
 
                     
 

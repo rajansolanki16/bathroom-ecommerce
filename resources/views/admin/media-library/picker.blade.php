@@ -60,18 +60,33 @@ $(document).off('click', '#picker-upload-toggle').on('click', '#picker-upload-to
 
 
 $(document).off('click', '#picker-media-grid .media-thumb').on('click', '#picker-media-grid .media-thumb', function () {
-    var selectedMediaId = $(this).data('id');
-    var imgUrl = $(this).find('img').attr('src');
-    var modal = $(this).closest('.modal');
-    var hiddenInput = $(window.pickerHiddenInputSelector || '#media_library_logo_id');
-    var previewDiv = $(window.pickerPreviewSelector || '#selected-media-preview');
-    hiddenInput.val(selectedMediaId);
-    if(imgUrl) {
-        previewDiv.html(`<img src="${imgUrl}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`);
-    } else {
-        previewDiv.html('<span class="badge bg-secondary">No Image</span>');
+    var $thumb = $(this);
+    var selectedMediaId = $thumb.data('id');
+    var imgUrl = $thumb.find('img').attr('src');
+    var modal = $thumb.closest('.modal');
+    var isMulti = modal.attr('data-multi') === '1';
+
+    // If multi-mode, delegate selection handling to the picker opener (initMediaPicker)
+    if (isMulti) {
+        return;
     }
-    modal.find('.btn-close').trigger('click');
+
+    // Single select: do NOT auto-close. Toggle selected state so user can confirm.
+    modal.find('.picker-selected').removeClass('picker-selected').css('outline', '');
+    $thumb.addClass('picker-selected').css('outline', '3px solid #0d6efd');
+    modal.data('picker-selected-id', selectedMediaId);
+
+    // optionally show a small temp-preview inside modal (non-final)
+    var $tempPreview = modal.find('.picker-temp-preview');
+    if (!$tempPreview.length) {
+        $tempPreview = $('<div class="picker-temp-preview mt-3"></div>');
+        modal.find('.modal-body').prepend($tempPreview);
+    }
+    if (imgUrl) {
+        $tempPreview.html(`<div class="d-flex align-items-center mb-2"><img src="${imgUrl}" style="height:48px;width:48px;object-fit:cover;border-radius:4px;margin-right:8px;"><div><strong>Selected</strong></div></div>`);
+    } else {
+        $tempPreview.html('<div class="mb-2"><strong>Selected</strong></div>');
+    }
 });
 
 $(document).off('submit', '#picker-upload-form').on('submit', '#picker-upload-form', function(e) {

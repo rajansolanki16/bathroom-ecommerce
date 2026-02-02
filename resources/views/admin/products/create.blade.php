@@ -778,6 +778,59 @@ $(document).ready(function () {
         formSelector: 'form[action*="products.store"]',
         multi: true
     });
+
+    function getGalleryIds() {
+        var val = $('#media_library_gallery_image_ids').val() || '';
+        if (!val) return [];
+        return String(val).split(',').filter(function(i){ return i !== ''; });
+    }
+    function setGalleryIds(arr) {
+        $('#media_library_gallery_image_ids').val(arr.join(','));
+    }
+    
+    function appendGalleryMedia(id, url) {
+        var ids = getGalleryIds();
+        if (ids.indexOf(String(id)) !== -1) return;
+        ids.push(String(id));
+        setGalleryIds(ids);
+
+        var $card = $('<div class="position-relative me-2 mb-2" style="width:100px;height:100px;border:1px solid #e9e9e9;border-radius:6px;overflow:hidden">');
+        var $img = $('<img>').attr('src', url).css({width: '100%', height: '100%', objectFit: 'cover'});
+        var $btn = $('<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-gallery-image" data-id="'+id+'">✕</button>');
+        $card.append($img).append($btn);
+        $('#selected-gallery-images-preview').append($card);
+    }
+
+    $(document).on('click', '.remove-gallery-image', function() {
+        var id = $(this).data('id');
+        var ids = getGalleryIds().filter(function(i){ return i !== String(id); });
+        setGalleryIds(ids);
+        $(this).closest('.position-relative').remove();
+    });
+
+    // Load existing IDs on page load (e.g., after validation error)
+    $(function(){
+        var ids = getGalleryIds();
+        if (ids && ids.length) {
+            ids.forEach(function(id){
+                var url = '{{ route("media-library.show", ":id") }}'.replace(':id', id);
+                $.get(url, function(meta){
+                    if (meta && meta.url) appendGalleryMedia(id, meta.url);
+                });
+            });
+        }
+
+        // Load main image preview if set
+        var mainId = $('#media_library_main_image_id').val();
+        if (mainId) {
+            var url = '{{ route("media-library.show", ":id") }}'.replace(':id', mainId);
+            $.get(url, function(meta){
+                if (meta && meta.url) {
+                    $('#selected-main-image-preview').html(`<img src="${meta.url}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`);
+                }
+            });
+        }
+    });
 });
 </script>
 <x-admin.footer />
