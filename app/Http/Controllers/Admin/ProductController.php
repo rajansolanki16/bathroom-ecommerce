@@ -18,6 +18,7 @@ use App\Models\ProductVariant;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -467,171 +468,159 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Product $product)
-    {
-        $validated = $request->validate([
-            'title'             => 'required|string|max:255',
-            'meta_title'        => 'nullable|string|max:160',
-            'meta_description'  => 'nullable|string|max:160',
-            'meta_keywords'     => 'nullable|string',
-            'categories'        => 'nullable|array',
-            'product_type'      => 'required',
-            'short_description' => 'required|string',
-            'price'             => 'nullable|numeric',
-            'stock'             => 'nullable|integer',
-            'media_library_main_image_id' => 'nullable|exists:media,id',
-            'media_library_gallery_image_ids' => 'nullable|array',
-            'media_library_gallery_image_ids.*' => 'exists:media,id',
-            'product_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp',
-            'gallery_images.*'  => 'nullable|image|mimes:jpg,jpeg,png,webp',
+{
+    Log::info('Product update request received', [
+        'product_id' => $product->id,
+        'request_data' => $request->all(),
+    ]);
+
+    /* ===============================
+    BASE VALIDATION
+    =============================== */
+    $validator = Validator::make($request->all(), [
+        'title'             => 'required|string|max:255',
+        'meta_title'        => 'nullable|string|max:160',
+        'meta_description'  => 'nullable|string|max:160',
+        'meta_keywords'     => 'nullable|string',
+        'categories'        => 'nullable|array',
+        'product_type'      => 'required',
+        'short_description' => 'nullable|string',
+        'price'             => 'nullable|numeric',
+        'stock'             => 'nullable|integer',
+        'media_library_main_image_id' => 'nullable|exists:media,id',
+        'media_library_gallery_image_ids' => 'nullable',
+        'media_library_gallery_image_ids.*' => 'exists:media,id',
+        'product_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp',
+        'gallery_images.*'  => 'nullable|image|mimes:jpg,jpeg,png,webp',
+    ]);
+
+    if ($validator->fails()) {
+        Log::error('Product base validation failed', [
+            'product_id' => $product->id,
+            'errors' => $validator->errors()->toArray(),
         ]);
 
-        $prodType = $validated['product_type'];
-
-        if ($prodType == ProductType::SIMPLE->value) {
-            $request->validate([
-                'price' => 'required|numeric',
-                'stock' => 'required|integer',
-            ]);
-        }
-
-        /* ===============================
-        MAIN IMAGE (Spatie)
-        =============================== */
-        if ($request->hasFile('product_image')) {
-            $product
-                ->clearMediaCollection('product_image')
-                ->addMedia($request->file('product_image'))
-                ->toMediaCollection('product_image');
-        }
-
-        /* ===============================
-        GALLERY IMAGES (Spatie)
-        (append only, not delete)
-        =============================== */
-        if ($request->hasFile('gallery_images')) {
-            foreach ($request->file('gallery_images') as $image) {
-                $product
-                    ->addMedia($image)
-                    ->toMediaCollection('gallery');
-            }
-        }
-
-        /* ===============================
-        PRODUCT DATA
-        =============================== */
-        $product->update([
-            'product_title'        => $validated['title'],
-            'slug'                 => Str::slug($validated['title']),
-            'meta_title'           => $validated['meta_title'] ?? null,
-            'meta_description'     => $validated['meta_description'] ?? null,
-            'meta_keywords'        => $validated['meta_keywords'] ?? null,
-            'product_type'         => $validated['product_type'],
-            'short_description'    => $validated['short_description'],
-            'product_decscription' => $request->product_decscription ?? $product->product_decscription,
-            'exchangeable'         => $request->boolean('exchangeable'),
-            'refundable'           => $request->boolean('refundable'),
-            'free_shipping'        => $request->boolean('free_shipping'),
-            'brand_id'             => $request->brand_id,
-            'status'               => $request->status ?? $product->status,
-            'visibility'           => $request->visibility ?? $product->visibility,
-            'sell_price'           => $request->sell_price,
-            'sell_price_start_date'=> $request->sell_price_start_date,
-            'sell_price_end_date'  => $request->sell_price_end_date,
-            'weight'               => $request->weight,
-            'length'               => $request->length,
-            'width'                => $request->width,
-            'height'               => $request->height,
-            'media_library_main_image_id' => $validated['media_library_main_image_id'] ?? $product->media_library_main_image_id,
-            'media_library_gallery_image_ids' => !empty($validated['media_library_gallery_image_ids']) ? json_encode($validated['media_library_gallery_image_ids']) : $product->media_library_gallery_image_ids,
-        ]);
-        // If media library selections provided, copy those media to this product's collections
-        if (!empty($validated['media_library_main_image_id'])) {
-            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($validated['media_library_main_image_id']);
-            if ($media) {
-                $product->clearMediaCollection('main_image');
-                $media->copy($product, 'main_image');
-            }
-        }
-
-        if (!empty($validated['media_library_gallery_image_ids'])) {
-            $gids = is_array($validated['media_library_gallery_image_ids']) ? $validated['media_library_gallery_image_ids'] : (is_string($validated['media_library_gallery_image_ids']) ? explode(',', $validated['media_library_gallery_image_ids']) : []);
-            // replace existing gallery with selected ones
-            $product->clearMediaCollection('gallery');
-            foreach ($gids as $gid) {
-                $m = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($gid);
-                if ($m) {
-                    $m->copy($product, 'gallery');
-                }
-            }
-        }
-        if ($product->product_type == ProductType::SIMPLE->value) {
-            $product->update([
-                'stock'    => $validated['stock'],
-                'price'    => $validated['price'],
-                'discount' => $request->discount ?? $product->discount,
-            ]);
-        } else {
-            $product->update([
-                'stock'    => 0,
-                'price'    => 0,
-                'discount' => 0,
-            ]);
-        }
-
-        /* ===============================
-        RELATIONS
-        =============================== */
-        $product->categories()->sync($validated['categories'] ?? []);
-        $product->tags()->sync($request->tags ?? []);
-
-        /* ===============================
-        VARIANTS
-        =============================== */
-        if ($product->product_type == ProductType::VARIANTS->value) {
-            if ($request->filled('product_attributes')) {
-                $product->attributes()->sync($request->product_attributes);
-            }
-
-            $product->variants()->delete();
-
-            foreach ($request->variants ?? [] as $idx => $variant) {
-
-                $pv = ProductVariant::create([
-                    'product_id'     => $product->id,
-                    'sku'            => $variant['sku'] ?? null,
-                    'price'          => $variant['price'] ?? null,
-                    'stock'          => $variant['stock'] ?? 0,
-                    'sell_price'     => $variant['sell_price'] ?? null,
-                    'shipping'       => $variant['shipping'] ?? null,
-                    'weight'         => $variant['weight'] ?? null,
-                    'length'         => $variant['length'] ?? null,
-                    'width'          => $variant['width'] ?? null,
-                    'height'         => $variant['height'] ?? null,
-                    'status'         => $variant['status'] ?? $product->status,
-                    'visibility'     => $variant['visibility'] ?? $product->visibility,
-                    'exchangeable'   => $variant['exchangeable'] ?? 0,
-                    'refundable'     => $variant['refundable'] ?? 0,
-                    'free_shipping'  => $variant['free_shipping'] ?? 0,
-                ]);
-
-                if (!empty($variant['values'])) {
-                    $pv->attributeValues()->sync($variant['values']);
-                }
-
-                if ($request->hasFile("variants.$idx.image")) {
-                    $pv
-                        ->addMedia($request->file("variants.$idx.image"))
-                        ->toMediaCollection('variant_image');
-                }
-            }
-        } else {
-            $product->variants()->delete();
-        }
-
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Product updated successfully!');
+        return back()->withErrors($validator)->withInput();
     }
+
+    $validated = $validator->validated();
+
+    Log::info('Product base validation passed', [
+        'product_id' => $product->id,
+        'validated_data' => $validated,
+    ]);
+
+    /* ===============================
+    CONDITIONAL SIMPLE PRODUCT VALIDATION
+    =============================== */
+    if ($validated['product_type'] == ProductType::SIMPLE->value) {
+        $simpleValidator = Validator::make($request->all(), [
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+        ]);
+
+        if ($simpleValidator->fails()) {
+            Log::error('Simple product validation failed', [
+                'product_id' => $product->id,
+                'errors' => $simpleValidator->errors()->toArray(),
+            ]);
+
+            return back()->withErrors($simpleValidator)->withInput();
+        }
+
+        Log::info('Simple product validation passed', [
+            'product_id' => $product->id,
+        ]);
+    }
+
+    /* ===============================
+    PRODUCT UPDATE
+    =============================== */
+    $product->update([
+        'product_title'        => $validated['title'],
+        'slug'                 => Str::slug($validated['title']),
+        'meta_title'           => $validated['meta_title'] ?? null,
+        'meta_description'     => $validated['meta_description'] ?? null,
+        'meta_keywords'        => $validated['meta_keywords'] ?? null,
+        'product_type'         => $validated['product_type'],
+        'short_description'    => $validated['short_description'],
+        'product_decscription' => $request->product_decscription ?? $product->product_decscription,
+        'exchangeable'         => $request->boolean('exchangeable'),
+        'refundable'           => $request->boolean('refundable'),
+        'free_shipping'        => $request->boolean('free_shipping'),
+        'brand_id'             => $request->brand_id,
+        'status'               => $request->status ?? $product->status,
+        'visibility'           => $request->visibility ?? $product->visibility,
+        'sell_price'           => $request->sell_price,
+        'sell_price_start_date'=> $request->sell_price_start_date,
+        'sell_price_end_date'  => $request->sell_price_end_date,
+        'weight'               => $request->weight,
+        'length'               => $request->length,
+        'width'                => $request->width,
+        'stock'                => $validated['stock'] ?? $product->stock,
+        'height'               => $request->height,
+        'media_library_main_image_id' =>
+            $validated['media_library_main_image_id'] ?? $product->media_library_main_image_id,
+        'media_library_gallery_image_ids' =>
+            !empty($validated['media_library_gallery_image_ids'])
+                ? json_encode($validated['media_library_gallery_image_ids'])
+                : $product->media_library_gallery_image_ids,
+    ]);
+
+    Log::info('Product main data updated', ['product_id' => $product->id]);
+
+    /* ===============================
+    MEDIA LIBRARY LOGS
+    =============================== */
+    if (!empty($validated['media_library_main_image_id'])) {
+        Log::info('Updating main image from media library', [
+            'product_id' => $product->id,
+            'media_id' => $validated['media_library_main_image_id'],
+        ]);
+    }
+
+    if (!empty($validated['media_library_gallery_image_ids'])) {
+        Log::info('Updating gallery images from media library', [
+            'product_id' => $product->id,
+            'media_ids' => $validated['media_library_gallery_image_ids'],
+        ]);
+    }
+
+    /* ===============================
+    SIMPLE / VARIANT DATA
+    =============================== */
+    if ($product->product_type == ProductType::SIMPLE->value) {
+        $product->update([
+            'stock'    => $validated['stock'],
+            'price'    => $validated['price'],
+            'discount' => $request->discount ?? $product->discount,
+        ]);
+
+        Log::info('Simple product pricing updated', ['product_id' => $product->id]);
+    } else {
+        Log::info('Variant product detected, resetting simple pricing', [
+            'product_id' => $product->id,
+        ]);
+    }
+
+    /* ===============================
+    VARIANTS LOGS
+    =============================== */
+    if ($product->product_type == ProductType::VARIANTS->value) {
+        Log::info('Processing product variants', [
+            'product_id' => $product->id,
+            'variant_count' => count($request->variants ?? []),
+        ]);
+    }
+
+    Log::info('Product update completed successfully', [
+        'product_id' => $product->id,
+    ]);
+
+    return redirect()
+        ->route('products.index')
+        ->with('success', 'Product updated successfully!');
+}
 
 
     /**

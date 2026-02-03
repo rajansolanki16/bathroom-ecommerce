@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -136,6 +137,12 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+
+        Log::info('User update request received', [
+            'user_id' => $user->id,
+            'request_data' => $request->all(),
+        ]);
+        
         $request->validate(
             [
                 'name' => [

@@ -56,15 +56,15 @@
                                         @enderror
                                 </div>
                                 <div class="row">
-                                    <!-- <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="productBrand" class="form-label">Brand <span class="text-danger">*</span></label>
-                                                    <input type="text" name="brand" class="form-control" id="productBrand" value="{{ old('brand', $product->brand) }}">
-                                                    @error('short_description')
-                                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div> -->
+                                        <!-- <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label for="productBrand" class="form-label">Brand <span class="text-danger">*</span></label>
+                                                        <input type="text" name="brand" class="form-control" id="productBrand" value="{{ old('brand', $product->brand) }}">
+                                                        @error('short_description')
+                                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                </div> -->
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label">Brand</label>
@@ -190,25 +190,11 @@
                         <div class="mb-4">
                             <label class="form-label">Product Image <span class="text-danger">*</span></label>
 
-                            <div class="border rounded p-3 text-center">
-                                <img id="productImagePreview"
-                                    src="{{ 
-                                        $product->getFirstMediaUrl('main_image') 
-                                            ?: asset('admin/images/new-document.png') 
-                                    }}"
-                                    class="img-thumbnail mb-3"
-                                    style="max-height: 180px">
-
-                                <input type="file"
-                                    name="product_image"
-                                    class="form-control"
-                                    accept="image/*"
-                                    onchange="previewSingleImage(event)">
+                            <div class="d-flex gap-2 mb-2">
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModalMain">Choose from Media Library</button>
                             </div>
-
-                            @error('product_image')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
+                            <input type="hidden" name="media_library_main_image_id" id="media_library_main_image_id" value="{{ old('media_library_main_image_id', optional($product->getFirstMedia('main_image'))->id) }}">
+                            <div id="selected-main-image-preview" class="mt-2 mb-2"></div>
                         </div>
 
                         <div class="mb-4">
@@ -216,35 +202,13 @@
                                 Gallery Images
                             </label>
 
-                            <input type="file"
-                                name="gallery_images[]"
-                                class="form-control"
-                                multiple
-                                accept="image/*"
-                                onchange="previewMultipleImages(event)">
-
-                            <div class="row mt-3" id="galleryPreview">
-                                @foreach ($product->getMedia('gallery') as $media)
-                                    <div class="col-md-3 mb-3">
-                                        <div class="card shadow-sm position-relative">
-                                            <img src="{{ $media->getUrl() }}"
-                                                class="card-img-top"
-                                                style="height:150px; object-fit:cover">
-
-                                            <!-- Optional delete button -->
-                                            <button type="button"
-                                                class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 delete-gallery-image" 
-                                                  data-url="{{ route('media.delete', $media->id) }}">
-                                                ✕
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endforeach
+                            <div class="d-flex gap-2 mb-2">
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModalGallery">Choose from Media Library</button>
                             </div>
+                            <input type="hidden" name="media_library_gallery_image_ids" id="media_library_gallery_image_ids" value="{{ old('media_library_gallery_image_ids', $product->getMedia('gallery')->pluck('id')->join(',')) }}">
+                            <div id="selected-gallery-images-preview" class="mt-2 d-flex flex-wrap" style="gap:10px;"></div>
 
-                            @error('gallery_images')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
+
                         </div>
 
                     </div>
@@ -398,7 +362,7 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="row gy-2">
+                            <div class="row gy-2">  
                                 <div class="col-lg-6">
                                     <div class="form-check form-switch mb-3">
                                         <input type="checkbox" name="exchangeable" value="1" class="form-check-input" {{ old('exchangeable', $product->exchangeable) ? 'checked' : '' }}>
@@ -1067,4 +1031,112 @@ $(document).on('click', '.delete-gallery-image', function () {
     });
 });
 </script>
+
+<!-- Media Picker Modals -->
+<div class="modal fade" id="mediaPickerModalMain" tabindex="-1" aria-labelledby="mediaPickerModalMainLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mediaPickerModalMainLabel">Select Main Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mediaPickerModalMainBody">
+                <!-- Media grid will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="mediaPickerModalGallery" tabindex="-1" aria-labelledby="mediaPickerModalGalleryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mediaPickerModalGalleryLabel">Select Gallery Images</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mediaPickerModalGalleryBody">
+                <!-- Media grid will be loaded here -->
+            </div>
+        </div>          
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+    // Main image picker
+    window.initMediaPicker({
+        pickerBtnSelector: '[data-bs-target="#mediaPickerModalMain"]',
+        modalBodySelector: '#mediaPickerModalMainBody',
+        modalSelector: '#mediaPickerModalMain',
+        hiddenInputSelector: '#media_library_main_image_id',
+        previewSelector: '#selected-main-image-preview',
+        pickerUrl: "{{ route('media-library.picker') }}",
+        formSelector: 'form[action*="products.update"]'
+    });
+    // Gallery picker (multi-select)
+    window.initMediaPicker({
+        pickerBtnSelector: '[data-bs-target="#mediaPickerModalGallery"]',
+        modalBodySelector: '#mediaPickerModalGalleryBody',
+        modalSelector: '#mediaPickerModalGallery',
+        hiddenInputSelector: '#media_library_gallery_image_ids',
+        previewSelector: '#selected-gallery-images-preview',
+        pickerUrl: "{{ route('media-library.picker') }}?multi=1",
+        formSelector: 'form[action*="products.update"]',
+        multi: true
+    });
+
+    function getGalleryIds() {
+        var val = $('#media_library_gallery_image_ids').val() || '';
+        if (!val) return [];
+        return String(val).split(',').filter(function(i){ return i !== ''; });
+    }
+    function setGalleryIds(arr) {
+        $('#media_library_gallery_image_ids').val(arr.join(','));
+    }
+    
+    function appendGalleryMedia(id, url) {
+        var ids = getGalleryIds();
+        if (ids.indexOf(String(id)) !== -1) return;
+        ids.push(String(id));
+        setGalleryIds(ids);
+
+        var $card = $('<div class="position-relative me-2 mb-2" style="width:100px;height:100px;border:1px solid #e9e9e9;border-radius:6px;overflow:hidden">');
+        var $img = $('<img>').attr('src', url).css({width: '100%', height: '100%', objectFit: 'cover'});
+        var $btn = $('<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-gallery-image" data-id="'+id+'">✕</button>');
+        $card.append($img).append($btn);
+        $('#selected-gallery-images-preview').append($card);
+    }
+
+    $(document).on('click', '.remove-gallery-image', function() {
+        var id = $(this).data('id');
+        var ids = getGalleryIds().filter(function(i){ return i !== String(id); });
+        setGalleryIds(ids);
+        $(this).closest('.position-relative').remove();
+    });
+
+    // Load existing IDs on page load (e.g., existing product media)
+    $(function(){
+        var ids = getGalleryIds();
+        if (ids && ids.length) {
+            ids.forEach(function(id){
+                var url = '{{ route("media-library.show", ":id") }}'.replace(':id', id);
+                $.get(url, function(meta){
+                    if (meta && meta.url) appendGalleryMedia(id, meta.url);
+                });
+            });
+        }
+
+        // Load main image preview if set
+        var mainId = $('#media_library_main_image_id').val();
+        if (mainId) {
+            var url = '{{ route("media-library.show", ":id") }}'.replace(':id', mainId);
+            $.get(url, function(meta){
+                if (meta && meta.url) {
+                    $('#selected-main-image-preview').html(`<img src="${meta.url}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`);
+                }
+            });
+        }
+    });
+});
+</script>
+
 <x-admin.footer />

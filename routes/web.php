@@ -147,7 +147,5 @@ Route::middleware(['auth'])->group(function () {
 
             return response()->json(['success' => true]);
         })->name('media.delete');
-
-        Route::get('/active-users', [ActiveUserController::class, 'index'])->name('admin.active_users.index');
     });
 });

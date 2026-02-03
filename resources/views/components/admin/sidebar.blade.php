@@ -229,11 +229,11 @@
                 </li>
 
                 <!-- Active Users -->
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('admin.active_users.index') }}" class="nav-link menu-link collapsed">
                         <i class="ri-user-shared-line"></i><span>Active Users</span>
                     </a>
-                </li>
+                </li> --}}
 
 
         </ul>
