@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ $meta['title'] ?? "Knoght Oasis" }}</title>
-    <meta property="og:title" content="{{ $meta['title'] ?? "Knoght Oasis" }}">
-    <meta name="twitter:title" content="{{ $meta['title'] ?? "Knoght Oasis" }}">
+    <meta property="og:title" content="{{ $meta['title'] ?? "E-commerce" }}">
+    <meta name="twitter:title" content="{{ $meta['title'] ?? "E-commerce" }}">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -16,7 +16,7 @@
     <meta property="og:image" content="{{ publicPath(getSetting("site_icon")) }}">
     <meta name="twitter:image" content="{{ publicPath(getSetting("site_icon")) }}">
     <meta name="twitter:card" content="{{ publicPath(getSetting("site_icon")) }}">
-
+    @vite(['resources/js/app.js'])
     @if(isset($meta['sco-allow']) && $meta['sco-allow'] == false)
     <meta name="robots" content="noindex, nofollow">
     @else
@@ -37,6 +37,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <script>

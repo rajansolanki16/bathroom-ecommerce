@@ -178,16 +178,16 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Title</label>
-                            <input type="text" id="edit-title" class="form-control">
+                            <input type="text" name="edit-title" id="edit-title" class="form-control">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Alt Text <span class="text-muted">(SEO)</span></label>
-                            <input type="text" id="edit-alt" class="form-control">
+                            <input type="text" name="edit-alt" id="edit-alt" class="form-control">
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Description</label>
-                        <textarea id="edit-description" class="form-control"></textarea>
+                        <textarea id="edit-description" name="edit-description" class="form-control"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </form>

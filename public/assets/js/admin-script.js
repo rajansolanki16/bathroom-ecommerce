@@ -674,12 +674,10 @@ $(document).ready(function () {
     //     pageLength: 10
     // });
     if (!$.fn.DataTable.isDataTable('#fixed-header')) {
-        // Disable DataTables' default search box and entries selector since we use server-side filters on the page
         table = $('#fixed-header').DataTable({
             pageLength: 10,
             searching: false,
             lengthChange: false,
-            // 'l' = length changing input, 'f' = filtering input — removed by using this dom
             dom: 'lrtip'
         });
     } else {

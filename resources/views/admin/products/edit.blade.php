@@ -56,15 +56,6 @@
                                         @enderror
                                 </div>
                                 <div class="row">
-                                        <!-- <div class="col-lg-6">
-                                                    <div class="mb-3">
-                                                        <label for="productBrand" class="form-label">Brand <span class="text-danger">*</span></label>
-                                                        <input type="text" name="brand" class="form-control" id="productBrand" value="{{ old('brand', $product->brand) }}">
-                                                        @error('short_description')
-                                                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
-                                                </div> -->
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label">Brand</label>

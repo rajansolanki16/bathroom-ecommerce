@@ -18,7 +18,6 @@ use App\Http\Controllers\Admin\AttributeValueController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\FaqController;
-use App\Http\Controllers\Admin\PaymentOptionsController;
 use App\Http\Controllers\Admin\ProductAttributeController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProductController;
@@ -27,7 +26,7 @@ use App\Http\Controllers\User\WishListController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProductReviewController;
-use App\Http\Controllers\Admin\ActiveUserController;
+use App\Http\Controllers\UserActivityController;
 
 //Auth
 Route::get('/login', [RedirectController::class, 'login'])->name('login');
@@ -148,4 +147,11 @@ Route::middleware(['auth'])->group(function () {
             return response()->json(['success' => true]);
         })->name('media.delete');
     });
+});
+
+
+Route::middleware('auth')->group(function () {
+    Route::post('/activity/online', [UserActivityController::class, 'online']);
+    Route::post('/activity/offline', [UserActivityController::class, 'offline']);
+    Route::post('/activity/ping', [UserActivityController::class, 'ping']);
 });

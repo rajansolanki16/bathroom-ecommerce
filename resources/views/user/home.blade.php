@@ -116,6 +116,10 @@
     window.guestMergeUrl = "{{ route('guest.merge') }}";
    window.cartAddUrl = "{{ route('cart.add') }}";
 
+    window.isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+
+
 </script>
 
 <x-footer />
+

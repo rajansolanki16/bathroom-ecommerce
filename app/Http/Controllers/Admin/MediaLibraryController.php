@@ -53,9 +53,9 @@ class MediaLibraryController extends Controller
     public function update(Request $request, Media $media)
     {
         $media->custom_properties = array_merge($media->custom_properties ?? [], [
-            'title' => $request->input('title'),
-            'alt' => $request->input('alt'),
-            'description' => $request->input('description'),
+            'title' => $request->input('edit-title'),
+            'alt' => $request->input('edit-alt'),
+            'description' => $request->input('edit-description'),
         ]);
         $media->save();
         return response()->json(['success' => true, 'media' => $media]);
