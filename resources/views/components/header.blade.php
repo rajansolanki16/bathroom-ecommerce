@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{{ $meta['title'] ?? "Knoght Oasis" }}</title>
+    <title>{{ $meta['title'] ?? "E-commerce" }}</title>
     <meta property="og:title" content="{{ $meta['title'] ?? "E-commerce" }}">
     <meta name="twitter:title" content="{{ $meta['title'] ?? "E-commerce" }}">
 

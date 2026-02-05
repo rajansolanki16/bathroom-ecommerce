@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_activity_logs', function (Blueprint $table) {
+         Schema::create('user_activity_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('session_id');
-            $table->timestamp('login_at');
-            $table->timestamp('last_activity_at')->nullable();
+            $table->timestamp('login_at')->useCurrent();
+            $table->timestamp('last_activity_at')->useCurrent(); 
             $table->timestamp('logout_at')->nullable();
-            $table->string('logout_reason')->nullable(); 
+            $table->string('logout_reason')->nullable(); // 'manual', 'tab_closed', 'timeout'
             $table->timestamps();
 
-            $table->index(['user_id', 'session_id']);
+            // Index for faster admin lookups
+            $table->index(['user_id', 'logout_at']);
+            $table->index('session_id');
         });
     }
 
