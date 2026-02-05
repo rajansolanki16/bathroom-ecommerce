@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Models\UserActivityLog;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -118,9 +119,16 @@ class UserController extends Controller
     /**
      * Display the specified user.
      */
+
     public function show(User $user)
     {
-        return view('users.show', compact('user'));
+        // Fetch the 10 most recent activity logs for this user
+        $activities = UserActivityLog::where('user_id', $user->id)
+            ->orderBy('last_activity_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return view('users.show', compact('user', 'activities'));
     }
 
     /**

@@ -28,9 +28,9 @@ const trackActivity = () => {
 
     // Real-time Presence
     window.Echo.join("presence-online")
-        .here((users) => console.log("Current online:", users))
-        .joining((user) => console.log("Joined:", user))
-        .leaving((user) => console.log("Left:", user));
+        // .here((users) => console.log("Current online:", users))
+        // .joining((user) => console.log("Joined:", user))
+        // .leaving((user) => console.log("Left:", user));
 
     setInterval(() => {
         axios.post("/activity/ping").catch(() => {});

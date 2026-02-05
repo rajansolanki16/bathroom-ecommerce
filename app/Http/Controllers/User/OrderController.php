@@ -26,16 +26,11 @@ class OrderController extends Controller
     public function indexshow(Request $request)
     {
         $statuses = OrderStatus::cases();
-
-        // Base query
         $query = Order::with('user', 'items.product');
-
-        // Filter by status (status stored as raw value in DB)
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Search filtering (user name or product title)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -47,7 +42,6 @@ class OrderController extends Controller
             });
         }
 
-        // Filter by date range
         if ($request->filled('from_date') && $request->filled('to_date')) {
             $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
         } elseif ($request->filled('from_date')) {
@@ -56,7 +50,6 @@ class OrderController extends Controller
             $query->whereDate('created_at', '<=', $request->to_date);
         }
 
-        // Paginate the results and keep query string for pagination links
         $perPage = (int) $request->input('per_page', 15);
         $orders = $query->latest()->paginate($perPage)->withQueryString();
 
@@ -168,7 +161,7 @@ class OrderController extends Controller
             return response()->json(['error' => 'Failed to generate Excel file'], 500);
         }
 
-        // CSV EXPORT (DEFAULT)
+        // CSV EXPORT
         return response()->stream(function () use ($orders) {
             $handle = fopen('php://output', 'w');
 

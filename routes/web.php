@@ -6,7 +6,6 @@ use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-//
 
 // Controllers
 use App\Http\Controllers\RedirectController;
@@ -146,6 +145,7 @@ Route::middleware(['auth'])->group(function () {
 
             return response()->json(['success' => true]);
         })->name('media.delete');
+        Route::get('/activity-monitor', [UserActivityController::class, 'index'])->name('admin.activity.index');
     });
 });
 

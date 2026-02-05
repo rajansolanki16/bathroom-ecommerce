@@ -16,7 +16,7 @@
     <meta property="og:image" content="{{ publicPath(getSetting("site_icon")) }}">
     <meta name="twitter:image" content="{{ publicPath(getSetting("site_icon")) }}">
     <meta name="twitter:card" content="{{ publicPath(getSetting("site_icon")) }}">
-    @vite(['resources/js/app.js'])
+    {{-- @vite(['resources/js/app.js']) --}}
     @if(isset($meta['sco-allow']) && $meta['sco-allow'] == false)
     <meta name="robots" content="noindex, nofollow">
     @else
@@ -153,15 +153,6 @@
                         All Products
                     </a>
                 </li>
-
-                {{-- @foreach($categories ?? [] as $category)
-                <li class="nav-item">
-                    <a class="nav-link text-muted"
-                       href="#">
-                        {{ $category->name }}
-                    </a>
-                </li>
-                @endforeach --}}
             </ul>
         </nav>
 

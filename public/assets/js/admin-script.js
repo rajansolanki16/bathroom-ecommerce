@@ -422,11 +422,6 @@ $(document).ready(function () {
         });
     });
 
-    $("#booking_room_type").on('change', function() {
-        $('.booking_form_services').prop('checked', false).prop('disabled', false);
-        get_room_services();
-    });
-
     function generateSocialLinkRow(counter, iconSrc = '', url = '', id = '') {
         return `
             <div class='row align-items-center'>
@@ -491,34 +486,6 @@ $(document).ready(function () {
         }
     }
 
-    function get_room_services(){
-        let $this = $("#booking_room_type");
-        var token = $('meta[name="csrf-token"]').attr('content');
-        let room_id =  $this.val();
-
-        let ajax_url = $('#get_room_services_url').data('url');
-
-        if(room_id !== null){
-            $.ajax({
-                url: ajax_url,
-                type: "POST",
-                data: {
-                    rid : room_id,
-                    _token: token
-                },
-                dataType: "json",
-                success: function (response) {
-                    if (Array.isArray(response) && response.length > 0) {
-                        response.forEach(function (id) {
-                            $('.booking_form_services[value="' + id + '"]').prop('checked', true).prop('disabled', true);
-                        });
-                    }
-                }
-            });
-        }
-    }
-    get_room_services();
-
 });
 
 //admin panel e-commerce
@@ -557,7 +524,6 @@ function previewMultipleImages(event) {
 // product type hide/show
 function toggleSections() {
     const type = $('#productType').val();
-    console.log('Product Type:', type); 
 
     if (type == 1) {
         $('#vec_shipping_section').hide();
@@ -724,7 +690,6 @@ $(document).ready(function () {
             },
             success: function (data) {
                 if (isEditMode) {
-                    // Update existing row in DataTable
                     table.rows().every(function() {
                         let rowData = this.data();
                         if (rowData[0] == data.id) {
@@ -869,12 +834,9 @@ $(document).ready(function () {
    ACTION BUTTONS
 ===================== */
 function actionButtons(id, attributeName) {
-    // Get base URL from the form store URL
     let storeUrl = $('#vec_attribute_value_form').data('store-url') || '';
-    // Extract base path (remove /attribute-values from end)
     let basePath = storeUrl.replace(/\/attribute-values\/?$/, '');
     
-    // Construct URLs following Laravel resource route pattern
     let editUrl = basePath + '/attribute-values/' + id + '/edit';
     let updateUrl = basePath + '/attribute-values/' + id;
     let deleteUrl = basePath + '/attribute-values/' + id;
@@ -904,7 +866,6 @@ function actionButtons(id, attributeName) {
         </ul>
     </div>`;
 }
-//End attribute values crud ajax
 
 document.addEventListener('DOMContentLoaded', function() {
     const categorySelect = document.querySelector('#vec_store_country');
