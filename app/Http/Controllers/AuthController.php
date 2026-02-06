@@ -250,7 +250,7 @@ class AuthController extends Controller
                     
                     return redirect()->route('view.otp_verify', $token)->with('message', 'Vendor login verification. Check admin email for OTP.')->with("email", $user->email);
                 } else {
-                    return redirect()->route('user.product');
+                    return redirect()->route('admin.dashboard');
                 }
             }
             

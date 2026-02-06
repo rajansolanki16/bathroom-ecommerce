@@ -27,6 +27,7 @@ use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProductReviewController;
 use App\Http\Controllers\UserActivityController;
+use App\Http\Controllers\Admin\SalesmanController;
 
 //Auth
 Route::get('/login', [RedirectController::class, 'login'])->name('login');
@@ -83,11 +84,13 @@ Route::get('/user/orders/{order}', [OrderController::class, 'show'])
 // });
 
 //admin panel
+
+Route::get('admin/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard')->middleware(['auth', 'role:admin|salesman']);
+
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
                     // Media Library Picker (returns only grid/list for modal)
                     Route::get('/media-library/picker', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'picker'])->name('media-library.picker');
-        Route::get('/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard');
 
             // Media Library
             Route::get('/media-library', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'index'])->name('media-library.index');
@@ -160,8 +163,12 @@ Route::middleware(['auth'])->group(function () {
 
             return response()->json(['success' => true]);
         })->name('media.delete');
-        Route::get('/activity-monitor', [UserActivityController::class, 'index'])->name('admin.activity.index');
+     //Route::get('/activity-monitor', [UserActivityController::class, 'index'])->name('admin.activity.index');
     });
 });
 
+Route::middleware(['role:admin|salesman'])->group(function () {
+    Route::get('/salesman/visit/create', [SalesmanController::class, 'createVisit'])->name('salesman.visit.create');
+    Route::post('/salesman/visit/store', [SalesmanController::class, 'storeVisit'])->name('salesman.visit.store');
+});
 
