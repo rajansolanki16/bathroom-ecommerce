@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\AttributeValueController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\ProductAttributeController;
@@ -109,6 +110,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/orders', [OrderController::class, 'indexshow'])->name('orders.show');
         Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
         Route::post('/orders/{order}/notes', [OrderController::class, 'updateNotes'])->name('orders.notes');
+
+       //Color
+       Route::get('/colors/create', [ColorController::class, 'create'])->name('colors.create');
+       Route::get('/colors', [ColorController::class, 'index'])->name('colors.index');
+       Route::post('/colors', [ColorController::class, 'store'])->name('colors.store');
+       Route::get('/colors/{id}/edit', [ColorController::class, 'edit'])->name('colors.edit');
+       Route::put('/colors/{id}', [ColorController::class, 'update'])->name('colors.update');
+       Route::delete('/colors/{id}', [ColorController::class, 'destroy'])->name('colors.destroy');
 
 
         Route::prefix('settings')->group(function () {

@@ -167,6 +167,27 @@
                     </div>
                 </li>
 
+
+                <!-- Colors -->
+                <li class="nav-item">
+                    <a href="#sidebarproduct_color" class="nav-link menu-link" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarproduct_color">
+                        <i class="bi bi-palette"></i>
+                        <span>Colors</span>
+                    </a>
+
+                    <div class="collapse menu-dropdown" id="sidebarproduct_color">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('colors.create') }}" class="nav-link">Create</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('colors.index') }}" class="nav-link">Show</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
                 <li class="nav-item">
                     @php
                         $orderActive = Route::is('orders.show');
