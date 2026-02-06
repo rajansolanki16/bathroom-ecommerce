@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\ProductAttributeController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\TagsController;
 use App\Http\Controllers\User\WishListController;
 use App\Http\Controllers\User\CheckoutController;
@@ -85,19 +86,20 @@ Route::get('/user/orders/{order}', [OrderController::class, 'show'])
 
 //admin panel
 
-Route::get('admin/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard')->middleware(['auth', 'role:admin|salesman']);
+Route::get('admin/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
                     // Media Library Picker (returns only grid/list for modal)
                     Route::get('/media-library/picker', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'picker'])->name('media-library.picker');
+        Route::get('/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard');
 
-            // Media Library
-            Route::get('/media-library', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'index'])->name('media-library.index');
-            Route::get('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'show'])->name('media-library.show');
-            Route::post('/media-library', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'store'])->name('media-library.store');
-            Route::delete('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'destroy'])->name('media-library.destroy');
-            Route::put('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'update'])->name('media-library.update');
+        // Media Library
+        Route::get('/media-library', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'index'])->name('media-library.index');
+        Route::get('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'show'])->name('media-library.show');
+        Route::post('/media-library', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'store'])->name('media-library.store');
+        Route::delete('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'destroy'])->name('media-library.destroy');
+        Route::put('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'update'])->name('media-library.update');
 
         Route::post('/products/{product}/variants/update', [ProductController::class, 'updateVariants'])->name('products.variants.update');
         Route::post('/products/{product}/variants/remove', [ProductController::class, 'removeVariant'])->name('products.variants.remove');
@@ -120,13 +122,21 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
         Route::post('/orders/{order}/notes', [OrderController::class, 'updateNotes'])->name('orders.notes');
 
-       //Color
-       Route::get('/colors/create', [ColorController::class, 'create'])->name('colors.create');
-       Route::get('/colors', [ColorController::class, 'index'])->name('colors.index');
-       Route::post('/colors', [ColorController::class, 'store'])->name('colors.store');
-       Route::get('/colors/{id}/edit', [ColorController::class, 'edit'])->name('colors.edit');
-       Route::put('/colors/{id}', [ColorController::class, 'update'])->name('colors.update');
-       Route::delete('/colors/{id}', [ColorController::class, 'destroy'])->name('colors.destroy');
+        //Color
+        Route::get('/colors/create', [ColorController::class, 'create'])->name('colors.create');
+        Route::get('/colors', [ColorController::class, 'index'])->name('colors.index');
+        Route::post('/colors', [ColorController::class, 'store'])->name('colors.store');
+        Route::get('/colors/{id}/edit', [ColorController::class, 'edit'])->name('colors.edit');
+        Route::put('/colors/{id}', [ColorController::class, 'update'])->name('colors.update');
+        Route::delete('/colors/{id}', [ColorController::class, 'destroy'])->name('colors.destroy');
+
+        //stock
+        Route::get('/stocks/create', [StockController::class, 'create'])->name('stocks.create');
+        Route::post('/stocks', [StockController::class, 'store'])->name('stocks.store');
+        Route::get('/stocks', [StockController::class, 'index'])->name('stocks.index');
+        Route::get('/stocks/{id}/edit', [StockController::class, 'edit'])->name('stocks.edit');
+        Route::put('/stocks/{id}', [StockController::class, 'update'])->name('stocks.update');
+        Route::delete('/stocks/{id}', [StockController::class, 'destroy'])->name('stocks.destroy');
 
 
         Route::prefix('settings')->group(function () {
@@ -167,8 +177,10 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
+
+
+
 Route::middleware(['role:admin|salesman'])->group(function () {
     Route::get('/salesman/visit/create', [SalesmanController::class, 'createVisit'])->name('salesman.visit.create');
     Route::post('/salesman/visit/store', [SalesmanController::class, 'storeVisit'])->name('salesman.visit.store');
 });
-
