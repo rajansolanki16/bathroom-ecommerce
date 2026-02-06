@@ -1,17 +1,17 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     {{-- <h5 class="mb-0">Select Media</h5> --}}
-    <button type="button" class="btn btn-sm btn-outline-primary" id="picker-upload-toggle"><i class="bi bi-upload"></i> Upload</button>
+    <button type="button" class="btn btn-sm btn-outline-primary picker-upload-toggle"><i class="bi bi-upload"></i> Upload</button>
 </div>
-<form id="picker-upload-form" enctype="multipart/form-data" style="display:none;" class="mb-3">
+<form class="picker-upload-form mb-3" enctype="multipart/form-data" style="display:none;">
     @csrf
     <div class="input-group">
-        <input type="file" name="file[]" id="picker-upload-input" class="form-control" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar">
+        <input type="file" name="file[]" class="form-control picker-upload-input" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar">
         <button type="submit" class="btn btn-primary">Upload</button>
     </div>
-    <div id="picker-upload-progress" class="small text-muted mt-1"></div>
+    <div class="picker-upload-progress small text-muted mt-1"></div>
 </form>
-<div id="picker-media-grid">
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 16px;">
+<div class="picker-media-grid">
+<div class="picker-media-grid-inner" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 16px;">
 @foreach($media as $item)
     @php
         $mime = $item->mime_type;
@@ -54,12 +54,12 @@
 </div>
 <script>
 
-$(document).off('click', '#picker-upload-toggle').on('click', '#picker-upload-toggle', function() {
-    $('#picker-upload-form').toggle();
+$(document).off('click', '.picker-upload-toggle').on('click', '.picker-upload-toggle', function() {
+    $(this).closest('.modal-body').find('.picker-upload-form').toggle();
 });
 
 
-$(document).off('click', '#picker-media-grid .media-thumb').on('click', '#picker-media-grid .media-thumb', function () {
+$(document).off('click', '.picker-media-grid .media-thumb').on('click', '.picker-media-grid .media-thumb', function () {
     var $thumb = $(this);
     var selectedMediaId = $thumb.data('id');
     var imgUrl = $thumb.find('img').attr('src');
@@ -89,10 +89,12 @@ $(document).off('click', '#picker-media-grid .media-thumb').on('click', '#picker
     }
 });
 
-$(document).off('submit', '#picker-upload-form').on('submit', '#picker-upload-form', function(e) {
+$(document).off('submit', '.picker-upload-form').on('submit', '.picker-upload-form', function(e) {
     e.preventDefault();
+    var $form = $(this);
+    var $body = $form.closest('.modal-body');
     var formData = new FormData(this);
-    $('#picker-upload-progress').text('Uploading...');
+    $body.find('.picker-upload-progress').text('Uploading...');
     $.ajax({
         url: '{{ route('media-library.store') }}',
         type: 'POST',
@@ -101,7 +103,7 @@ $(document).off('submit', '#picker-upload-form').on('submit', '#picker-upload-fo
         contentType: false,
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         success: function(res) {
-            $('#picker-upload-progress').text('Upload successful!');
+            $body.find('.picker-upload-progress').text('Upload successful!');
             if(res.media && Array.isArray(res.media)) {
                 res.media.forEach(function(item) {
                     var mime = item.mime_type;
@@ -138,14 +140,13 @@ $(document).off('submit', '#picker-upload-form').on('submit', '#picker-upload-fo
                         html += '</div>';
                     }
                     html += '</div>';
-                    $('#picker-media-grid > div').prepend(html);
+                    $body.find('.picker-media-grid-inner').prepend(html);
                 });
             }
-            // Optionally clear file input
-            $('#picker-upload-input').val('');
+            $form.find('.picker-upload-input').val('');
         },
         error: function(xhr) {
-            $('#picker-upload-progress').text('Upload failed.');
+            $body.find('.picker-upload-progress').text('Upload failed.');
         }
     });
 });

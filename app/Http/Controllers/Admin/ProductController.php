@@ -449,6 +449,31 @@ class ProductController extends Controller
         });
 
         $variantsJson = json_encode($variantsData);
+        $galleryImages = $product->getMedia('gallery');
+
+        if (empty($product->media_library_main_image_id)) {
+            $mainMedia = $product->getFirstMedia('main_image');
+            if ($mainMedia) {
+                $libraryMedia = \Spatie\MediaLibrary\MediaCollections\Models\Media::where('model_type', 'App\\Models\\Setting')
+                    ->where('collection_name', 'uploads')
+                    ->where('file_name', $mainMedia->file_name)
+                    ->first();
+
+                if ($libraryMedia) {
+                    $product->media_library_main_image_id = $libraryMedia->id;
+                    $product->save();
+                }
+            }
+        }
+
+        // Convert gallery IDs from JSON to CSV format for the hidden input
+        $galleryIds = '';
+        if ($product->media_library_gallery_image_ids) {
+            $decoded = json_decode($product->media_library_gallery_image_ids, true);
+            if (is_array($decoded)) {
+                $galleryIds = implode(',', $decoded);
+            }
+        }
 
         return view('admin.products.edit', [
             'product'            => $product,
@@ -461,6 +486,8 @@ class ProductController extends Controller
             'attributes'         => $attributes,
             'attributesJson'     => $attributesJson,
             'variantsJson'       => $variantsJson,
+            'galleryImages'      => $galleryImages,
+            'galleryIds'         => $galleryIds,
         ]);
     }
 
@@ -561,10 +588,7 @@ class ProductController extends Controller
         'height'               => $request->height,
         'media_library_main_image_id' =>
             $validated['media_library_main_image_id'] ?? $product->media_library_main_image_id,
-        'media_library_gallery_image_ids' =>
-            !empty($validated['media_library_gallery_image_ids'])
-                ? json_encode($validated['media_library_gallery_image_ids'])
-                : $product->media_library_gallery_image_ids,
+        'media_library_gallery_image_ids' => $this->formatGalleryIds($validated['media_library_gallery_image_ids'] ?? null, $product->media_library_gallery_image_ids),
     ]);
 
     Log::info('Product main data updated', ['product_id' => $product->id]);
@@ -741,5 +765,29 @@ class ProductController extends Controller
             ->firstOrFail();
 
         return view('user.product.show', compact('product'));
+    }
+
+    /**
+     * Format gallery IDs from CSV or array to JSON
+     */
+    private function formatGalleryIds($newIds, $currentIds)
+    {
+        if (empty($newIds)) {
+            return $currentIds;
+        }
+
+        $ids = [];
+
+        // Handle CSV string format
+        if (is_string($newIds)) {
+            $ids = array_filter(array_map('trim', explode(',', $newIds)));
+        }
+        // Handle array format
+        elseif (is_array($newIds)) {
+            $ids = array_filter($newIds);
+        }
+
+        // Return as JSON if there are IDs, otherwise null
+        return !empty($ids) ? json_encode(array_values($ids)) : null;
     }
 }

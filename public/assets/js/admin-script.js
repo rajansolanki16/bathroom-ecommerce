@@ -20,7 +20,24 @@ window.initMediaPicker = function(options) {
                     var selectedIds = [];
                     var existing = (hiddenInput.val() || '');
                     if (existing) {
-                        selectedIds = existing.split(',').filter(Boolean);
+                        // Try to read JSON first, then fall back to CSV.
+                        try {
+                            var parsed = JSON.parse(existing);
+                            if (Array.isArray(parsed)) {
+                                selectedIds = parsed.map(String);
+                            } else if (parsed) {
+                                selectedIds = [String(parsed)];
+                            }
+                        } catch (e) {
+                            selectedIds = String(existing)
+                                .split(',')
+                                .map(function(id) {
+                                    return String(id).replace(/[\[\]"]/g, '').trim();
+                                })
+                                .filter(function(id) {
+                                    return id !== '';
+                                });
+                        }
                     }
 
                     modalBody.find('.media-thumb').each(function() {
@@ -55,20 +72,47 @@ window.initMediaPicker = function(options) {
                     $footer.append($cancel).append($confirm);
 
                     $confirm.on('click', function () {
+                        // Always normalize and store the IDs on the hidden input
                         hiddenInput.val(selectedIds.join(','));
-                        previewDiv.empty();
-                        if (selectedIds.length === 0) {
-                            previewDiv.html('<div class="text-muted">No images selected</div>');
-                        } else {
-                            selectedIds.forEach(function(id) {
-                                var $thumb = modalBody.find('.media-thumb[data-id="' + id + '"]');
-                                var img = $thumb.find('img').attr('src') || '';
-                                var $card = $('<div class="position-relative me-2 mb-2" style="width:100px;height:100px;border:1px solid #e9e9e9;border-radius:6px;overflow:hidden">');
-                                if (img) $card.append($('<img>').attr('src', img).css({width: '100%', height: '100%', objectFit: 'cover'}));
-                                var $btn = $('<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-gallery-image" data-id="'+id+'">✕</button>');
-                                $card.append($btn);
-                                previewDiv.append($card);
+
+                        // If a custom handler is provided (e.g. product edit gallery),
+                        // delegate rendering/handling to that instead of duplicating UI logic here.
+                        if (typeof options.onMediaSelected === 'function') {
+                            var selectedMediaData = selectedIds.map(function(id) {
+                                var $thumb = modalBody.find('.media-thumb').filter(function () {
+                                    return String($(this).data('id')) === String(id);
+                                });
+                                return {
+                                    id: id,
+                                    url: $thumb.find('img').attr('src') || ''
+                                };
                             });
+
+                            options.onMediaSelected(selectedMediaData);
+                        } else {
+                            // Default behavior: render simple thumbnails with a remove button
+                            previewDiv.empty();
+                            if (selectedIds.length === 0) {
+                                previewDiv.html('<div class="text-muted">No images selected</div>');
+                            } else {
+                                selectedIds.forEach(function(id) {
+                                    var $thumb = $('.media-thumb').filter(function () {
+                                        return String($(this).data('id')) === String(id);
+                                    });
+                                    var img = $thumb.find('img').attr('src') || '';
+                                    var $card = $('<div class="position-relative me-2 mb-2" style="width:100px;height:100px;border:1px solid #e9e9e9;border-radius:6px;overflow:hidden">');
+                                    if (img) {
+                                        $card.append(
+                                            $('<img>')
+                                                .attr('src', img)
+                                                .css({width: '100%', height: '100%', objectFit: 'cover'})
+                                        );
+                                    }
+                                    var $btn = $('<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-gallery-image" data-id="'+id+'">✕</button>');
+                                    $card.append($btn);
+                                    previewDiv.append($card);
+                                });
+                            }
                         }
 
                         modal.find('.btn-close').trigger('click');

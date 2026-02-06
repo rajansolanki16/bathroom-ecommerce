@@ -39,12 +39,12 @@
 
                                     <select class="form-control" name="categories[]" id="productCategories" multiple>
                                         @foreach ($categories as $parent)
-                                            <optgroup label="{{ $parent->name }}">
-                                                <option value="{{ $parent->id }}" {{ in_array($parent->id, old('categories', $product->categories->pluck('id')->toArray())) ? 'selected' : '' }}>{{ $parent->name }}</option>
-                                                @foreach($parent->children as $child)
-                                                    <option value="{{ $child->id }}" {{ in_array($child->id, old('categories', $product->categories->pluck('id')->toArray())) ? 'selected' : '' }}>— {{ $child->name }}</option>
-                                                @endforeach
-                                            </optgroup>
+                                        <optgroup label="{{ $parent->name }}">
+                                            <option value="{{ $parent->id }}" {{ in_array($parent->id, old('categories', $product->categories->pluck('id')->toArray())) ? 'selected' : '' }}>{{ $parent->name }}</option>
+                                            @foreach($parent->children as $child)
+                                            <option value="{{ $child->id }}" {{ in_array($child->id, old('categories', $product->categories->pluck('id')->toArray())) ? 'selected' : '' }}>— {{ $child->name }}</option>
+                                            @endforeach
+                                        </optgroup>
                                         @endforeach
                                     </select>
                                 </div>
@@ -56,6 +56,15 @@
                                         @enderror
                                 </div>
                                 <div class="row">
+                                        <!-- <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label for="productBrand" class="form-label">Brand <span class="text-danger">*</span></label>
+                                                        <input type="text" name="brand" class="form-control" id="productBrand" value="{{ old('brand', $product->brand) }}">
+                                                        @error('short_description')
+                                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                </div> -->
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label">Brand</label>
@@ -184,23 +193,30 @@
                             <div class="d-flex gap-2 mb-2">
                                 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModalMain">Choose from Media Library</button>
                             </div>
-                            <input type="hidden" name="media_library_main_image_id" id="media_library_main_image_id" value="{{ old('media_library_main_image_id', optional($product->getFirstMedia('main_image'))->id) }}">
+                            <input
+                                type="hidden"
+                                name="media_library_main_image_id"
+                                id="media_library_main_image_id"
+                                value="{{ old('media_library_main_image_id', $product->media_library_main_image_id ?? optional($product->getFirstMedia('main_image'))->id) }}">
                             <div id="selected-main-image-preview" class="mt-2 mb-2"></div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">
-                                Gallery Images
-                            </label>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    Gallery Images
+                                </label>
 
-                            <div class="d-flex gap-2 mb-2">
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModalGallery">Choose from Media Library</button>
+                                <div class="d-flex gap-2 mb-2">
+                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModalGallery">Choose from Media Library</button>
+                                </div>
+                                {{-- Use CSV-formatted IDs so picker can correctly preselect and highlight existing images --}}
+                                <input type="hidden"
+                                       name="media_library_gallery_image_ids"
+                                       id="media_library_gallery_image_ids"
+                                       value="{{ old('media_library_gallery_image_ids', $galleryIds) }}">
+                                <div id="selected-gallery-images-preview" class="mt-2 d-flex flex-wrap" style="gap:10px;"></div>
+
                             </div>
-                            <input type="hidden" name="media_library_gallery_image_ids" id="media_library_gallery_image_ids" value="{{ old('media_library_gallery_image_ids', $product->getMedia('gallery')->pluck('id')->join(',')) }}">
-                            <div id="selected-gallery-images-preview" class="mt-2 d-flex flex-wrap" style="gap:10px;"></div>
-
-
-                        </div>
 
                     </div>
                 </div><!--end row-->
@@ -353,7 +369,7 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="row gy-2">  
+                            <div class="row gy-2">
                                 <div class="col-lg-6">
                                     <div class="form-check form-switch mb-3">
                                         <input type="checkbox" name="exchangeable" value="1" class="form-check-input" {{ old('exchangeable', $product->exchangeable) ? 'checked' : '' }}>
@@ -998,29 +1014,29 @@
 <script src="{{ asset('admin/js/pages/ecommerce-create-product.init.js') }}"></script>
 @stack('scripts')
 <script>
-$(document).on('click', '.delete-gallery-image', function () {
-    const btn   = $(this);
-    const url   = btn.data('url');
-    const id    = btn.data('id');
-    const card  = btn.closest('.col-md-3');
+    $(document).on('click', '.delete-gallery-image', function() {
+        const btn = $(this);
+        const url = btn.data('url');
+        const id = btn.data('id');
+        const card = btn.closest('.col-md-3');
 
-    $.ajax({
-        url: url,
-        type: 'POST',
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-            media_id: id
-        },
-        success: function () {
-            card.fadeOut(300, function () {
-                $(this).remove();
-            });
-        },
-        error: function () {
-            alert('Failed to delete image');
-        }
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                media_id: id
+            },
+            success: function() {
+                card.fadeOut(300, function() {
+                    $(this).remove();
+                });
+            },
+            error: function() {
+                alert('Failed to delete image');
+            }
+        });
     });
-});
 </script>
 
 <!-- Media Picker Modals -->
@@ -1047,87 +1063,190 @@ $(document).on('click', '.delete-gallery-image', function () {
             <div class="modal-body" id="mediaPickerModalGalleryBody">
                 <!-- Media grid will be loaded here -->
             </div>
-        </div>          
+        </div>
     </div>
 </div>
 
 <script>
-$(document).ready(function () {
-    // Main image picker
-    window.initMediaPicker({
-        pickerBtnSelector: '[data-bs-target="#mediaPickerModalMain"]',
-        modalBodySelector: '#mediaPickerModalMainBody',
-        modalSelector: '#mediaPickerModalMain',
-        hiddenInputSelector: '#media_library_main_image_id',
-        previewSelector: '#selected-main-image-preview',
-        pickerUrl: "{{ route('media-library.picker') }}",
-        formSelector: 'form[action*="products.update"]'
-    });
-    // Gallery picker (multi-select)
-    window.initMediaPicker({
-        pickerBtnSelector: '[data-bs-target="#mediaPickerModalGallery"]',
-        modalBodySelector: '#mediaPickerModalGalleryBody',
-        modalSelector: '#mediaPickerModalGallery',
-        hiddenInputSelector: '#media_library_gallery_image_ids',
-        previewSelector: '#selected-gallery-images-preview',
-        pickerUrl: "{{ route('media-library.picker') }}?multi=1",
-        formSelector: 'form[action*="products.update"]',
-        multi: true
-    });
+    $(document).ready(function() {
+        // Main image picker
+        window.initMediaPicker({
+            pickerBtnSelector: '[data-bs-target="#mediaPickerModalMain"]',
+            modalBodySelector: '#mediaPickerModalMainBody',
+            modalSelector: '#mediaPickerModalMain',
+            hiddenInputSelector: '#media_library_main_image_id',
+            previewSelector: '#selected-main-image-preview',
+            pickerUrl: "{{ route('media-library.picker') }}",
+            formSelector: 'form[action*="products.update"]'
+        });
 
+        // Gallery picker (multi-select)
+        window.initMediaPicker({
+                pickerBtnSelector: '[data-bs-target="#mediaPickerModalGallery"]',
+                modalBodySelector: '#mediaPickerModalGalleryBody',
+                modalSelector: '#mediaPickerModalGallery',
+                hiddenInputSelector: '#media_library_gallery_image_ids',
+                previewSelector: '#selected-gallery-images-preview',
+                pickerUrl: "{{ route('media-library.picker') }}?multi=1",
+                formSelector: 'form[action*="products.update"]',
+                multi: true,
+                onMediaSelected: function(selectedIds) {
+                    // Handle custom selection logic
+                    console.log('Media selected from picker:', selectedIds);
+
+                    selectedIds.forEach(function(mediaData) {
+                        if (mediaData && mediaData.id && mediaData.url) {
+                            appendGalleryMedia(String(mediaData.id), mediaData.url);
+                        }
+                    });
+            }
+        });
+
+    // Helper functions for gallery
     function getGalleryIds() {
         var val = $('#media_library_gallery_image_ids').val() || '';
         if (!val) return [];
-        return String(val).split(',').filter(function(i){ return i !== ''; });
-    }
-    function setGalleryIds(arr) {
-        $('#media_library_gallery_image_ids').val(arr.join(','));
-    }
-    
-    function appendGalleryMedia(id, url) {
-        var ids = getGalleryIds();
-        if (ids.indexOf(String(id)) !== -1) return;
-        ids.push(String(id));
-        setGalleryIds(ids);
 
-        var $card = $('<div class="position-relative me-2 mb-2" style="width:100px;height:100px;border:1px solid #e9e9e9;border-radius:6px;overflow:hidden">');
-        var $img = $('<img>').attr('src', url).css({width: '100%', height: '100%', objectFit: 'cover'});
-        var $btn = $('<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-gallery-image" data-id="'+id+'">✕</button>');
+        var ids = [];
+
+        // Try parsing as JSON first
+        try {
+            var parsed = JSON.parse(val);
+            if (Array.isArray(parsed)) {
+                ids = parsed.map(String);
+            } else {
+                ids = [String(parsed)];
+            }
+        } catch (e) {
+            // Not JSON, parse as CSV
+            ids = String(val).split(',');
+        }
+
+        return ids.map(function(id) {
+            return String(id).replace(/[\[\]"]/g, '').trim();
+        }).filter(function(id) {
+            return id !== '';
+        });
+
+    }
+
+    function setGalleryIds(arr) {
+        // Save as CSV format for media picker compatibility
+        var csvValue = arr.join(',');
+        $('#media_library_gallery_image_ids').val(csvValue);
+        console.log('Updated hidden input with IDs (CSV):', csvValue);
+    }
+
+    // Display gallery media thumbnail
+    function displayGalleryMedia(id, url) {
+        if ($('#selected-gallery-images-preview').find('[data-id="' + id + '"]').length > 0) {
+            console.log('Image ' + id + ' already displayed, skipping');
+            return;
+        }
+        var $card = $('<div class="position-relative me-2 mb-2" style="width:100px;height:100px;border:1px solid #e9e9e9;border-radius:6px;overflow:hidden" data-id="' + id + '">');
+        var $img = $('<img>').attr('src', url).css({
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
+        });
+        var $btn = $('<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-gallery-image" data-id="' + id + '">✕</button>');
         $card.append($img).append($btn);
         $('#selected-gallery-images-preview').append($card);
+        console.log('✓ Displayed gallery image:', id);
     }
 
+    // Add gallery media when selected from picker
+    function appendGalleryMedia(id, url) {
+        var ids = getGalleryIds();
+        // Always attempt to display; UI deduplicates based on DOM,
+        // and we only append ID to the hidden field if it's actually new.
+        if (ids.indexOf(String(id)) === -1) {
+            ids.push(String(id));
+            setGalleryIds(ids);
+        }
+        displayGalleryMedia(id, url);
+    }
+
+    // Remove gallery image handler
     $(document).on('click', '.remove-gallery-image', function() {
         var id = $(this).data('id');
-        var ids = getGalleryIds().filter(function(i){ return i !== String(id); });
+        var ids = getGalleryIds().filter(function(i) {
+            return i !== String(id);
+        });
         setGalleryIds(ids);
         $(this).closest('.position-relative').remove();
     });
 
-    // Load existing IDs on page load (e.g., existing product media)
-    $(function(){
+
+    // Load existing gallery images on page load
+    function loadExistingGalleryImages() {
         var ids = getGalleryIds();
+        console.log('Gallery IDs from hidden input:', ids);
+        console.log('Hidden input value:', $('#media_library_gallery_image_ids').val());
+
+        var failedIds = [];
+
         if (ids && ids.length) {
-            ids.forEach(function(id){
+            ids.forEach(function(id) {
                 var url = '{{ route("media-library.show", ":id") }}'.replace(':id', id);
-                $.get(url, function(meta){
-                    if (meta && meta.url) appendGalleryMedia(id, meta.url);
+                console.log('Loading gallery image from:', url);
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(meta) {
+                        console.log('✓ Successfully loaded gallery image:', id, meta);
+                        if (meta && meta.url) {
+                            displayGalleryMedia(id, meta.url);
+                        }
+                    },
+                    error: function(err) {
+                        console.error('✗ Failed to load gallery image:', id, err);
+                        failedIds.push(id);
+                    }
                 });
             });
-        }
 
-        // Load main image preview if set
+            // After all AJAX calls complete, remove failed IDs
+            setTimeout(function() {
+                if (failedIds.length > 0) {
+                    console.warn('Removing failed image IDs:', failedIds);
+                    var updatedIds = getGalleryIds().filter(function(id) {
+                        return failedIds.indexOf(id) === -1;
+                    });
+                    setGalleryIds(updatedIds);
+                }
+            }, 1500);
+        } else {
+            console.log('No gallery IDs found');
+        }
+    }
+
+    // Load existing main image on page load
+    function loadExistingMainImage() {
         var mainId = $('#media_library_main_image_id').val();
+        console.log('Main image ID from hidden input:', mainId);
+
         if (mainId) {
             var url = '{{ route("media-library.show", ":id") }}'.replace(':id', mainId);
-            $.get(url, function(meta){
-                if (meta && meta.url) {
-                    $('#selected-main-image-preview').html(`<img src="${meta.url}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`);
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(meta) {
+                    if (meta && meta.url) {
+                        $('#selected-main-image-preview').html(`<img src="${meta.url}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`);
+                    }
+                },
+                error: function(err) {
+                    console.error('Failed to load main image:', err);
                 }
             });
         }
+    }
+    // Initialize on page load
+    loadExistingGalleryImages(); loadExistingMainImage();
     });
-});
 </script>
 
 <x-admin.footer />

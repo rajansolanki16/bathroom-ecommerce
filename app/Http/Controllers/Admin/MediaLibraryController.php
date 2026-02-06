@@ -39,7 +39,12 @@ class MediaLibraryController extends Controller
         }
         foreach ($files as $file) {
             $media = $model->addMedia($file)->toMediaCollection('uploads');
-            $uploaded[] = $media;
+            $uploaded[] = [
+                'id' => $media->id,
+                'file_name' => $media->file_name,
+                'mime_type' => $media->mime_type,
+                'original_url' => $media->getUrl(),
+            ];
         }
         return response()->json(['success' => true, 'media' => $uploaded]);
     }
