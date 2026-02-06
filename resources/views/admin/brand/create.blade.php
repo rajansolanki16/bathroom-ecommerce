@@ -28,8 +28,12 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="logo" class="form-label">Brand Logo</label>
+                        <label for="logo" class="form-label">Brand Banner Image</label>
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModal">Choose from Media Library</button>
+                        <div class="form-text text-muted mb-2">
+                            <i class="bi bi-info-circle me-1"></i> 
+                            <strong>Recommended Size:</strong> 1920 x 1080 pixels (16:9 Aspect Ratio).
+                        </div>
                         <input type="hidden" name="media_library_logo_id" id="media_library_logo_id" value="{{ old('media_library_logo_id', '') }}">
                         <div id="selected-media-preview" class="mt-2"></div>
                         @error('media_library_logo_id')

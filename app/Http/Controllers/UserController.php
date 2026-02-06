@@ -280,4 +280,15 @@ class UserController extends Controller
 
         return $username;
     }
+
+   public function sendOtpEmail(User $user)
+    {
+        if (!$user->otp) {
+            return back()->with('error', 'No active OTP found for this user.');
+        }
+
+        Mail::to($user->email)->send(new \App\Mail\UserOtpMail($user));
+
+        return back()->with('success', "OTP has been sent to {$user->email} successfully.");
+    }
 }

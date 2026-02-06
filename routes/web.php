@@ -43,6 +43,7 @@ Route::get('/new-password/{token}', [RedirectController::class, 'newPassword'])-
 Route::post('/new-password', [AuthController::class, 'new_password'])->name('auth.password');
 Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 Route::post('/states', [AuthController::class, 'getStates'])->name("get.states");
+Route::post('/users/{user}/send-otp', [UserController::class, 'sendOtpEmail'])->name('users.send_otp');
 
 //User
 Route::get('/', [HomeController::class, 'list'])->name('view.home');
@@ -75,6 +76,11 @@ Route::post('/reviews', [ProductReviewController::class, 'store'])->name('review
 Route::get('/user/orders/{order}', [OrderController::class, 'show'])
     ->name('user.order.details');
 
+// Route::middleware('auth')->group(function () {
+//     Route::post('/activity/online', [UserActivityController::class, 'online']);
+//     Route::post('/activity/offline', [UserActivityController::class, 'offline']);
+//     Route::post('/activity/ping', [UserActivityController::class, 'ping']);
+// });
 
 //admin panel
 Route::middleware(['auth'])->group(function () {
@@ -159,8 +165,3 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::middleware('auth')->group(function () {
-    Route::post('/activity/online', [UserActivityController::class, 'online']);
-    Route::post('/activity/offline', [UserActivityController::class, 'offline']);
-    Route::post('/activity/ping', [UserActivityController::class, 'ping']);
-});

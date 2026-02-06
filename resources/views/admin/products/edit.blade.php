@@ -391,7 +391,7 @@
     </div><!--end col-->
 </div><!--end row-->
 
-<div class="row" class="vec_shipping_section" id="vec_shipping_section">
+{{-- <div class="row" class="vec_shipping_section" id="vec_shipping_section">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
@@ -467,7 +467,7 @@
             </div>
         </div>
     </div><!--end col-->
-</div><!--end row-->
+</div> --}}
 
 <!-- Variants Section (Only for product_type=VARIANTS) -->
 <div id="variantsSection" class="row" style="display: none;">

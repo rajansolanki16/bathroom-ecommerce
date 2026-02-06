@@ -142,58 +142,58 @@ class ProductController extends Controller
             }
         }
 
-        if ($productType == ProductType::VARIANTS->value || $productType == ProductType::VARIANTS) {
-            Log::info('=== VARIANTS PRODUCT VALIDATION STARTED ===');
-            try {
-                $validatedVariants = $request->validate([
-                    'title'                     => 'required|string|max:255',
-                    'sku_number'                => 'nullable|string|max:255|unique:products,sku_number',
-                    'meta_title'                => 'nullable|string|max:160',
-                    'meta_description'          => 'nullable|string|max:160',
-                    'meta_keywords'             => 'nullable|string',
+        // if ($productType == ProductType::VARIANTS->value || $productType == ProductType::VARIANTS) {
+        //     Log::info('=== VARIANTS PRODUCT VALIDATION STARTED ===');
+        //     try {
+        //         $validatedVariants = $request->validate([
+        //             'title'                     => 'required|string|max:255',
+        //             'sku_number'                => 'nullable|string|max:255|unique:products,sku_number',
+        //             'meta_title'                => 'nullable|string|max:160',
+        //             'meta_description'          => 'nullable|string|max:160',
+        //             'meta_keywords'             => 'nullable|string',
 
-                    'categories'                => 'nullable|array',
-                    'categories.*'              => 'exists:categories,id',
+        //             'categories'                => 'nullable|array',
+        //             'categories.*'              => 'exists:categories,id',
 
-                    'tags'                      => 'nullable|array',
-                    'tags.*'                    => 'exists:tags,id',
+        //             'tags'                      => 'nullable|array',
+        //             'tags.*'                    => 'exists:tags,id',
 
-                    'product_type'              => 'required|integer',
-                    'short_description'         => 'required|string',
-                    'product_decscription'      => 'required',
+        //             'product_type'              => 'required|integer',
+        //             'short_description'         => 'required|string',
+        //             'product_decscription'      => 'required',
 
-                    'price'                     => 'required|numeric|min:0',
-                    'discount'                  => 'nullable|numeric|min:0',
+        //             'price'                     => 'required|numeric|min:0',
+        //             'discount'                  => 'nullable|numeric|min:0',
 
-                    'media_library_main_image_id' => 'nullable|exists:media,id',
-                    'media_library_gallery_image_ids' => 'nullable|array',
-                    'media_library_gallery_image_ids.*' => 'exists:media,id',
-                    'gallery_images.*'          => 'nullable|image|mimes:jpg,jpeg,png,webp',
-                ], [
-                    'variants.*.price.min' => 'Price must be greater than or equal to 0',
-                    'variants.*.stock.integer' => 'Stock must be a whole number',
-                    'variants.*.stock.min' => 'Stock must be greater than or equal to 0',
-                    'variants.*.sell_price.numeric' => 'Sell Price must be a valid number',
-                    'variants.*.sell_price.min' => 'Sell Price must be greater than or equal to 0',
-                    'variants.*.weight.numeric' => 'Weight must be a valid number',
-                    'variants.*.weight.min' => 'Weight must be greater than or equal to 0',
-                    'variants.*.length.numeric' => 'Length must be a valid number',
-                    'variants.*.length.min' => 'Length must be greater than or equal to 0',
-                    'variants.*.width.numeric' => 'Width must be a valid number',
-                    'variants.*.width.min' => 'Width must be greater than or equal to 0',
-                    'variants.*.height.numeric' => 'Height must be a valid number',
-                    'variants.*.height.min' => 'Height must be greater than or equal to 0',
-                    'variants.*.image.image' => 'Image must be a valid image file',
-                    'variants.*.image.mimes' => 'Image must be a file of type: jpg, jpeg, png, webp',
-                ]);
+        //             'media_library_main_image_id' => 'nullable|exists:media,id',
+        //             'media_library_gallery_image_ids' => 'nullable|array',
+        //             'media_library_gallery_image_ids.*' => 'exists:media,id',
+        //             'gallery_images.*'          => 'nullable|image|mimes:jpg,jpeg,png,webp',
+        //         ], [
+        //             'variants.*.price.min' => 'Price must be greater than or equal to 0',
+        //             'variants.*.stock.integer' => 'Stock must be a whole number',
+        //             'variants.*.stock.min' => 'Stock must be greater than or equal to 0',
+        //             'variants.*.sell_price.numeric' => 'Sell Price must be a valid number',
+        //             'variants.*.sell_price.min' => 'Sell Price must be greater than or equal to 0',
+        //             'variants.*.weight.numeric' => 'Weight must be a valid number',
+        //             'variants.*.weight.min' => 'Weight must be greater than or equal to 0',
+        //             'variants.*.length.numeric' => 'Length must be a valid number',
+        //             'variants.*.length.min' => 'Length must be greater than or equal to 0',
+        //             'variants.*.width.numeric' => 'Width must be a valid number',
+        //             'variants.*.width.min' => 'Width must be greater than or equal to 0',
+        //             'variants.*.height.numeric' => 'Height must be a valid number',
+        //             'variants.*.height.min' => 'Height must be greater than or equal to 0',
+        //             'variants.*.image.image' => 'Image must be a valid image file',
+        //             'variants.*.image.mimes' => 'Image must be a file of type: jpg, jpeg, png, webp',
+        //         ]);
 
-                Log::info('=== VARIANTS PRODUCT VALIDATION PASSED ===');
-                $validated = array_merge($validated, $validatedVariants);
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                Log::error('=== VARIANTS PRODUCT VALIDATION FAILED ===', ['errors' => $e->errors()]);
-                throw $e;
-            }
-        }
+        //         Log::info('=== VARIANTS PRODUCT VALIDATION PASSED ===');
+        //         $validated = array_merge($validated, $validatedVariants);
+        //     } catch (\Illuminate\Validation\ValidationException $e) {
+        //         Log::error('=== VARIANTS PRODUCT VALIDATION FAILED ===', ['errors' => $e->errors()]);
+        //         throw $e;
+        //     }
+        // }
 
 
         /* ===============================
@@ -327,67 +327,67 @@ class ProductController extends Controller
             $product->attributes()->sync($request->product_attributes);
         }
 
-        if ($product->product_type == ProductType::VARIANTS->value || $product->product_type == ProductType::VARIANTS) {
-            Log::info('=== HANDLING VARIANTS ===', ['variant_count' => count($request->variants ?? [])]);
-            if ($request->filled('product_attributes')) {
-                $product->attributes()->sync($request->product_attributes);
-                Log::info('=== ATTRIBUTES SYNCED ===');
-            }
+        // if ($product->product_type == ProductType::VARIANTS->value || $product->product_type == ProductType::VARIANTS) {
+        //     Log::info('=== HANDLING VARIANTS ===', ['variant_count' => count($request->variants ?? [])]);
+        //     if ($request->filled('product_attributes')) {
+        //         $product->attributes()->sync($request->product_attributes);
+        //         Log::info('=== ATTRIBUTES SYNCED ===');
+        //     }
 
-            $product->variants()->delete();
+        //     $product->variants()->delete();
 
-            if ($request->filled('variants') && is_array($request->variants)) {
-                foreach ($request->variants as $idx => $variant) {
-                    $values = $variant['values'] ?? [];
+        //     if ($request->filled('variants') && is_array($request->variants)) {
+        //         foreach ($request->variants as $idx => $variant) {
+        //             $values = $variant['values'] ?? [];
 
-                    $pvData = [
-                        'product_id' => $product->id,
-                        'sku'        => $variant['sku'] ?? null,
-                        'price'      => $variant['price'] ?? null,
-                        'stock'      => $variant['stock'] ?? 0,
-                        'sell_price' => $variant['sell_price'] ?? null,
-                        'shipping'   => $variant['shipping'] ?? null,
-                        'weight'     => $variant['weight'] ?? null,
-                        'length'     => $variant['length'] ?? null,
-                        'width'      => $variant['width'] ?? null,
-                        'height'     => $variant['height'] ?? null,
-                        'status'     => $variant['status'] ?? $product->status,
-                        'visibility' => $variant['visibility'] ?? $product->visibility,
-                        'exchangeable' => $variant['exchangeable'] ?? $product->exchangeable,
-                        'refundable' => $variant['refundable'] ?? $product->refundable,
-                        'free_shipping' => $variant['free_shipping'] ?? $product->free_shipping,
-                        'shipping_address' => $variant['shipping_address'] ?? null,
-                        'general_info' => $variant['general_info'] ?? null,
-                    ];
+        //             $pvData = [
+        //                 'product_id' => $product->id,
+        //                 'sku'        => $variant['sku'] ?? null,
+        //                 'price'      => $variant['price'] ?? null,
+        //                 'stock'      => $variant['stock'] ?? 0,
+        //                 'sell_price' => $variant['sell_price'] ?? null,
+        //                 'shipping'   => $variant['shipping'] ?? null,
+        //                 'weight'     => $variant['weight'] ?? null,
+        //                 'length'     => $variant['length'] ?? null,
+        //                 'width'      => $variant['width'] ?? null,
+        //                 'height'     => $variant['height'] ?? null,
+        //                 'status'     => $variant['status'] ?? $product->status,
+        //                 'visibility' => $variant['visibility'] ?? $product->visibility,
+        //                 'exchangeable' => $variant['exchangeable'] ?? $product->exchangeable,
+        //                 'refundable' => $variant['refundable'] ?? $product->refundable,
+        //                 'free_shipping' => $variant['free_shipping'] ?? $product->free_shipping,
+        //                 'shipping_address' => $variant['shipping_address'] ?? null,
+        //                 'general_info' => $variant['general_info'] ?? null,
+        //             ];
 
-                    // handle variant image file input
-                    if ($request->hasFile("variants.$idx.image")) {
-                        $file = $request->file("variants.$idx.image");
-                        if ($file && $file->isValid()) {
-                            $pvData['image'] = $file->store('products/variants', 'public');
-                        }
-                    }
+        //             // handle variant image file input
+        //             if ($request->hasFile("variants.$idx.image")) {
+        //                 $file = $request->file("variants.$idx.image");
+        //                 if ($file && $file->isValid()) {
+        //                     $pvData['image'] = $file->store('products/variants', 'public');
+        //                 }
+        //             }
 
-                    try {
-                        $pv = ProductVariant::create($pvData);
-                        Log::info("=== VARIANT $idx CREATED ===", ['variant_id' => $pv->id]);
-                    } catch (\Exception $e) {
-                        Log::error("=== VARIANT $idx CREATION FAILED ===", [
-                            'error' => $e->getMessage(),
-                            'data' => $pvData,
-                        ]);
-                        throw $e;
-                    }
+        //             try {
+        //                 $pv = ProductVariant::create($pvData);
+        //                 Log::info("=== VARIANT $idx CREATED ===", ['variant_id' => $pv->id]);
+        //             } catch (\Exception $e) {
+        //                 Log::error("=== VARIANT $idx CREATION FAILED ===", [
+        //                     'error' => $e->getMessage(),
+        //                     'data' => $pvData,
+        //                 ]);
+        //                 throw $e;
+        //             }
 
-                    if (!empty($values)) {
-                        $pv->attributeValues()->sync($values);
-                    }
-                }
-            }
-            Log::info('=== ALL VARIANTS CREATED SUCCESSFULLY ===');
-        } else {
-            $product->variants()->delete();
-        }
+        //             if (!empty($values)) {
+        //                 $pv->attributeValues()->sync($values);
+        //             }
+        //         }
+        //     }
+        //     Log::info('=== ALL VARIANTS CREATED SUCCESSFULLY ===');
+        // } else {
+        //     $product->variants()->delete();
+        // }
 
         Log::info('=== STORE METHOD COMPLETED SUCCESSFULLY ===', ['product_id' => $product->id]);
         return redirect()
@@ -495,217 +495,217 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Product $product)
-{
-    Log::info('Product update request received', [
-        'product_id' => $product->id,
-        'request_data' => $request->all(),
-    ]);
-
-    /* ===============================
-    BASE VALIDATION
-    =============================== */
-    $validator = Validator::make($request->all(), [
-        'title'             => 'required|string|max:255',
-        'meta_title'        => 'nullable|string|max:160',
-        'meta_description'  => 'nullable|string|max:160',
-        'meta_keywords'     => 'nullable|string',
-        'categories'        => 'nullable|array',
-        'product_type'      => 'required',
-        'short_description' => 'nullable|string',
-        'price'             => 'nullable|numeric',
-        'stock'             => 'nullable|integer',
-        'media_library_main_image_id' => 'nullable|exists:media,id',
-        'media_library_gallery_image_ids' => 'nullable',
-        'media_library_gallery_image_ids.*' => 'exists:media,id',
-        'product_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp',
-        'gallery_images.*'  => 'nullable|image|mimes:jpg,jpeg,png,webp',
-    ]);
-
-    if ($validator->fails()) {
-        Log::error('Product base validation failed', [
+    {
+        Log::info('Product update request received', [
             'product_id' => $product->id,
-            'errors' => $validator->errors()->toArray(),
+            'request_data' => $request->all(),
         ]);
 
-        return back()->withErrors($validator)->withInput();
-    }
-
-    $validated = $validator->validated();
-
-    Log::info('Product base validation passed', [
-        'product_id' => $product->id,
-        'validated_data' => $validated,
-    ]);
-
-    /* ===============================
-    CONDITIONAL SIMPLE PRODUCT VALIDATION
-    =============================== */
-    if ($validated['product_type'] == ProductType::SIMPLE->value) {
-        $simpleValidator = Validator::make($request->all(), [
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
+        /* ===============================
+        BASE VALIDATION
+        =============================== */
+        $validator = Validator::make($request->all(), [
+            'title'             => 'required|string|max:255',
+            'meta_title'        => 'nullable|string|max:160',
+            'meta_description'  => 'nullable|string|max:160',
+            'meta_keywords'     => 'nullable|string',
+            'categories'        => 'nullable|array',
+            'product_type'      => 'required',
+            'short_description' => 'nullable|string',
+            'price'             => 'nullable|numeric',
+            'stock'             => 'nullable|integer',
+            'media_library_main_image_id' => 'nullable|exists:media,id',
+            'media_library_gallery_image_ids' => 'nullable',
+            'media_library_gallery_image_ids.*' => 'exists:media,id',
+            'product_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp',
+            'gallery_images.*'  => 'nullable|image|mimes:jpg,jpeg,png,webp',
         ]);
 
-        if ($simpleValidator->fails()) {
-            Log::error('Simple product validation failed', [
+        if ($validator->fails()) {
+            Log::error('Product base validation failed', [
                 'product_id' => $product->id,
-                'errors' => $simpleValidator->errors()->toArray(),
+                'errors' => $validator->errors()->toArray(),
             ]);
 
-            return back()->withErrors($simpleValidator)->withInput();
+            return back()->withErrors($validator)->withInput();
         }
 
-        Log::info('Simple product validation passed', [
+        $validated = $validator->validated();
+
+        Log::info('Product base validation passed', [
             'product_id' => $product->id,
+            'validated_data' => $validated,
         ]);
-    }
 
-    /* ===============================
-    PRODUCT UPDATE
-    =============================== */
-    $product->update([
-        'product_title'        => $validated['title'],
-        'slug'                 => Str::slug($validated['title']),
-        'meta_title'           => $validated['meta_title'] ?? null,
-        'meta_description'     => $validated['meta_description'] ?? null,
-        'meta_keywords'        => $validated['meta_keywords'] ?? null,
-        'product_type'         => $validated['product_type'],
-        'short_description'    => $validated['short_description'],
-        'product_decscription' => $request->product_decscription ?? $product->product_decscription,
-        'exchangeable'         => $request->boolean('exchangeable'),
-        'refundable'           => $request->boolean('refundable'),
-        'free_shipping'        => $request->boolean('free_shipping'),
-        'brand_id'             => $request->brand_id,
-        'status'               => $request->status ?? $product->status,
-        'visibility'           => $request->visibility ?? $product->visibility,
-        'sell_price'           => $request->sell_price,
-        'sell_price_start_date'=> $request->sell_price_start_date,
-        'sell_price_end_date'  => $request->sell_price_end_date,
-        'weight'               => $request->weight,
-        'length'               => $request->length,
-        'width'                => $request->width,
-        'stock'                => $validated['stock'] ?? $product->stock,
-        'height'               => $request->height,
-        'media_library_main_image_id' =>
-            $validated['media_library_main_image_id'] ?? $product->media_library_main_image_id,
-        'media_library_gallery_image_ids' => $this->formatGalleryIds($validated['media_library_gallery_image_ids'] ?? null, $product->media_library_gallery_image_ids),
-    ]);
+        /* ===============================
+        CONDITIONAL SIMPLE PRODUCT VALIDATION
+        =============================== */
+        if ($validated['product_type'] == ProductType::SIMPLE->value) {
+            $simpleValidator = Validator::make($request->all(), [
+                'price' => 'required|numeric',
+                'stock' => 'required|integer',
+            ]);
 
-    Log::info('Product main data updated', ['product_id' => $product->id]);
+            if ($simpleValidator->fails()) {
+                Log::error('Simple product validation failed', [
+                    'product_id' => $product->id,
+                    'errors' => $simpleValidator->errors()->toArray(),
+                ]);
 
-    /* ===============================
-    MEDIA LIBRARY LOGS
-    =============================== */
-    if (!empty($validated['media_library_main_image_id'])) {
-        Log::info('Updating main image from media library', [
-            'product_id' => $product->id,
-            'media_id' => $validated['media_library_main_image_id'],
-        ]);
-    }
+                return back()->withErrors($simpleValidator)->withInput();
+            }
 
-    if (!empty($validated['media_library_gallery_image_ids'])) {
-        Log::info('Updating gallery images from media library', [
-            'product_id' => $product->id,
-            'media_ids' => $validated['media_library_gallery_image_ids'],
-        ]);
-    }
+            Log::info('Simple product validation passed', [
+                'product_id' => $product->id,
+            ]);
+        }
 
-    /* ===============================
-    SIMPLE / VARIANT DATA
-    =============================== */
-    if ($product->product_type == ProductType::SIMPLE->value) {
+        /* ===============================
+        PRODUCT UPDATE
+        =============================== */
         $product->update([
-            'stock'    => $validated['stock'],
-            'price'    => $validated['price'],
-            'discount' => $request->discount ?? $product->discount,
+            'product_title'        => $validated['title'],
+            'slug'                 => Str::slug($validated['title']),
+            'meta_title'           => $validated['meta_title'] ?? null,
+            'meta_description'     => $validated['meta_description'] ?? null,
+            'meta_keywords'        => $validated['meta_keywords'] ?? null,
+            'product_type'         => $validated['product_type'],
+            'short_description'    => $validated['short_description'],
+            'product_decscription' => $request->product_decscription ?? $product->product_decscription,
+            'exchangeable'         => $request->boolean('exchangeable'),
+            'refundable'           => $request->boolean('refundable'),
+            'free_shipping'        => $request->boolean('free_shipping'),
+            'brand_id'             => $request->brand_id,
+            'status'               => $request->status ?? $product->status,
+            'visibility'           => $request->visibility ?? $product->visibility,
+            'sell_price'           => $request->sell_price,
+            'sell_price_start_date'=> $request->sell_price_start_date,
+            'sell_price_end_date'  => $request->sell_price_end_date,
+            'weight'               => $request->weight,
+            'length'               => $request->length,
+            'width'                => $request->width,
+            'stock'                => $validated['stock'] ?? $product->stock,
+            'height'               => $request->height,
+            'media_library_main_image_id' =>
+                $validated['media_library_main_image_id'] ?? $product->media_library_main_image_id,
+            'media_library_gallery_image_ids' => $this->formatGalleryIds($validated['media_library_gallery_image_ids'] ?? null, $product->media_library_gallery_image_ids),
         ]);
 
-        Log::info('Simple product pricing updated', ['product_id' => $product->id]);
-    } else {
-        Log::info('Variant product detected, resetting simple pricing', [
+        Log::info('Product main data updated', ['product_id' => $product->id]);
+
+        /* ===============================
+        MEDIA LIBRARY LOGS
+        =============================== */
+        if (!empty($validated['media_library_main_image_id'])) {
+            Log::info('Updating main image from media library', [
+                'product_id' => $product->id,
+                'media_id' => $validated['media_library_main_image_id'],
+            ]);
+        }
+
+        if (!empty($validated['media_library_gallery_image_ids'])) {
+            Log::info('Updating gallery images from media library', [
+                'product_id' => $product->id,
+                'media_ids' => $validated['media_library_gallery_image_ids'],
+            ]);
+        }
+
+        /* ===============================
+        SIMPLE / VARIANT DATA
+        =============================== */
+        if ($product->product_type == ProductType::SIMPLE->value) {
+            $product->update([
+                'stock'    => $validated['stock'],
+                'price'    => $validated['price'],
+                'discount' => $request->discount ?? $product->discount,
+            ]);
+
+            Log::info('Simple product pricing updated', ['product_id' => $product->id]);
+        } else {
+            Log::info('Variant product detected, resetting simple pricing', [
+                'product_id' => $product->id,
+            ]);
+        }
+
+        /* ===============================
+        VARIANTS LOGS
+        =============================== */
+        if ($product->product_type == ProductType::VARIANTS->value) {
+            Log::info('Processing product variants', [
+                'product_id' => $product->id,
+                'variant_count' => count($request->variants ?? []),
+            ]);
+        }
+
+        Log::info('Product update completed successfully', [
             'product_id' => $product->id,
         ]);
+
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Product updated successfully!');
     }
-
-    /* ===============================
-    VARIANTS LOGS
-    =============================== */
-    if ($product->product_type == ProductType::VARIANTS->value) {
-        Log::info('Processing product variants', [
-            'product_id' => $product->id,
-            'variant_count' => count($request->variants ?? []),
-        ]);
-    }
-
-    Log::info('Product update completed successfully', [
-        'product_id' => $product->id,
-    ]);
-
-    return redirect()
-        ->route('products.index')
-        ->with('success', 'Product updated successfully!');
-}
 
 
     /**
      * Remove the specified resource from storage.
      */
 
-    public function updateVariants(Request $request, Product $product)
-    {
-        $variants = $request->variants ?? [];
+    // public function updateVariants(Request $request, Product $product)
+    // {
+    //     $variants = $request->variants ?? [];
 
-        foreach ($variants as $variantData) {
+    //     foreach ($variants as $variantData) {
 
-            $variant = $product->variants()
-                ->updateOrCreate(
-                    ['id' => $variantData['id'] ?? null],
-                    [
-                        'sku'           => $variantData['sku'] ?? null,
-                        'price'         => $variantData['price'] ?? 0,
-                        'stock'         => $variantData['stock'] ?? 0,
-                        'sell_price'    => $variantData['sell_price'] ?? null,
-                        'weight'        => $variantData['weight'] ?? null,
-                        'length'        => $variantData['length'] ?? null,
-                        'width'         => $variantData['width'] ?? null,
-                        'height'        => $variantData['height'] ?? null,
-                        'exchangeable'  => (int) ($variantData['exchangeable'] ?? 0),
-                        'refundable'    => (int) ($variantData['refundable'] ?? 0),
-                        'free_shipping' => (int) ($variantData['free_shipping'] ?? 0),
-                    ]
-                );
+    //         $variant = $product->variants()
+    //             ->updateOrCreate(
+    //                 ['id' => $variantData['id'] ?? null],
+    //                 [
+    //                     'sku'           => $variantData['sku'] ?? null,
+    //                     'price'         => $variantData['price'] ?? 0,
+    //                     'stock'         => $variantData['stock'] ?? 0,
+    //                     'sell_price'    => $variantData['sell_price'] ?? null,
+    //                     'weight'        => $variantData['weight'] ?? null,
+    //                     'length'        => $variantData['length'] ?? null,
+    //                     'width'         => $variantData['width'] ?? null,
+    //                     'height'        => $variantData['height'] ?? null,
+    //                     'exchangeable'  => (int) ($variantData['exchangeable'] ?? 0),
+    //                     'refundable'    => (int) ($variantData['refundable'] ?? 0),
+    //                     'free_shipping' => (int) ($variantData['free_shipping'] ?? 0),
+    //                 ]
+    //             );
 
-            if (!empty($variantData['values'])) {
-                $variant->attributeValues()->sync($variantData['values']);
-            }
-        }
+    //         if (!empty($variantData['values'])) {
+    //             $variant->attributeValues()->sync($variantData['values']);
+    //         }
+    //     }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Variants updated successfully'
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Variants updated successfully'
+    //     ]);
+    // }
 
 
-    public function removeVariant(Request $request, Product $product)
-    {
-        $variantId = $request->variant_id;
+    // public function removeVariant(Request $request, Product $product)
+    // {
+    //     $variantId = $request->variant_id;
 
-        $variant = ProductVariant::where('id', $variantId)
-            ->where('product_id', $product->id)
-            ->firstOrFail();
+    //     $variant = ProductVariant::where('id', $variantId)
+    //         ->where('product_id', $product->id)
+    //         ->firstOrFail();
 
-        if ($variant->image && Storage::disk('public')->exists($variant->image)) {
-            Storage::disk('public')->delete($variant->image);
-        }
+    //     if ($variant->image && Storage::disk('public')->exists($variant->image)) {
+    //         Storage::disk('public')->delete($variant->image);
+    //     }
 
-        $variant->delete();
+    //     $variant->delete();
 
-        return response()->json([
-            'success' => true,
-            'variant_id' => $variantId
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'variant_id' => $variantId
+    //     ]);
+    // }
 
     public function destroy(Product $product)
     {
@@ -713,43 +713,43 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 
-    public function generateVariants(Request $request)
-    {
-        $attributes = $request->input('attributes');
+    // public function generateVariants(Request $request)
+    // {
+    //     $attributes = $request->input('attributes');
 
-        if (empty($attributes)) {
-            return response()->json(['html' => '']);
-        }
+    //     if (empty($attributes)) {
+    //         return response()->json(['html' => '']);
+    //     }
 
-        $lists = [];
+    //     $lists = [];
 
-        foreach ($attributes as $attr) {
-            $lists[] = collect($attr['values'])->map(function ($valId) use ($attr) {
-                return [
-                    'attribute_id' => $attr['attribute_id'],
-                    'value_id'     => $valId,
-                    'value_name'   => $attr['values_map'][$valId] ?? ''
-                ];
-            })->toArray();
-        }
+    //     foreach ($attributes as $attr) {
+    //         $lists[] = collect($attr['values'])->map(function ($valId) use ($attr) {
+    //             return [
+    //                 'attribute_id' => $attr['attribute_id'],
+    //                 'value_id'     => $valId,
+    //                 'value_name'   => $attr['values_map'][$valId] ?? ''
+    //             ];
+    //         })->toArray();
+    //     }
 
-        // Cartesian product
-        $variants = collect($lists)->reduce(function ($carry, $item) {
-            if (empty($carry)) return array_map(fn($i) => [$i], $item);
+    //     // Cartesian product
+    //     $variants = collect($lists)->reduce(function ($carry, $item) {
+    //         if (empty($carry)) return array_map(fn($i) => [$i], $item);
 
-            $result = [];
-            foreach ($carry as $c) {
-                foreach ($item as $i) {
-                    $result[] = array_merge($c, [$i]);
-                }
-            }
-            return $result;
-        }, []);
+    //         $result = [];
+    //         foreach ($carry as $c) {
+    //             foreach ($item as $i) {
+    //                 $result[] = array_merge($c, [$i]);
+    //             }
+    //         }
+    //         return $result;
+    //     }, []);
 
-        return response()->json([
-            'html' => view('admin.products.partials.variants-html', compact('variants'))->render()
-        ]);
-    }
+    //     return response()->json([
+    //         'html' => view('admin.products.partials.variants-html', compact('variants'))->render()
+    //     ]);
+    // }
 
 
     public function userShow(string $slug)

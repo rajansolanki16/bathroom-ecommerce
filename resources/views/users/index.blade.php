@@ -61,6 +61,7 @@
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
+                                    <th>OTP Code</th>
                                     <th>Username</th>
                                     <th>Mobile</th>
                                     <th>Status</th>
@@ -74,6 +75,25 @@
                                         <td>#{{ $user->id }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td>
+                                        
+                                            @if($user->otp)
+                                                <form action="{{ route('users.send_otp', $user->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-primary d-flex align-items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-at-fill me-2" viewBox="0 0 16 16">
+                                                        <path d="M2 2A2 2 0 0 0 .05 3.555L8 8.414l7.95-4.859A2 2 0 0 0 14 2zm15.98 4.87a.5.5 0 0 1 .302.625l-2 6a.5.5 0 0 1-.453.35H2.173a.5.5 0 0 1-.454-.35l-2-6a.5.5 0 0 1 .302-.625.5.5 0 0 1 .625.302l1.83 5.492h11.048l1.83-5.492a.5.5 0 0 1 .625-.302m-4.32 1.348l-4.16 2.544a.5.5 0 0 1-.5 0L4.5 8.218v3.657l3.5 2.1 3.5-2.1z"/>
+                                                        </svg>
+                                                        Email OTP
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <button class="btn btn-sm btn-outline-secondary disabled" title="No OTP generated yet">
+                                                    No OTP to Send
+                                                </button>
+                                            @endif
+                                       
+                                    </td>
                                         <td><span class="badge bg-info">{{ $user->username }}</span></td>
                                         <td>{{ $user->mobile }}</td>
                                         <td>

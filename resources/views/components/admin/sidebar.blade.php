@@ -94,7 +94,7 @@
                 <!-- END BRANDS -->
 
                 <!-- Product Attribute -->
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     @php
                         $productAttributeActive =
                             Route::is('product_attributes.create') || Route::is('product_attributes.index');
@@ -119,7 +119,7 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> --}}
 
                 <!-- Category -->
                 <li class="nav-item">

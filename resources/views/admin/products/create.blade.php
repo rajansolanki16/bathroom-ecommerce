@@ -245,7 +245,7 @@
                                 <div class="col-xxl-4">
                                     <h5 class="card-title mb-3">Images</h5>
                                     <p class="text-muted">Product Information refers to any information held by an organization about the products it produces, buys, sells or distributes.</p>
-                                </div><!--end col-->
+                                </div>
                                 <div class="col-xxl-8">
                                     <div class="mb-4">
                                         <label class="form-label">Product Main Image <span class="text-danger">*</span></label>
@@ -266,11 +266,11 @@
                                         @enderror
                                     </div>
                                 </div>
-                            </div><!--end row-->
+                            </div>
                         </div>
                     </div>
-                </div><!--end col-->
-            </div><!--end row-->
+                </div>
+            </div>
 
             <div class="row" id="vec_general_Info_Section" style="display: none">
                 <div class="col-lg-12">
@@ -280,7 +280,7 @@
                                 <div class="col-xxl-4">
                                     <h5 class="card-title mb-3">General Info</h5>
                                     <p class="text-muted mb-0">An informational product can be a digital book (or e-book), a digital report, a white paper, a piece of software, audio or video files, a website, an e-zine or a newsletter.</p>
-                                </div><!--end col-->
+                                </div>
                                 <div class="col-xxl-8">
                                     <div class="row gy-3">
                                         <div class="col-lg-4">
@@ -314,7 +314,7 @@
                                             @error('discount')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
-                                        </div><!--end col-->
+                                        </div>
 
                                         <div class="col-lg-4">
                                             <div>
@@ -361,7 +361,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Info Note -->
                                         <div class="col-lg-12">
                                             <div class="alert alert-info mb-0">
                                                 <i class="ph-info me-1"></i>
@@ -381,16 +380,15 @@
                                             </div>
                                         </div>
 
-                                    </div><!--end row-->
+                                    </div>
                                 </div>
-                            </div><!--end row-->
+                            </div>
                         </div>
                     </div>
-                </div><!--end col-->
-            </div><!--end row-->
+                </div>
+            </div>
 
-            <!-- Shipping Info -->
-            <div class="row" id="vec_shipping_section">
+            {{-- <div class="row" id="vec_shipping_section">
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
@@ -400,12 +398,11 @@
                                     <p class="text-muted">
                                         Define product shipping details like weight, dimensions and free shipping option.
                                     </p>
-                                </div><!--end col-->
+                                </div>
 
                                 <div class="col-xxl-8">
                                     <div class="row gy-3">
 
-                                        <!-- Weight -->
                                         <div class="col-lg-4">
                                             <div>
                                                 <label class="form-label">Weight</label>
@@ -421,7 +418,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Length -->
                                         <div class="col-lg-4">
                                             <div>
                                                 <label class="form-label">Length</label>
@@ -437,7 +433,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Width -->
                                         <div class="col-lg-4">
                                             <div>
                                                 <label class="form-label">Width</label>
@@ -453,7 +448,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Height -->
                                         <div class="col-lg-4">
                                             <div>
                                                 <label class="form-label">Height</label>
@@ -469,7 +463,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Free Shipping -->
                                         <div class="col-lg-8 d-flex align-items-center">
                                             <div class="form-check form-switch mt-4">
                                                 <input class="form-check-input"
@@ -489,10 +482,9 @@
                         </div>
                     </div>
                 </div><!--end col-->
-            </div><!--end row-->
+            </div> --}}
 
-            {{-- Variant Section --}}
-            <div class="row" id="vec_variantSection" style="display:none;">
+            {{-- <div class="row" id="vec_variantSection" style="display:none;">
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
@@ -506,7 +498,6 @@
                                 </div>
 
                                 <div class="col-xxl-8">
-                                    {{-- Attribute Type --}}
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold">Variant Attributes</label>
                                         <select class="form-control" id="variantAttributesSelect" name="product_attributes[]" multiple>
@@ -525,7 +516,6 @@
                                     </button>
 
                                     <div id="variantsList" class="mt-4">
-                                        <!-- Variants will be rendered here -->
                                     </div>
 
                                 </div>
@@ -534,8 +524,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            {{-- End Variant Section --}}
+            </div> --}}
 
             <div class="hstack gap-2 justify-content-end mb-3">
                 <a href="{{ route('products.index') }}" class="btn btn-danger">Back</a>
