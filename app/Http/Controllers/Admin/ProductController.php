@@ -20,12 +20,29 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Imports\ProductsImport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function import(Request $request) 
+    {
+        $request->validate([
+            'import_file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        try {
+            Excel::import(new ProductsImport, $request->file('import_file'));
+            return back()->with('success', 'Products imported successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error during import: ' . $e->getMessage());
+        }
+    }
+
     public function index(Request $request)
     {
         $query = Product::with('categories');
@@ -398,6 +415,7 @@ class ProductController extends Controller
             ->with('success', 'Product created successfully!');
     }
 
+
     /**
      * Display the specified resource.
      */
@@ -635,16 +653,16 @@ class ProductController extends Controller
         /* ===============================
         VARIANTS LOGS
         =============================== */
-        if ($product->product_type == ProductType::VARIANTS->value) {
-            Log::info('Processing product variants', [
-                'product_id' => $product->id,
-                'variant_count' => count($request->variants ?? []),
-            ]);
-        }
+        // if ($product->product_type == ProductType::VARIANTS->value) {
+        //     Log::info('Processing product variants', [
+        //         'product_id' => $product->id,
+        //         'variant_count' => count($request->variants ?? []),
+        //     ]);
+        // }
 
-        Log::info('Product update completed successfully', [
-            'product_id' => $product->id,
-        ]);
+        // Log::info('Product update completed successfully', [
+        //     'product_id' => $product->id,
+        // ]);
 
         return redirect()
             ->route('products.index')

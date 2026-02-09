@@ -1,5 +1,6 @@
 <x-admin.header :title="'Dashboard'" />
 
+@role('admin')
 <div class="row">
     <div class="col-xxl col-sm-6">
         <div class="card overflow-hidden">
@@ -162,6 +163,9 @@
         </div>
     </div>
 </div>
+@endrole
+
+
 
 
 

@@ -33,11 +33,8 @@
 
                     <div class="col-md-4">
                         <div class="search-box">
-                            <input type="text"
-                                   name="search"
-                                   value="{{ request('search') }}"
-                                   class="form-control"
-                                   placeholder="Search products...">
+                            <input type="text" name="search" value="{{ request('search') }}" class="form-control"
+                                placeholder="Search products...">
                             <i class="ri-search-line search-icon"></i>
                         </div>
                     </div>
@@ -48,7 +45,7 @@
                             @foreach ($categories as $parent)
                                 <optgroup label="{{ $parent->name }}">
                                     <option value="{{ $parent->id }}">{{ $parent->name }}</option>
-                                    @foreach($parent->children as $child)
+                                    @foreach ($parent->children as $child)
                                         <option value="{{ $child->id }}">— {{ $child->name }}</option>
                                     @endforeach
                                 </optgroup>
@@ -85,7 +82,14 @@
                             <a href="{{ route('products.create') }}" class="btn btn-success add-btn">
                                 <i class="ri-add-line align-bottom me-1"></i> Add
                             </a>
+
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                                data-bs-target="#importModal">
+                                <i class="ri-upload-2-line align-bottom me-1"></i> Import Excel
+                            </button>
                         </div>
+
+
 
                         <div class="col-sm">
                             <div class="text-sm-end text-muted">
@@ -116,12 +120,12 @@
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-xs bg-light rounded p-1 me-2">
                                                     <img src="{{ $product->getFirstMediaUrl('main_image') ?: asset('admin/images/new-document.png') }}"
-                                                         class="img-fluid"
-                                                         alt="">
+                                                        class="img-fluid" alt="">
                                                 </div>
                                                 <div>
                                                     <h6 class="mb-0">
-                                                        <a href="{{ route('products.edit', $product->id) }}" class="text-reset">
+                                                        <a href="{{ route('products.edit', $product->id) }}"
+                                                            class="text-reset">
                                                             {{ $product->product_title }}
                                                         </a>
                                                     </h6>
@@ -148,33 +152,33 @@
                                         <td>
                                             <div class="dropdown">
                                                 <button class="btn btn-sm btn-subtle-secondary btn-icon"
-                                                        data-bs-toggle="dropdown">
+                                                    data-bs-toggle="dropdown">
                                                     <i class="bi bi-three-dots-vertical"></i>
                                                 </button>
 
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
                                                         <a class="dropdown-item"
-                                                           href="{{ route('products.show', $product->id) }}">
+                                                            href="{{ route('products.show', $product->id) }}">
                                                             <i class="ph-eye me-1"></i> View
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item"
-                                                           href="{{ route('products.edit', $product->id) }}">
+                                                            href="{{ route('products.edit', $product->id) }}">
                                                             <i class="ph-pencil me-1"></i> Edit
                                                         </a>
                                                     </li>
 
-                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
 
                                                     <li>
-                                                        <a href="javascript:void(0);"
-                                                           class="dropdown-item text-danger"
-                                                           data-delete-url="{{ route('products.destroy', $product->id) }}"
-                                                           onclick="setDeleteFormAction(this)"
-                                                           data-bs-toggle="modal"
-                                                           data-bs-target="#deleteRecordModal">
+                                                        <a href="javascript:void(0);" class="dropdown-item text-danger"
+                                                            data-delete-url="{{ route('products.destroy', $product->id) }}"
+                                                            onclick="setDeleteFormAction(this)" data-bs-toggle="modal"
+                                                            data-bs-target="#deleteRecordModal">
                                                             <i class="ph-trash me-1"></i> Remove
                                                         </a>
                                                     </li>
@@ -213,6 +217,35 @@
 
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="importModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Import Products</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Choose Excel File (.xlsx, .csv)</label>
+                        <input type="file" name="import_file" class="form-control" required>
+                    </div>
+                    <div class="alert alert-info">
+                        <small>Headers should be: <strong>title, type, short_description,
+                                description, price, discount</strong></small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Upload & Import</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

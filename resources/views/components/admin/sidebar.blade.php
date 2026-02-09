@@ -290,7 +290,7 @@
                 </li>
                 @endrole
 
-                @role('admin|salesman')
+                @role('salesman')
                 <li class="nav-item">
                     @php
                     $visitActive = Route::is('salesman.visit.create') || Route::is('salesman.visit.store');
