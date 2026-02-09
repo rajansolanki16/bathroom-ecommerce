@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use App\Models\Setting;
 
 class MediaLibraryController extends Controller
 
@@ -31,7 +32,7 @@ class MediaLibraryController extends Controller
         $request->validate([
             'file' => 'required',
         ]);
-        $model = \App\Models\Setting::first();
+        $model = Setting::first();
         $uploaded = [];
         $files = $request->file('file');
         if (!is_array($files)) {
@@ -81,6 +82,4 @@ class MediaLibraryController extends Controller
         ]);
     }
 
-    // Add image manipulation using conversions
-    // In Setting model, add registerMediaConversions
 }

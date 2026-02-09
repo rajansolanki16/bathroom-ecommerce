@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Models\UserActivityLog;
 use Illuminate\Support\Facades\Log;
+use App\Mail\UserOtpMail;
 
 class UserController extends Controller
 {
@@ -255,7 +256,7 @@ class UserController extends Controller
         $user->update(['is_approved' => !$user->is_approved]);
 
         $status = $user->is_approved ? 'approved' : 'blocked';
-        return back()->with('success', "User access has been {$status} successfully.");
+        return back()->with('success', "User access ha  s been {$status} successfully.");
     }
 
     /**
@@ -287,7 +288,7 @@ class UserController extends Controller
             return back()->with('error', 'No active OTP found for this user.');
         }
 
-        Mail::to($user->email)->send(new \App\Mail\UserOtpMail($user));
+        Mail::to($user->email)->send(new UserOtpMail($user));
 
         return back()->with('success', "OTP has been sent to {$user->email} successfully.");
     }
