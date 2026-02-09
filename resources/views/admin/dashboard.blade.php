@@ -213,21 +213,53 @@
                 <h4 class="card-title mb-0">Recent Store Visits</h4>
             </div>
 
+            {{-- Filter Section --}}
+            <div class="card-body border-bottom bg-light">
+                <form action="{{ route('admin.dashboard') }}" method="GET">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Vendor</label>
+                            <select name="vendor_id" class="form-select">
+                                <option value="">All Vendors</option>
+                                @foreach($vendors as $vendor)
+                                <option value="{{ $vendor->id }}" {{ request('vendor_id') == $vendor->id ? 'selected' : '' }}>
+                                    {{ $vendor->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">From Date</label>
+                            <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">To Date</label>
+                            <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="ri-search-line"></i> Filter
+                            </button>
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+                                <i class="ri-refresh-line"></i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table align-middle table-nowrap mb-0">
                         <thead>
                             <tr>
                                 <th>Vendor</th>
-                                <th>Salesman</th>
                                 <th>Outcome</th>
                                 <th>Purpose</th>
-                                <th>Notes</th>
-                                <th>Feedback</th>
-                                <th>Follow-up Required</th>
-                                <th>Next Follow-up Date</th>
-                                <th>Rating</th>
-                                <th>Location</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>
@@ -236,7 +268,6 @@
                             @forelse($recentVisits as $visit)
                             <tr>
                                 <td>{{ $visit->vendor->name ?? '-' }}</td>
-                                <td>{{ $visit->salesman->name ?? '-' }}</td>
                                 <td>
                                     <span class="badge bg-{{ 
                                         $visit->outcome === 'positive' ? 'success' :
@@ -246,29 +277,11 @@
                                     </span>
                                 </td>
                                 <td>{{ $visit->purpose ?? '-' }}</td>
-                                <td>{{ Str::limit($visit->notes ?? '-', 30) }}</td>
-                                <td>{{ Str::limit($visit->feedback ?? '-', 30) }}</td>
-                                <td>
-                                    @if($visit->follow_up_required)
-                                    <span class="badge bg-warning">Yes</span>
-                                    @else
-                                    <span class="badge bg-secondary">No</span>
-                                    @endif
-                                </td>
-                                <td>{{ $visit->next_follow_up_date ? \Carbon\Carbon::parse($visit->next_follow_up_date)->format('M d, Y') : '-' }}</td>
-                                <td>
-                                    @if($visit->rating)
-                                    <span class="badge bg-info">{{ $visit->rating }}/5</span>
-                                    @else
-                                    -
-                                    @endif
-                                </td>
-                                <td>{{ Str::limit($visit->location_address ?? '-', 20) }}</td>
                                 <td>{{ $visit->created_at->format('M d, Y') }}</td>
                                 <td>
                                     <a href="{{ route('salesman.visit.edit', $visit->id) }}" class="btn btn-sm">
                                         <i class="ri-edit-line"></i> Edit
-                                    </a> 
+                                    </a>
                                 </td>
                             </tr>
                             @empty

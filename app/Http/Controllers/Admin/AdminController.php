@@ -11,10 +11,11 @@ use App\Http\Controllers\Controller;
 use App\Models\StoreVisit;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\Request;
 
 class AdminController extends Controller
 {
-    public function show_admin()
+    public function show_admin(Request $request)
     {
         $user = Auth::user();
 
@@ -52,12 +53,26 @@ class AdminController extends Controller
             ->limit(5)
             ->get();
 
-
         // Store Visit data for salesman
         $totalVisits = StoreVisit::count();
         $todayVisits = StoreVisit::whereDate('created_at', today())->count();
-        $recentVisits = StoreVisit::with(['vendor', 'salesman'])
-            ->latest()
+        $recentVisitsQuery = StoreVisit::with(['vendor', 'salesman'])
+            ->latest();
+
+        //filter vendors for dropdown
+        $vendors = User::whereHas('roles', fn($q) => $q->where('name', 'vendor'))->get();
+        if ($request->filled('vendor_id')) {
+            $recentVisitsQuery->where('vendor_id', $request->vendor_id);
+        }
+        // From date filter
+        if ($request->filled('from_date')) {
+            $recentVisitsQuery->whereDate('created_at', '>=', $request->from_date);
+        }
+        // To date filter
+        if ($request->filled('to_date')) {
+            $recentVisitsQuery->whereDate('created_at', '<=', $request->to_date);
+        }
+        $recentVisits = $recentVisitsQuery
             ->take(5)
             ->get();
 
@@ -79,6 +94,7 @@ class AdminController extends Controller
                 "totalVisits" => $totalVisits,
                 "todayVisits" => $todayVisits,
                 "recentVisits" => $recentVisits,
+                "vendors" => $vendors,
             ]);
     }
 
