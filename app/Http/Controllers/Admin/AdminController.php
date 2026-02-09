@@ -8,12 +8,14 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
+use App\Models\StoreVisit;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class AdminController extends Controller
 {
-    public function show_admin(){
+    public function show_admin()
+    {
         $user = Auth::user();
 
         $totalOrders = Order::count();
@@ -50,26 +52,39 @@ class AdminController extends Controller
             ->limit(5)
             ->get();
 
+
+        // Store Visit data for salesman
+        $totalVisits = StoreVisit::count();
+        $todayVisits = StoreVisit::whereDate('created_at', today())->count();
+        $recentVisits = StoreVisit::with(['vendor', 'salesman'])
+            ->latest()
+            ->take(5)
+            ->get();
+
         return view('admin.dashboard')
-                ->with([
-                    "user" => $user,
-                    "totalOrders" => $totalOrders,
-                    "totalRevenue" => $totalRevenue,
-                    "totalProducts" => $totalProducts,
-                    "totalBrands" => $totalBrands,
-                    "totalCategories" => $totalCategories,
-                    "totalUsers" => $totalUsers,
-                    "recentOrders" => $recentOrders,
-                    "monthlyRevenue" => $monthlyRevenue,
-                    "monthlyOrders" => $monthlyOrders,
-                    "topBrands" => $topBrands,
-                    "ordersByStatus" => $ordersByStatus,
-                    "lowStockProducts" => $lowStockProducts,
-                ]);
+            ->with([
+                "user" => $user,
+                "totalOrders" => $totalOrders,
+                "totalRevenue" => $totalRevenue,
+                "totalProducts" => $totalProducts,
+                "totalBrands" => $totalBrands,
+                "totalCategories" => $totalCategories,
+                "totalUsers" => $totalUsers,
+                "recentOrders" => $recentOrders,
+                "monthlyRevenue" => $monthlyRevenue,
+                "monthlyOrders" => $monthlyOrders,
+                "topBrands" => $topBrands,
+                "ordersByStatus" => $ordersByStatus,
+                "lowStockProducts" => $lowStockProducts,
+                "totalVisits" => $totalVisits,
+                "todayVisits" => $todayVisits,
+                "recentVisits" => $recentVisits,
+            ]);
     }
 
-    public function show_users(){
+    public function show_users()
+    {
         $users = User::whereDoesntHave('roles', fn($q) => $q->where('name', 'admin'))->get();
-        return view('admin.users.all')->with(["users"=>$users]);
+        return view('admin.users.all')->with(["users" => $users]);
     }
 }
