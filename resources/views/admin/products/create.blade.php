@@ -115,6 +115,17 @@
                                           @endforeach
                                         </select>
                                     </div>
+
+                                    <br>
+                                      <div class="col-lg-12">
+                                        <label class="form-label">Colors</label>
+                                        <select id="productColors" name="color_id" class="form-control" >
+                                          @foreach( $allcolors as $color)
+                                            <option value="{{ $color->id }}" {{ (collect(old('colors'))->contains($color->id) || (isset($product) && $product->colors->contains($color->id))) ? 'selected' : '' }}>{{ $color->name }}</option>
+                                          @endforeach
+                                        </select>
+                                    </div>
+
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">

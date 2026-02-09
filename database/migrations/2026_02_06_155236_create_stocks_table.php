@@ -13,13 +13,8 @@ return new class extends Migration
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
-            // product info
-            $table->text('product_name');
-            // $table->string('category')->nullable(); 
-            // $table->string('brand')->nullable();
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->integer('quantity')->default(0);
-            //$table->integer('min_quantity')->default(5);
-            $table->string('unit')->default('pcs'); // pcs, box, set
             $table->text('notes')->nullable();
             $table->timestamps();
         });

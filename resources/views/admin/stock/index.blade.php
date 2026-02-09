@@ -46,17 +46,40 @@
                         </div>
 
                         <div class="col-sm">
-                            <div class="d-flex justify-content-sm-end gap-2">
-                                <div class="search-box ms-2">
-                                    <input type="text" class="form-control" id="searchBrands" placeholder="Search...">
-                                    <i class="ri-search-line search-icon"></i>
+                            <form method="GET"
+                                action="{{ route('stocks.index') }}"
+                                class="d-flex align-items-end justify-content-sm-end gap-2 flex-wrap">
+
+                                <div>
+                                    <label class="form-label mb-1">From</label>
+                                    <input type="date"
+                                        class="form-control"
+                                        name="from_date"
+                                        value="{{ request('from_date') }}">
                                 </div>
 
-                                <a href="{{ request()->has('enabled') ? route('stocks.index') : route('stocks.index', ['enabled' => 1]) }}"
-                                    class="btn btn-outline-info">
-                                    {{ request()->has('enabled') ? 'Show All' : 'Show Enabled' }}
-                                </a>
-                            </div>
+                                <div>
+                                    <label class="form-label mb-1">To</label>
+                                    <input type="date"
+                                        class="form-control"
+                                        name="to_date"
+                                        value="{{ request('to_date') }}">
+                                </div>
+
+                                <div>
+                                    <button type="submit" class="btn btn-outline-info">
+                                        Filter
+                                    </button>
+                                </div>
+
+                                <div>
+                                    <a href="{{ route('stocks.index') }}"
+                                        class="btn btn-outline-secondary">
+                                        Reset
+                                    </a>
+                                </div>
+
+                            </form>
                         </div>
                     </div>
 
@@ -68,8 +91,8 @@
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Quantity</th>
-                                    <th>Unit</th>
                                     <th>Notes</th>
+                                    <th>Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -78,13 +101,12 @@
                                 @forelse($stocks as $stock)
                                 <tr>
                                     <td>#{{ $stock->id }}</td>
-
-                                    <td>{{ $stock->product_name }}</td>
+                                    <td>{{ $stock->product->product_title }}</td>
                                     <td>{{ $stock->quantity}}</td>
-                                    <td>{{ $stock->unit }}</td>
                                     <td>{{ $stock->notes}}</td>
+                                    <td>{{ $stock->created_at->format('d M Y') }}</td>
 
-                                     <td>
+                                    <td>
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-subtle-secondary btn-icon"
                                                 data-bs-toggle="dropdown">
@@ -92,15 +114,6 @@
                                             </button>
 
                                             <ul class="dropdown-menu dropdown-menu-end">
-                                                <li>
-                                                    <a href="{{ route('stocks.edit', $stock->id) }}" class="dropdown-item">
-                                                        <i class="ph-pencil me-1"></i> Edit
-                                                    </a>
-                                                </li>
-
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
 
                                                 <li>
                                                     <a href="javascript:void(0);"
@@ -114,7 +127,7 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                    </td> 
+                                    </td>
 
                                 </tr>
                                 @empty

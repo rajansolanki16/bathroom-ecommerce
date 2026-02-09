@@ -22,6 +22,7 @@ class Product extends Model implements HasMedia
 
         'product_type',
         'brand_id',
+        'color_id',
         'short_description',
         'product_decscription',
 

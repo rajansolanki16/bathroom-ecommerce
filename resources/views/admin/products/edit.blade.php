@@ -84,6 +84,29 @@
                                         @enderror
                                     </div>
                                 </div>
+
+                                 <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">Color</label>
+                                            <select id="productColors" name="color_id" class="form-control">
+                                                <option value="">Select Color</option>
+
+                                                @foreach($allcolors as $color)
+                                                <option value="{{ $color->id }}"
+                                                    {{ isset($product) && $product->color_id == $color->id ? 'selected' : '' }}>
+                                                    {{ $color->name }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        @error('tags')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label">Tags</label>

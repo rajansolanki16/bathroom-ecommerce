@@ -92,7 +92,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
                     // Media Library Picker (returns only grid/list for modal)
                     Route::get('/media-library/picker', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'picker'])->name('media-library.picker');
-        Route::get('/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard');
+        // Route::get('/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard');
 
         // Media Library
         Route::get('/media-library', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'index'])->name('media-library.index');
@@ -134,8 +134,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/stocks/create', [StockController::class, 'create'])->name('stocks.create');
         Route::post('/stocks', [StockController::class, 'store'])->name('stocks.store');
         Route::get('/stocks', [StockController::class, 'index'])->name('stocks.index');
-        Route::get('/stocks/{id}/edit', [StockController::class, 'edit'])->name('stocks.edit');
-        Route::put('/stocks/{id}', [StockController::class, 'update'])->name('stocks.update');
+        // Route::get('/stocks/{id}/edit', [StockController::class, 'edit'])->name('stocks.edit');
+        // Route::put('/stocks/{id}', [StockController::class, 'update'])->name('stocks.update');
         Route::delete('/stocks/{id}', [StockController::class, 'destroy'])->name('stocks.destroy');
 
 

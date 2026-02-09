@@ -11,6 +11,7 @@ use App\Enums\ProductVisibility;
 use App\Enums\ProductStatus;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Product;
 use App\Models\Tag;
 use App\Models\ProductAttribute;
@@ -67,6 +68,7 @@ class ProductController extends Controller
             'categories'         => Category::whereNull('parent_id')->with('children')->orderBy('name')->get(),
             'allTags'            => Tag::orderBy('name')->get(),
             'allbrands'          => Brand::orderBy('name')->get(),
+            'allcolors'          => Color::orderBy('name')->get(),
             'attributes'         => $attributes,
             'attributesJson'     => $attributesJson,
         ]);
@@ -220,6 +222,7 @@ class ProductController extends Controller
         $product->free_shipping        = $request->boolean('free_shipping');
 
         $product->brand_id             = $request->brand_id ?? null;
+        $product->color_id             = $request->color_id ?? null;
         // Main and gallery IDs can come as CSV string (from JS) or array; normalize here
         $product->media_library_main_image_id = $request->input('media_library_main_image_id') ?? null;
         $galleryIds = $request->input('media_library_gallery_image_ids');
@@ -483,6 +486,7 @@ class ProductController extends Controller
             'productVisibilities' => ProductVisibility::cases(),
             'allTags'            => Tag::orderBy('name')->get(),
             'allbrands'          => Brand::orderBy('name')->get(),
+            'allcolors'          => Color::orderBy('name')->get(),
             'attributes'         => $attributes,
             'attributesJson'     => $attributesJson,
             'variantsJson'       => $variantsJson,
@@ -576,6 +580,7 @@ class ProductController extends Controller
             'refundable'           => $request->boolean('refundable'),
             'free_shipping'        => $request->boolean('free_shipping'),
             'brand_id'             => $request->brand_id,
+            'color_id'             => $request->color_id,
             'status'               => $request->status ?? $product->status,
             'visibility'           => $request->visibility ?? $product->visibility,
             'sell_price'           => $request->sell_price,

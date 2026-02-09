@@ -615,6 +615,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    const colorSelect = document.querySelector('#productColors');
+    if (colorSelect) {
+        new Choices(colorSelect, {
+            searchEnabled: true,
+            removeItemButton: true,
+            shouldSort: false,
+            placeholderValue: 'Select colors',
+        });
+    }
+
+    const productStockSelect = document.querySelector('#productStock');
+    if (productStockSelect) {
+        new Choices(productStockSelect, {
+            searchEnabled: true,
+            removeItemButton: true,
+            shouldSort: false,
+            placeholderValue: 'Select product',
+        });
+    }
+
 
     const productTypeSelect = document.querySelector('#productType');
     if (productTypeSelect) {
