@@ -8,7 +8,7 @@ class StoreVisit extends Model
     protected $fillable = [
         'salesman_id', 'vendor_id', 'purpose', 'notes', 
         'feedback', 'rating', 'outcome', 
-        'follow_up_required', 'next_follow_up_date'
+        'follow_up_required', 'next_follow_up_date','location_address'
     ];
 
     public function salesman() {

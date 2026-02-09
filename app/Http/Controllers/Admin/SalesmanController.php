@@ -28,18 +28,19 @@ class SalesmanController extends Controller
             'next_date' => 'required_if:follow_up_required,on|nullable|date|after_or_equal:today',
         ]);
 
-        // 2. Data Preparation
-        $data = [
-            'salesman_id'        => auth()->id(),
-            'vendor_id'          => $request->vendor_id,
-            'purpose'            => $request->purpose,
-            'notes'              => $request->notes,
-            'feedback'           => $request->feedback,
-            'rating'             => $request->rating,
-            'outcome'            => $request->outcome,
-            'follow_up_required' => $request->has('follow_up_required'),
-            'next_follow_up_date' => $request->next_date,
-        ];
+    // 2. Data Preparation
+    $data = [
+        'salesman_id'        => auth()->id(), 
+        'vendor_id'          => $request->vendor_id,
+        'purpose'            => $request->purpose,
+        'notes'              => $request->notes,
+        'feedback'           => $request->feedback,
+        'rating'             => $request->rating,
+        'outcome'            => $request->outcome,
+        'follow_up_required' => $request->has('follow_up_required'),
+        'next_follow_up_date'=> $request->next_date,
+        'location_address'   => $request->location_address,
+    ];
 
         // 3. Create Record
         StoreVisit::create($data);
