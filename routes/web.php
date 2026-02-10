@@ -27,8 +27,8 @@ use App\Http\Controllers\User\WishListController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProductReviewController;
-use App\Http\Controllers\UserActivityController;
 use App\Http\Controllers\Admin\SalesmanController;
+use App\Http\Controllers\Admin\MediaLibraryController;
 
 //Auth
 Route::get('/login', [RedirectController::class, 'login'])->name('login');
@@ -75,8 +75,7 @@ Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 Route::post('/reviews', [ProductReviewController::class, 'store'])->name('reviews.store');
 
 
-Route::get('/user/orders/{order}', [OrderController::class, 'show'])
-    ->name('user.order.details');
+Route::get('/user/orders/{order}', [OrderController::class, 'show'])->name('user.order.details');
 
 // Route::middleware('auth')->group(function () {
 //     Route::post('/activity/online', [UserActivityController::class, 'online']);
@@ -90,16 +89,15 @@ Route::get('admin/dashboard', [AdminController::class, 'show_admin'])->name('adm
 
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
-                    // Media Library Picker (returns only grid/list for modal)
-                    Route::get('/media-library/picker', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'picker'])->name('media-library.picker');
+    Route::get('/media-library/picker', [MediaLibraryController::class, 'picker'])->name('media-library.picker');
         // Route::get('/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard');
 
         // Media Library
-        Route::get('/media-library', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'index'])->name('media-library.index');
-        Route::get('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'show'])->name('media-library.show');
-        Route::post('/media-library', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'store'])->name('media-library.store');
-        Route::delete('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'destroy'])->name('media-library.destroy');
-        Route::put('/media-library/{media}', [\App\Http\Controllers\Admin\MediaLibraryController::class, 'update'])->name('media-library.update');
+        Route::get('/media-library', [MediaLibraryController::class, 'index'])->name('media-library.index');
+        Route::get('/media-library/{media}', [MediaLibraryController::class, 'show'])->name('media-library.show');
+        Route::post('/media-library', [MediaLibraryController::class, 'store'])->name('media-library.store');
+        Route::delete('/media-library/{media}', [MediaLibraryController::class, 'destroy'])->name('media-library.destroy');
+        Route::put('/media-library/{media}', [MediaLibraryController::class, 'update'])->name('media-library.update');
 
         Route::post('/products/{product}/variants/update', [ProductController::class, 'updateVariants'])->name('products.variants.update');
         Route::post('/products/{product}/variants/remove', [ProductController::class, 'removeVariant'])->name('products.variants.remove');
@@ -135,6 +133,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/stocks/create', [StockController::class, 'create'])->name('stocks.create');
         Route::post('/stocks', [StockController::class, 'store'])->name('stocks.store');
         Route::get('/stocks', [StockController::class, 'index'])->name('stocks.index');
+        Route::get('/stocks/{id}', [StockController::class, 'show'])->name('stocks.show');
         // Route::get('/stocks/{id}/edit', [StockController::class, 'edit'])->name('stocks.edit');
         // Route::put('/stocks/{id}', [StockController::class, 'update'])->name('stocks.update');
         Route::delete('/stocks/{id}', [StockController::class, 'destroy'])->name('stocks.destroy');
@@ -184,6 +183,6 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['role:admin|salesman'])->group(function () {
     Route::get('/salesman/visit/create', [SalesmanController::class, 'createVisit'])->name('salesman.visit.create');
     Route::post('/salesman/visit/store', [SalesmanController::class, 'storeVisit'])->name('salesman.visit.store');
-        Route::get('/salesman/visit/{id}/edit', [SalesmanController::class, 'editVisit'])->name('salesman.visit.edit');
-        Route::put('/salesman/visit/{id}', [SalesmanController::class, 'updateVisit'])->name('salesman.visit.update');
+    Route::get('/salesman/visit/{id}/edit', [SalesmanController::class, 'editVisit'])->name('salesman.visit.edit');
+    Route::put('/salesman/visit/{id}', [SalesmanController::class, 'updateVisit'])->name('salesman.visit.update');
 });
