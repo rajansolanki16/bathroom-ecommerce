@@ -177,10 +177,7 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-
-
-
-Route::middleware(['role:admin|salesman'])->group(function () {
+Route::middleware(['role:salesman'])->group(function () {
     Route::get('/salesman/visit/create', [SalesmanController::class, 'createVisit'])->name('salesman.visit.create');
     Route::post('/salesman/visit/store', [SalesmanController::class, 'storeVisit'])->name('salesman.visit.store');
     Route::get('/salesman/visit/{id}/edit', [SalesmanController::class, 'editVisit'])->name('salesman.visit.edit');

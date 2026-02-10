@@ -19,28 +19,33 @@ class AdminController extends Controller
     {
         $user = Auth::user();
 
+        /* =======================
+        ADMIN DASHBOARD STATS
+        ======================= */
         $totalOrders = Order::count();
         $totalRevenue = Order::sum('total');
         $totalProducts = Product::count();
         $totalBrands = Brand::count();
         $totalCategories = Category::count();
-        $totalUsers = User::whereDoesntHave('roles', fn($q) => $q->where('name', 'admin'))->count();
+        $totalUsers = User::whereDoesntHave('roles', fn ($q) =>
+            $q->where('name', 'admin')
+        )->count();
 
         $recentOrders = Order::with('user', 'items')
             ->latest()
             ->limit(10)
             ->get();
 
-        $monthlyRevenue = Order::whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)
+        $monthlyRevenue = Order::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
             ->sum('total');
 
-        $monthlyOrders = Order::whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)
+        $monthlyOrders = Order::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
             ->count();
 
         $topBrands = Brand::withCount('products')
-            ->orderBy('products_count', 'desc')
+            ->orderByDesc('products_count')
             ->limit(5)
             ->get();
 
@@ -49,58 +54,92 @@ class AdminController extends Controller
             ->get();
 
         $lowStockProducts = Product::where('stock', '<', 10)
-            ->orderBy('stock', 'asc')
+            ->orderBy('stock')
             ->limit(5)
             ->get();
 
-        // Store Visit data for salesman
-        $totalVisits = StoreVisit::count();
-        $todayVisits = StoreVisit::whereDate('created_at', today())->count();
-        $recentVisitsQuery = StoreVisit::with(['vendor', 'salesman'])
+        /* =======================
+        SALESMAN VISIT STATS
+        ======================= */
+        $totalVisits = StoreVisit::where('salesman_id', Auth::id())->count();
+
+        $todayVisits = StoreVisit::where('salesman_id', Auth::id())
+            ->whereDate('created_at', today())
+            ->count();
+
+        /* =======================
+        VENDOR DROPDOWN
+        ======================= */
+        $vendors = User::whereHas('roles', fn ($q) =>
+            $q->where('name', 'vendor')
+        )->select('id', 'name')->get();
+
+        /* =======================
+        STORE VISIT QUERY
+        ======================= */
+        $recentVisitsQuery = StoreVisit::with('vendor')
+            ->where('salesman_id', Auth::id()) 
             ->latest();
 
-        //filter vendors for dropdown
-        $vendors = User::whereHas('roles', fn($q) => $q->where('name', 'vendor'))->get();
+        // Vendor filter
         if ($request->filled('vendor_id')) {
             $recentVisitsQuery->where('vendor_id', $request->vendor_id);
         }
-        // From date filter
+        // Date filters
         if ($request->filled('from_date')) {
             $recentVisitsQuery->whereDate('created_at', '>=', $request->from_date);
         }
-        // To date filter
         if ($request->filled('to_date')) {
             $recentVisitsQuery->whereDate('created_at', '<=', $request->to_date);
         }
+
+        // Search (vendor / purpose / outcome)
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $recentVisitsQuery->where(function ($q) use ($search) {
+                $q->where('purpose', 'like', "%{$search}%")
+                ->orWhere('outcome', 'like', "%{$search}%")
+                ->orWhereHas('vendor', function ($vendor) use ($search) {
+                    $vendor->where('name', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        /* =======================
+        PAGINATION
+        ======================= */
         $recentVisits = $recentVisitsQuery
-            ->take(5)
-            ->get();
+            ->paginate(5)
+            ->withQueryString();
 
-        return view('admin.dashboard')
-            ->with([
-                "user" => $user,
-                "totalOrders" => $totalOrders,
-                "totalRevenue" => $totalRevenue,
-                "totalProducts" => $totalProducts,
-                "totalBrands" => $totalBrands,
-                "totalCategories" => $totalCategories,
-                "totalUsers" => $totalUsers,
-                "recentOrders" => $recentOrders,
-                "monthlyRevenue" => $monthlyRevenue,
-                "monthlyOrders" => $monthlyOrders,
-                "topBrands" => $topBrands,
-                "ordersByStatus" => $ordersByStatus,
-                "lowStockProducts" => $lowStockProducts,
-                "totalVisits" => $totalVisits,
-                "todayVisits" => $todayVisits,
-                "recentVisits" => $recentVisits,
-                "vendors" => $vendors,
-            ]);
+        /* =======================
+        VIEW
+        ======================= */
+        return view('admin.dashboard', compact(
+            'user',
+            'totalOrders',
+            'totalRevenue',
+            'totalProducts',
+            'totalBrands',
+            'totalCategories',
+            'totalUsers',
+            'recentOrders',
+            'monthlyRevenue',
+            'monthlyOrders',
+            'topBrands',
+            'ordersByStatus',
+            'lowStockProducts',
+            'totalVisits',
+            'todayVisits',
+            'recentVisits',
+            'vendors'
+        ));
     }
 
-    public function show_users()
-    {
-        $users = User::whereDoesntHave('roles', fn($q) => $q->where('name', 'admin'))->get();
-        return view('admin.users.all')->with(["users" => $users]);
-    }
+    // public function show_users()
+    // {
+    //     $users = User::whereDoesntHave('roles', fn($q) => $q->where('name', 'admin'))->get();
+    //     return view('admin.users.all')->with(["users" => $users]);
+    // }
 }
