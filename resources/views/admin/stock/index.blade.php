@@ -46,46 +46,31 @@
                         </div>
 
                         <div class="col-sm">
-                            <form method="GET"
-                                action="{{ route('stocks.index') }}"
-                                class="d-flex align-items-end justify-content-sm-end gap-2 flex-wrap">
+                            <div class="d-flex justify-content-sm-end gap-2 flex-wrap">
 
-                                <div>
-                                    <label class="form-label mb-1">From</label>
-                                    <input type="date"
-                                        class="form-control"
-                                        name="from_date"
-                                        value="{{ request('from_date') }}">
-                                </div>
-
-                                <div>
-                                    <label class="form-label mb-1">To</label>
-                                    <input type="date"
-                                        class="form-control"
-                                        name="to_date"
-                                        value="{{ request('to_date') }}">
-                                </div>
-
-                                <div>
+                                <!-- Date Filter Form -->
+                                <form method="GET" action="{{ route('stocks.index') }}" class="d-flex gap-2">
+                                    <input type="date" class="form-control" name="from_date" 
+                                           value="{{ request('from_date') }}" placeholder="From">
+                                    
+                                    <input type="date" class="form-control" name="to_date" 
+                                           value="{{ request('to_date') }}" placeholder="To">
+                                    
                                     <button type="submit" class="btn btn-outline-info">
-                                        Filter
+                                        <i class="ri-filter-line"></i> Filter
                                     </button>
-                                </div>
-
-                                <div>
-                                    <a href="{{ route('stocks.index') }}"
-                                        class="btn btn-outline-secondary">
-                                        Reset
+                                    
+                                    <a href="{{ route('stocks.index') }}" class="btn btn-outline-secondary">
+                                        <i class="ri-refresh-line"></i> Reset
                                     </a>
-                                </div>
-
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Table -->
                     <div class="table-responsive table-card mt-3 mb-1">
-                        <table class="table align-middle table-nowrap" id="brandTable">
+                        <table class="table align-middle table-nowrap" id="stockTable">
                             <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
@@ -102,8 +87,10 @@
                                 <tr>
                                     <td>#{{ $stock->id }}</td>
                                     <td>{{ $stock->product->product_title }}</td>
-                                    <td>{{ $stock->quantity}}</td>
-                                    <td>{{ $stock->notes}}</td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ $stock->quantity }}</span>
+                                    </td>
+                                    <td>{{ $stock->notes ?? '-' }}</td>
                                     <td>{{ $stock->created_at->format('d M Y') }}</td>
 
                                     <td>
@@ -114,7 +101,6 @@
                                             </button>
 
                                             <ul class="dropdown-menu dropdown-menu-end">
-
                                                 <li>
                                                     <a href="javascript:void(0);"
                                                         class="dropdown-item text-danger"
@@ -128,7 +114,6 @@
                                             </ul>
                                         </div>
                                     </td>
-
                                 </tr>
                                 @empty
                                 <tr>
@@ -148,12 +133,12 @@
                         </div>
                     </div>
 
-                    <!-- Pagination (JS same as Users) -->
+                    <!-- Pagination (JS same as Brands) -->
                     <div class="d-flex justify-content-end" id="paginationWrapper">
                         <div class="gap-2 pagination-wrap hstack">
-                            <a href="#" class="page-item pagination-prev disabled" id="prevBrandPage">Previous</a>
-                            <ul class="mb-0 pagination" id="brandPagination"></ul>
-                            <a href="#" class="page-item pagination-next" id="nextBrandPage">Next</a>
+                            <a href="#" class="page-item pagination-prev disabled" id="prevStockPage">Previous</a>
+                            <ul class="mb-0 pagination" id="stockPagination"></ul>
+                            <a href="#" class="page-item pagination-next" id="nextStockPage">Next</a>
                         </div>
                     </div>
 
@@ -165,6 +150,16 @@
 
 @include('partials.delete-modal')
 
-
+<script>
+    setupPaginatedTable({
+        searchInputId: "searchStocks",
+        tableId: "stockTable",
+        paginationWrapperId: "paginationWrapper",
+        paginationListId: "stockPagination",
+        prevBtnId: "prevStockPage",
+        nextBtnId: "nextStockPage",
+        noResultClass: "noresult"
+    });
+</script>
 
 <x-admin.footer />

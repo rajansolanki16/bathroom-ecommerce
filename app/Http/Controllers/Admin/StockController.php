@@ -25,6 +25,9 @@ class StockController extends Controller
                 $query->whereDate('created_at', '>=', $start_date)
                       ->whereDate('created_at', '<=', $end_date);
             })
+            ->latest()
+            // ->paginate(1)
+            // ->withQueryString();
             ->get();
         return view('admin.stock.index', compact('stocks'));
     }
@@ -64,13 +67,33 @@ class StockController extends Controller
 
             ]
         );
-        foreach ($request->products as $item) {
+            // foreach ($request->products as $item) {
+            //     Stock::create([
+            //         'product_id' => $item['product_id'],
+            //         'quantity'   => $item['quantity'],
+            //         'notes'      => $item['notes'] ?? null,
+            //     ]);
+            // }
+            foreach ($request->products as $item) {
+        $productId = $item['product_id'];
+        $quantity = $item['quantity'];
+        $notes = $item['notes'] ?? null;
+
+        $existingStock = Stock::where('product_id', $productId)->first();
+
+        if ($existingStock) {
+            $existingStock->update([
+                'quantity' => $existingStock->quantity + $quantity,
+                'notes' => $notes ? ($existingStock->notes ? $existingStock->notes . ' | ' . $notes : $notes) : $existingStock->notes,
+            ]);
+        } else {
             Stock::create([
-                'product_id' => $item['product_id'],
-                'quantity'   => $item['quantity'],
-                'notes'      => $item['notes'] ?? null,
+                'product_id' => $productId,
+                'quantity' => $quantity,
+                'notes' => $notes,
             ]);
         }
+    }
 
 
         return redirect()
