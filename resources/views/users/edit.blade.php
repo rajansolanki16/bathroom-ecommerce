@@ -131,7 +131,7 @@
                         <div class="mb-3">
                             <label class="form-label">Role <span class="text-danger">*</span></label>
                             <select name="role"
-                                    class="form-select @error('role') is-invalid @enderror"
+                                    class="form-select choices @error('role') is-invalid @enderror"
                                     required>
                                 @foreach($roles as $id => $name)
                                     <option value="{{ $name }}"

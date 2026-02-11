@@ -150,18 +150,7 @@
     </div>
 </div>
 
-@include('partials.delete-modal')
-<script>
-    setupPaginatedTable({
-        searchInputId: "searchColors",
-        tableId: "colorTable",
-        paginationWrapperId: "paginationWrapper",
-        paginationListId: "colorPagination",
-        prevBtnId: "prevColorPage",
-        nextBtnId: "nextColorPage",
-        noResultClass: "noresult"
-    });
-</script>
+<livewire:modals.delete-record />
 
 
 

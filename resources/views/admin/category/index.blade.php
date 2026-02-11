@@ -48,7 +48,8 @@
                         <div class="col-sm">
                             <div class="d-flex justify-content-sm-end">
                                 <div class="search-box ms-2">
-                                    <input type="text" class="form-control" id="searchCategories" placeholder="Search...">
+                                    <input type="text" class="form-control" id="searchCategories"
+                                        placeholder="Search...">
                                     <i class="ri-search-line search-icon"></i>
                                 </div>
                             </div>
@@ -71,32 +72,42 @@
 
                             <tbody>
                                 @forelse($categories as $category)
-                                    <tr>
+                                    <tr id="row-category-{{ $category->id }}">
                                         <td>#{{ $category->id }}</td>
 
                                         <td>
                                             @php
                                                 $logoUrl = null;
                                                 if ($category->media_library_logo_id) {
-                                                    $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($category->media_library_logo_id);
-                                                    if ($media && file_exists(storage_path('app/public/'.$media->id.'/'.$media->file_name))) {
-                                                        $logoUrl = asset('storage/'.$media->id.'/'.$media->file_name);
+                                                    $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find(
+                                                        $category->media_library_logo_id,
+                                                    );
+                                                    if (
+                                                        $media &&
+                                                        file_exists(
+                                                            storage_path(
+                                                                'app/public/' . $media->id . '/' . $media->file_name,
+                                                            ),
+                                                        )
+                                                    ) {
+                                                        $logoUrl = asset(
+                                                            'storage/' . $media->id . '/' . $media->file_name,
+                                                        );
                                                     }
                                                 }
                                             @endphp
 
-                                            @if($logoUrl)
+                                            @if ($logoUrl)
                                                 <img src="{{ $logoUrl }}"
-                                                     style="width:40px;height:40px;object-fit:cover"
-                                                     class="rounded"
-                                                     alt="{{ $category->name }}">
+                                                    style="width:40px;height:40px;object-fit:cover" class="rounded"
+                                                    alt="{{ $category->name }}">
                                             @else
                                                 <span class="badge bg-secondary">No Image</span>
                                             @endif
                                         </td>
 
                                         <td>
-                                            @if($category->parent_id)
+                                            @if ($category->parent_id)
                                                 <span class="badge bg-secondary me-1">Sub</span>
                                             @else
                                                 <span class="badge bg-primary me-1">Main</span>
@@ -109,7 +120,7 @@
                                         </td>
 
                                         <td>
-                                            @if($category->is_visible)
+                                            @if ($category->is_visible)
                                                 <span class="badge bg-success">Visible</span>
                                             @else
                                                 <span class="badge bg-danger">Hidden</span>
@@ -126,20 +137,21 @@
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
                                                         <a href="{{ route('categories.edit', $category->id) }}"
-                                                           class="dropdown-item">
+                                                            class="dropdown-item">
                                                             <i class="ph-pencil me-1"></i> Edit
                                                         </a>
                                                     </li>
 
-                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
 
                                                     <li>
-                                                        <a href="javascript:void(0);"
-                                                           class="dropdown-item text-danger"
-                                                           data-delete-url="{{ route('categories.destroy', $category->id) }}"
-                                                           onclick="setDeleteFormAction(this)"
-                                                           data-bs-toggle="modal"
-                                                           data-bs-target="#deleteRecordModal">
+                                                        <a href="javascript:void(0);" class="dropdown-item text-danger"
+                                                            onclick="Livewire.dispatch('confirmDelete', { 
+                                                                id: {{ $category->id }}, 
+                                                                model: 'App\\Models\\Category' 
+                                                        })">
                                                             <i class="ph-trash me-1"></i> Remove
                                                         </a>
                                                     </li>
@@ -168,7 +180,8 @@
                     <!-- Pagination -->
                     <div class="d-flex justify-content-end" id="paginationWrapper">
                         <div class="gap-2 pagination-wrap hstack">
-                            <a href="#" class="page-item pagination-prev disabled" id="prevCategoryPage">Previous</a>
+                            <a href="#" class="page-item pagination-prev disabled"
+                                id="prevCategoryPage">Previous</a>
                             <ul class="mb-0 pagination" id="categoryPagination"></ul>
                             <a href="#" class="page-item pagination-next" id="nextCategoryPage">Next</a>
                         </div>
@@ -180,7 +193,7 @@
     </div>
 </div>
 
-@include('partials.delete-modal')
+<livewire:modals.delete-record />
 
 <script>
     setupPaginatedTable({
@@ -191,6 +204,33 @@
         prevBtnId: "prevCategoryPage",
         nextBtnId: "nextCategoryPage",
         noResultClass: "noresult"
+    });
+
+    document.addEventListener('livewire:init', () => {
+
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+
+        Livewire.on('open-delete-modal', () => {
+            deleteModal.show();
+        });
+
+        Livewire.on('close-delete-modal', () => {
+            deleteModal.hide();
+        });
+
+        Livewire.on('record-deleted', (event) => {
+
+            let data = event[0];
+
+            let modelName = data.model.split('\\').pop().toLowerCase();
+            let row = document.getElementById(`row-${modelName}-${data.id}`);
+
+            if (row) {
+                row.remove();
+            }
+
+        });
+
     });
 </script>
 

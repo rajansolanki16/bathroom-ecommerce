@@ -64,8 +64,8 @@
                     <div class="table-responsive table-card mt-3 mb-1">
                         <table class="table align-middle table-nowrap" id="brandTable">
                             <thead class="table-light">
-                                <tr>
-                                    <th>ID</th>
+                            <tr>
+                                    <th>Index</th>
                                     <th>Logo</th>
                                     <th>Name</th>
                                     <th>Slug</th>
@@ -75,9 +75,9 @@
                             </thead>
 
                             <tbody>
-                                @forelse($brands as $brand)
-                                    <tr>
-                                        <td>#{{ $brand->id }}</td>
+                                @forelse($brands as $index => $brand)
+                                    <tr id="row-brand-{{ $brand->id }}">
+                                        <td>{{ $index + 1 }}</td>
 
                                         <td>
                                             @php
@@ -130,11 +130,11 @@
 
                                                     <li>
                                                         <a href="javascript:void(0);"
-                                                           class="dropdown-item text-danger"
-                                                           data-delete-url="{{ route('brands.destroy', $brand->id) }}"
-                                                           onclick="setDeleteFormAction(this)"
-                                                           data-bs-toggle="modal"
-                                                           data-bs-target="#deleteRecordModal">
+                                                        class="dropdown-item text-danger"
+                                                        onclick="Livewire.dispatch('confirmDelete', { 
+                                                                id: {{ $brand->id }}, 
+                                                                model: 'App\\Models\\Brand' 
+                                                        })">
                                                             <i class="ph-trash me-1"></i> Remove
                                                         </a>
                                                     </li>
@@ -175,7 +175,7 @@
     </div>
 </div>
 
-@include('partials.delete-modal')
+<livewire:modals.delete-record />
 
 <script>
     setupPaginatedTable({
@@ -188,9 +188,10 @@
         noResultClass: "noresult"
     });
 
-    document.querySelectorAll('.toggle-home-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const button = this;
+    // Use event delegation for toggle button clicks
+    document.getElementById('brandTable').addEventListener('click', function(e) {
+        if (e.target.closest('.toggle-home-btn')) {
+            const button = e.target.closest('.toggle-home-btn');
             button.disabled = true;
 
             fetch("{{ route('brands.toggle-home') }}", {
@@ -201,17 +202,56 @@
                 },
                 body: JSON.stringify({ brand_id: button.dataset.id })
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
             .then(data => {
                 if (data.status) {
                     button.classList.toggle('btn-success', data.show_on_home);
                     button.classList.toggle('btn-outline-secondary', !data.show_on_home);
                     button.textContent = data.show_on_home ? 'Enabled' : 'Disabled';
+                } else {
+                    console.error('Toggle failed:', data);
+                    alert('Failed to update brand status');
                 }
             })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('Error: ' + error.message);
+            })
             .finally(() => button.disabled = false);
-        });
+        }
     });
+
+    document.addEventListener('livewire:init', () => {
+
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+
+    Livewire.on('open-delete-modal', () => {
+        deleteModal.show();
+    });
+
+    Livewire.on('close-delete-modal', () => {
+        deleteModal.hide();
+    });
+
+    Livewire.on('record-deleted', (event) => {
+
+        let data = event[0];
+
+        let modelName = data.model.split('\\').pop().toLowerCase();
+        let row = document.getElementById(`row-${modelName}-${data.id}`);
+
+        if (row) {
+            row.remove();
+        }
+
+    });
+
+});
+
 </script>
+
 
 <x-admin.footer />

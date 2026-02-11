@@ -13,161 +13,158 @@
                                 <p class="text-muted">Product Information refers to any information held by an organisation about the products it produces, buys, sells or distributes.</p>
                             </div>
                             <div class="col-xxl-8">
+                                <!-- Product Title -->
                                 <div class="mb-3">
-                                    <label for="productTitle" class="form-label">Product Title <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="title" id="productTitle"
+                                    <label class="form-label">Product Title <span class="text-danger">*</span></label>
+                                    <input type="text" name="title" class="form-control"
                                         value="{{ old('title') }}" placeholder="Enter product title">
                                     @error('title')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label for="productType" class="form-label">Product Type <span class="text-danger">*</span></label>
-                                    <select class="form-control"
-                                        name="product_type"
-                                        id="productType">
-                                        <option value="">Select Type</option>
-                                        @foreach ($productTypes as $type)
-                                        <option value="{{ $type->value }}">{{ $type->label() }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('product_type')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
 
+                                <!-- Categories -->
                                 <div class="mb-3">
-                                    <label for="productCategories" class="form-label">
-                                        Categories
-                                    </label>
-
-                                    <select class="form-control"
-                                        name="categories[]"
-                                        id="productCategories"
-                                        multiple>
-                                        @forelse ($categories as $parent)
+                                    <label class="form-label">Categories</label>
+                                    <select class="form-control choices" name="categories[]" multiple>
+                                        @foreach ($categories as $parent)
                                             <optgroup label="{{ $parent->name }}">
-                                                <option value="{{ $parent->id }}" {{ collect(old('categories'))->contains($parent->id) ? 'selected' : '' }}>{{ $parent->name }}</option>
-                                                @foreach($parent->children as $child)
-                                                    <option value="{{ $child->id }}" {{ collect(old('categories'))->contains($child->id) ? 'selected' : '' }}>— {{ $child->name }}</option>
+                                                <option value="{{ $parent->id }}"
+                                                    {{ collect(old('categories'))->contains($parent->id) ? 'selected' : '' }}>
+                                                    {{ $parent->name }}
+                                                </option>
+                                                @foreach ($parent->children as $child)
+                                                    <option value="{{ $child->id }}"
+                                                        {{ collect(old('categories'))->contains($child->id) ? 'selected' : '' }}>
+                                                        — {{ $child->name }}
+                                                    </option>
                                                 @endforeach
                                             </optgroup>
-                                        @empty
-                                        <option disabled>No categories found</option>
-                                        @endforelse
+                                        @endforeach
                                     </select>
                                 </div>
 
+                                <!-- Short Description -->
                                 <div class="mb-3">
-                                    <label for="shortDecs" class="form-label">Short Description <span class="text-danger">*</span> </label>
-                                    <textarea class="form-control" name="short_description" id="shortDecs" rows="3">
-                                    {{ old('short_description') }}
-                                    </textarea>
+                                    <label class="form-label">Short Description</label>
+                                    <textarea name="short_description" class="form-control" rows="3">{{ old('short_description') }}</textarea>
                                     @error('short_description')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
+
+                                <!-- Brand & Color -->
                                 <div class="row">
-                                    <!-- SKU -->
                                     <div class="col-lg-6">
-                                        <div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Brand</label>
+                                            <select name="brand_id" class="form-control choices">
+                                                <option value="">Select Brand</option>
+                                                @foreach ($allbrands as $brand)
+                                                    <option value="{{ $brand->id }}"
+                                                        {{ old('brand_id') == $brand->id ? 'selected' : '' }}>
+                                                        {{ $brand->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Color</label>
+                                            <select name="color_id" class="form-control choices">
+                                                <option value="">Select Color</option>
+                                                @foreach ($allcolors as $color)
+                                                    <option value="{{ $color->id }}"
+                                                        {{ old('color_id') == $color->id ? 'selected' : '' }}>
+                                                        {{ $color->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tags & SKU -->
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tags</label>
+                                            <select class="form-control choices" name="tags[]" multiple>
+                                                @foreach ($allTags as $tag)
+                                                    <option value="{{ $tag->id }}"
+                                                        {{ collect(old('tags'))->contains($tag->id) ? 'selected' : '' }}>
+                                                        {{ $tag->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
                                             <label class="form-label">SKU Number</label>
-                                            <input type="text"
-                                                name="sku_number"
+                                            <input type="text" name="sku_number" class="form-control"
                                                 value="{{ old('sku_number') }}"
-                                                class="form-control"
                                                 placeholder="SKU-ABC-001">
-                                            @error('sku_number')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-6">
-                                        <div>
-                                            <label class="form-label" for="product-price-input">Price <span class="text-danger">*</span></label>
-                                            <div class="input-group has-validation">
-                                                <span class="input-group-text" id="product-price-addon">$</span>
-                                                <input type="number" step="0.01" name="price" class="form-control">
-                                                <div class="invalid-feedback">Please Enter a product price.</div>
-                                            </div>
-                                        </div>
-                                        @error('price')
+                                <!-- Price -->
+                                <div class="mb-3">
+                                    <label class="form-label">Price <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" step="0.01" name="price" class="form-control"
+                                            value="{{ old('price') }}" placeholder="0.00">
+                                    </div>
+                                    @error('price')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
-                                    </div><!--end col-->
+                                    @enderror
+                                </div>
 
+                                <!-- Status & Visibility -->
+                                <div class="row">
                                     <div class="col-lg-6">
-                                        <label class="form-label">Tags</label>
-                                        <select id="productTags" name="tags[]" class="form-control" multiple>
-                                            @foreach ($allTags as $tag)
-                                            <option value="{{ $tag->id }}" {{ (collect(old('tags'))->contains($tag->id) || (isset($product) && $product->tags->contains($tag->id))) ? 'selected' : '' }}>{{ $tag->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-
-                                    <div class="col-lg-6">
-                                        <label class="form-label">Brands</label>
-                                        <select id="productBrands" name="brand_id" class="form-control" >
-                                          @foreach( $allbrands as $brand)
-                                            <option value="{{ $brand->id }}" {{ (collect(old('brands'))->contains($brand->id) || (isset($product) && $product->brands->contains($brand->id))) ? 'selected' : '' }}>{{ $brand->name }}</option>
-                                          @endforeach
-                                        </select>
-                                    </div>
-
-                                    <br>
-                                      <div class="col-lg-12">
-                                        <label class="form-label">Colors</label>
-                                        <select id="productColors" name="color_id" class="form-control" >
-                                          @foreach( $allcolors as $color)
-                                            <option value="{{ $color->id }}" {{ (collect(old('colors'))->contains($color->id) || (isset($product) && $product->colors->contains($color->id))) ? 'selected' : '' }}>{{ $color->name }}</option>
-                                          @endforeach
-                                        </select>
-                                    </div>
-
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <label for="productStatus" class="form-label">Status</label>
-                                            <select class="form-control"
-                                                name="status"
-                                                id="productStatus">
+                                        <div class="mb-3">
+                                            <label class="form-label">Status</label>
+                                            <select name="status" class="form-control choices">
                                                 <option value="">Select Status</option>
-
                                                 @foreach ($productStatuses as $status)
-                                                <option value="{{ $status->value }}"
-                                                    {{ old('status') === $status->value ? 'selected' : '' }}>
-                                                    {{ $status->label() }}
-                                                </option>
+                                                    <option value="{{ $status->value }}"
+                                                        {{ old('status') === $status->value ? 'selected' : '' }}>
+                                                        {{ $status->label() }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                             @error('status')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div>
-                                                <label for="productVisibility" class="form-label">Visibility</label>
-                                                <select class="form-control" name="visibility" id="productVisibility">
-                                                    <option value="">Select Visibility</option>
+                                    </div>
 
-                                                    @foreach ($productVisibilities as $visibility)
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Visibility</label>
+                                            <select name="visibility" class="form-control choices">
+                                                <option value="">Select Visibility</option>
+                                                @foreach ($productVisibilities as $visibility)
                                                     <option value="{{ $visibility->value }}"
                                                         {{ old('visibility') === $visibility->value ? 'selected' : '' }}>
                                                         {{ $visibility->label() }}
                                                     </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('visibility')
+                                                @endforeach
+                                            </select>
+                                            @error('visibility')
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div><!--end col-->
+                                            @enderror
+                                        </div>
                                     </div>
-
-                                </div><!--end col-->
-                            </div><!--end row-->
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div><!--end col-->
@@ -298,7 +295,7 @@
                                             <div>
                                                 <label class="form-label">Stock Status <span class="text-danger">*</span></label>
                                                 <select name="stock_status"
-                                                    class="form-control">
+                                                    class="form-control choices">
                                                     <option value="">Select Status</option>
                                                     <option value="1" {{ old('stock_status') === 'instock' ? 'selected' : '' }}>
                                                         In Stock
@@ -755,6 +752,10 @@
     });
 </script>
 <script src="{{ asset('admin/js/pages/ecommerce-create-product.init.js') }}"></script>
+
+<script>
+
+</script>
 
 <script>
 $(document).ready(function () {

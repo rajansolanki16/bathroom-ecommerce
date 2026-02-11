@@ -112,7 +112,7 @@
                         <div class="mb-3">
                             <label class="form-label">Role <span class="text-danger">*</span></label>
                             <select id="role" name="role"
-                                class="form-select @error('role') is-invalid @enderror" required>
+                                class="form-select choices @error('role') is-invalid @enderror" required>
                                 <option value="">Select Role</option>
                                 @foreach ($roles as $id => $name)
                                     <option value="{{ $name }}" {{ old('role') == $name ? 'selected' : '' }}>
@@ -129,8 +129,14 @@
                         <!-- Actions -->
                         <div class="d-flex justify-content-end gap-2">
                             <a href="{{ route('users.index') }}" class="btn btn-light">Cancel</a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save me-1"></i> Create User
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <span id="btnText">
+                                    <i class="bi bi-save me-1"></i> Create User
+                                </span>
+                                <span id="btnLoader" class="d-none">
+                                    <span class="spinner-border spinner-border-sm me-1"></span>
+                                    Saving...
+                                </span>
                             </button>
                         </div>
 
@@ -148,5 +154,12 @@
         </div>
     </div>
 </div>
+<script>
+      document.querySelector('form').addEventListener('submit', function () {
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('btnText').classList.add('d-none');
+        document.getElementById('btnLoader').classList.remove('d-none');
+    });
+</script>
 
 <x-admin.footer />

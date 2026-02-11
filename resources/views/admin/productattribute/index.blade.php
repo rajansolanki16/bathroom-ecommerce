@@ -160,7 +160,7 @@
     </div>
 </div>
 
-@include('partials.delete-modal')
+<livewire:modals.delete-record />
 
 <script>
     setupPaginatedTable({

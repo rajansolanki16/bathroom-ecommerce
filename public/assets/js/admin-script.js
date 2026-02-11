@@ -945,3 +945,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+document.addEventListener('DOMContentLoaded', function () {
+    const elements = document.querySelectorAll('.choices');
+    elements.forEach(function(el) {
+        new Choices(el, {
+            removeItemButton: true,
+            searchEnabled: true,
+            shouldSort: false,
+        });
+    });
+});

@@ -105,7 +105,7 @@
                                 <tr>
                                     <th>Product</th>
                                     <th>Category</th>
-                                    <th>Stock</th>
+                                    <th>Brand</th>
                                     <th>Price</th>
                                     <th>Rating</th>
                                     <th>Published</th>
@@ -119,7 +119,16 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-xs bg-light rounded p-1 me-2">
-                                                    <img src="{{ $product->getFirstMediaUrl('main_image') ?: asset('admin/images/new-document.png') }}"
+                                                    @php
+                                                        $imageUrl = asset('admin/images/new-document.png');
+                                                        if ($product->media_library_main_image_id) {
+                                                            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($product->media_library_main_image_id);
+                                                            if ($media) {
+                                                                $imageUrl = $media->getUrl();
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    <img src="{{ $imageUrl }}"
                                                         class="img-fluid" alt="">
                                                 </div>
                                                 <div>
@@ -137,7 +146,7 @@
                                             {{ $product->categories->pluck('name')->join(', ') ?: '-' }}
                                         </td>
 
-                                        <td>{{ $product->stock ?? 0 }}</td>
+                                        <td>{{ $product->brand->name ?? '-' }}</td>
 
                                         <td>₹{{ number_format($product->price, 2) }}</td>
 
@@ -250,6 +259,6 @@
     </div>
 </div>
 
-@include('partials.delete-modal')
+<livewire:modals.delete-record />
 
 <x-admin.footer />

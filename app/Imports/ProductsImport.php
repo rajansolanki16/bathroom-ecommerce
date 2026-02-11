@@ -14,7 +14,6 @@ class ProductsImport implements ToModel, WithHeadingRow
         return new Product([
             'product_title'        => $row['title'],
             'slug'                 => Str::slug($row['title']),
-            'product_type'         => $row['type'], // 0 or 1
             'short_description'    => $row['short_description'],
             'product_decscription' => $row['description'],
             'price'                => $row['price'],

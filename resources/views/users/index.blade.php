@@ -58,21 +58,21 @@
                         <table class="table align-middle table-nowrap" id="userTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th>ID</th>
+                                    <th>Index</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>OTP Code</th>
                                     <th>Username</th>
-                                    <th>Mobile</th>
+                                    {{-- <th>Mobile</th> --}}
                                     <th>Status</th>
                                     <th>Approval</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($users as $user)
-                                    <tr>
-                                        <td>#{{ $user->id }}</td>
+                                @forelse($users as $index => $user)
+                                    <tr id="row-user-{{ $user->id }}">
+                                        <td>{{ $index + 1 }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>
@@ -95,7 +95,7 @@
                                        
                                     </td>
                                         <td><span class="badge bg-info">{{ $user->username }}</span></td>
-                                        <td>{{ $user->mobile }}</td>
+                                        {{-- <td>{{ $user->mobile }}</td> --}}
                                         <td>
                                             @if ($user->is_active)
                                                 <span class="badge bg-success">Active</span>
@@ -164,10 +164,10 @@
                                                     <li>
                                                         <a href="javascript:void(0);"
                                                             class="dropdown-item text-danger"
-                                                            data-delete-url="{{ route('users.destroy', $user->id) }}"
-                                                            onclick="setDeleteFormAction(this)"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#deleteRecordModal">
+                                                            onclick="Livewire.dispatch('confirmDelete', {
+                                                                id: {{ $user->id }},
+                                                                model: 'App\\Models\\User'
+                                                            })">
                                                             <i class="ph-trash me-1"></i> Remove
                                                         </a>
                                                     </li>
@@ -212,8 +212,9 @@
         </div>
     </div>
 </div>
+<livewire:modals.delete-record />
 
-@include('partials.delete-modal')
+
 <script>
         setupPaginatedTable({
         searchInputId: "searchUsers",
@@ -226,3 +227,32 @@
     });
 </script>
 <x-admin.footer />
+<script>
+document.addEventListener('livewire:init', () => {
+
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+
+    Livewire.on('open-delete-modal', () => {
+        deleteModal.show();
+    });
+
+    Livewire.on('close-delete-modal', () => {
+        deleteModal.hide();
+    });
+
+    Livewire.on('record-deleted', (event) => {
+
+        let data = event[0]; 
+
+        let modelName = data.model.split('\\').pop().toLowerCase();
+        let row = document.getElementById(`row-${modelName}-${data.id}`);
+
+        if (row) {
+            row.remove();
+        }
+        
+    });
+
+});
+</script>
+

@@ -31,6 +31,8 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js"></script>
     <script src="{{ asset('assets/js/paginationHelper.js') }}"></script>  
     @stack('scripts');
+    @livewireStyles
+
 </head>
 <body>
     <header id="page-topbar" id="fontsLink">

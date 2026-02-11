@@ -131,30 +131,6 @@
                         {{ $product->short_description }}
                     </p>
 
-                    {{-- VARIANTS --}}
-                    @if ($product->product_type == \App\Enums\ProductType::VARIANTS->value)
-                        <div class="mb-4">
-
-                            @foreach ($product->variants->groupBy(fn($v) => $v->attributeValues->first()->attribute->name ?? '') as $attr => $variants)
-                                <div class="mb-3">
-                                    <label class="fw-semibold d-block mb-2">{{ $attr }}</label>
-
-                                    <div class="d-flex flex-wrap gap-2">
-                                        @foreach ($variants as $variant)
-                                            <button type="button"
-                                                class="btn btn-outline-secondary variant-btn px-3 py-2"
-                                                data-price="{{ $variant->sell_price ?? $variant->price }}"
-                                                data-image="{{ $variant->image ? asset('storage/' . $variant->image) : '' }}">
-                                                {{ $variant->attributeValues->pluck('value')->join(' / ') }}
-                                            </button>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endforeach
-
-                        </div>
-                    @endif
-
                     {{-- ADD TO CART --}}
                     <form action="{{ route('cart.add', $product->id) }}" method="POST" class="mb-4">
                         @csrf

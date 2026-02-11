@@ -63,13 +63,6 @@
                         </div>
 
                         <div class="col-md-6">
-                            <p class="mb-1 text-muted">Product Type</p>
-                            <span class="badge bg-info">
-                                {{ ucfirst($product->product_type) }}
-                            </span>
-                        </div>
-
-                        <div class="col-md-6">
                             <p class="mb-1 text-muted">Price</p>
                             <h6>₹{{ number_format($product->price, 2) }}</h6>
                         </div>
