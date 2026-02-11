@@ -47,6 +47,11 @@
 
                         <div class="col-sm">
                             <div class="d-flex justify-content-sm-end gap-2 flex-wrap">
+                                <!-- Search Box -->
+                                <div class="search-box">
+                                    <input type="text" class="form-control" id="searchStocks" placeholder="Search...">
+                                    <i class="ri-search-line search-icon"></i>
+                                </div>
 
                                 <!-- Date Filter Form -->
                                 <form method="GET" action="{{ route('stocks.index') }}" class="d-flex gap-2">

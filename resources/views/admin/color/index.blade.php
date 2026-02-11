@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0">color</h4>
+                <h4 class="mb-sm-0">Color</h4>
 
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
@@ -48,7 +48,7 @@
                         <div class="col-sm">
                             <div class="d-flex justify-content-sm-end gap-2">
                                 <div class="search-box ms-2">
-                                    <input type="text" class="form-control" id="searchBrands" placeholder="Search...">
+                                    <input type="text" class="form-control" id="searchColors" placeholder="Search...">
                                     <i class="ri-search-line search-icon"></i>
                                 </div>
 
@@ -62,7 +62,7 @@
 
                     <!-- Table -->
                     <div class="table-responsive table-card mt-3 mb-1">
-                        <table class="table align-middle table-nowrap" id="brandTable">
+                        <table class="table align-middle table-nowrap" id="colorTable">
                             <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
@@ -138,9 +138,9 @@
                     <!-- Pagination (JS same as Users) -->
                     <div class="d-flex justify-content-end" id="paginationWrapper">
                         <div class="gap-2 pagination-wrap hstack">
-                            <a href="#" class="page-item pagination-prev disabled" id="prevBrandPage">Previous</a>
-                            <ul class="mb-0 pagination" id="brandPagination"></ul>
-                            <a href="#" class="page-item pagination-next" id="nextBrandPage">Next</a>
+                            <a href="#" class="page-item pagination-prev disabled" id="prevColorPage">Previous</a>
+                            <ul class="mb-0 pagination" id="colorPagination"></ul>
+                            <a href="#" class="page-item pagination-next" id="nextColorPage">Next</a>
                         </div>
                     </div>
 
@@ -151,6 +151,17 @@
 </div>
 
 @include('partials.delete-modal')
+<script>
+    setupPaginatedTable({
+        searchInputId: "searchColors",
+        tableId: "colorTable",
+        paginationWrapperId: "paginationWrapper",
+        paginationListId: "colorPagination",
+        prevBtnId: "prevColorPage",
+        nextBtnId: "nextColorPage",
+        noResultClass: "noresult"
+    });
+</script>
 
 
 

@@ -54,9 +54,33 @@ class AdminController extends Controller
             ->get();
 
         // Store Visit data for salesman
-        $totalVisits = StoreVisit::count();
-        $todayVisits = StoreVisit::whereDate('created_at', today())->count();
-        $recentVisitsQuery = StoreVisit::with(['vendor', 'salesman'])
+        // $totalVisits = StoreVisit::count();
+        // $todayVisits = StoreVisit::whereDate('created_at', today())->count();
+        // $recentVisitsQuery = StoreVisit::with(['vendor', 'salesman'])
+        //     ->latest();
+
+        // Store Visit data - filtered by logged-in user
+        $visitsQuery = StoreVisit::query();
+
+        // Filter based on user role
+        if ($user->hasRole('salesman')) {
+            $visitsQuery->where('salesman_id', $user->id);
+        } elseif ($user->hasRole('vendor')) {
+            $visitsQuery->where('vendor_id', $user->id);
+        }
+        
+        $totalVisits = StoreVisit::when($user->hasRole('salesman'), fn($q) => $q->where('salesman_id', $user->id))
+            ->when($user->hasRole('vendor'), fn($q) => $q->where('vendor_id', $user->id))
+            ->count();
+
+        $todayVisits = StoreVisit::when($user->hasRole('salesman'), fn($q) => $q->where('salesman_id', $user->id))
+            ->when($user->hasRole('vendor'), fn($q) => $q->where('vendor_id', $user->id))
+            ->whereDate('created_at', today())
+            ->count();
+
+        $recentVisitsQuery = StoreVisit::when($user->hasRole('salesman'), fn($q) => $q->where('salesman_id', $user->id))
+            ->when($user->hasRole('vendor'), fn($q) => $q->where('vendor_id', $user->id))
+            ->with(['vendor', 'salesman'])
             ->latest();
 
         //filter vendors for dropdown

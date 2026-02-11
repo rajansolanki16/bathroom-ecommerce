@@ -29,6 +29,7 @@ use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProductReviewController;
 use App\Http\Controllers\Admin\SalesmanController;
 use App\Http\Controllers\Admin\MediaLibraryController;
+use App\Http\Controllers\Admin\StoreVisitController;
 
 //Auth
 Route::get('/login', [RedirectController::class, 'login'])->name('login');
@@ -165,6 +166,14 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/users', UserController::class)->names('users');
         Route::post('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
         Route::post('/users/{user}/toggle-approval', [UserController::class, 'toggleApproval'])->name('users.toggle-approval');
+
+        Route::resource('/store_visits', StoreVisitController::class)->names('store_visits');
+        Route::get('/store_visits/{storeVisit}', [StoreVisitController::class, 'show'])->name('visit_report.view');
+        Route::post('/store_visits/{id}/approve', [StoreVisitController::class, 'approve'])->name('visit_report.approve');
+        Route::post('/store_visits/{id}/reject', [StoreVisitController::class, 'reject'])->name('visit_report.reject');
+        // Export routes
+        Route::get('/store_visits-export/excel', [StoreVisitController::class, 'exportExcel'])->name('visit_report.export.excel');
+        Route::get('/store_visits-export/pdf', [StoreVisitController::class, 'exportPdf'])->name('visit_report.export.pdf');
 
         Route::post('media/delete/{media}', function (
             \Spatie\MediaLibrary\MediaCollections\Models\Media $media
