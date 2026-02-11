@@ -62,7 +62,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Image</th>
+                                    {{-- <th>Image</th> --}}
                                     <th>Name</th>
                                     <th>Slug</th>
                                     <th>Visibility</th>
@@ -75,7 +75,7 @@
                                     <tr id="row-category-{{ $category->id }}">
                                         <td>#{{ $category->id }}</td>
 
-                                        <td>
+                                        {{-- <td>
                                             @php
                                                 $logoUrl = null;
                                                 if ($category->media_library_logo_id) {
@@ -103,7 +103,7 @@
                                                     alt="{{ $category->name }}">
                                             @else
                                                 <span class="badge bg-secondary">No Image</span>
-                                            @endif
+                                            @endif --}}
                                         </td>
 
                                         <td>

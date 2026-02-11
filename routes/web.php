@@ -182,7 +182,6 @@ Route::middleware(['auth'])->group(function () {
 
             return response()->json(['success' => true]);
         })->name('media.delete');
-     //Route::get('/activity-monitor', [UserActivityController::class, 'index'])->name('admin.activity.index');
     });
 });
 

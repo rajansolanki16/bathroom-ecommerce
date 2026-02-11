@@ -76,7 +76,7 @@
                         <label for="subcategory" class="form-label">{{ __('category.Parent_Category') }} <span class="text-danger">{{ __('category.required_mark') }}</span></label>
 
 
-                        <select name="parent_id" id="subcategory" class="form-control">
+                        <select name="parent_id" id="subcategory" class="form-control choices">
                             <option value="">Select parent Category </option>
                             @foreach($parentCategories as $parent)
                             <option value="{{ $parent->id }}" {{ old('parent_id', isset($category) ? $category->parent_id : '') == $parent->id ? 'selected' : '' }}>
