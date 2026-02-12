@@ -21,7 +21,7 @@
                     <div id="stockRows">
 
                         @php
-                        $oldProducts = old('products', [[]]); // default one empty row
+                        $oldProducts = old('products', [[]]); 
                         @endphp
 
                         @foreach($oldProducts as $i => $oldProduct)
@@ -33,18 +33,15 @@
                                     <label class="form-label">
                                         Product <span class="text-danger">*</span>
                                     </label>
-
-                                    <select id="productStock{{ $i }}"
-                                        class="form-control @error(" products.$i.product_id") is-invalid @enderror"
-                                        name="products[{{ $i }}][product_id]">
-
+                                    <select id="productStock"
+                                        class="form-control @error('products.0.product_id') is-invalid @enderror"
+                                        name="products[0][product_id]">
                                         <option value="">Select product</option>
-
-                                        @foreach($products as $product)
-                                        <option value="{{ $product->id }}"
-                                            {{ old("products.$i.product_id") == $product->id ? 'selected' : '' }}>
-                                            {{ $product->product_title }}
-                                        </option>
+                                        @foreach ($products as $product)
+                                            <option value="{{ $product->id }}"
+                                                {{ old('products.0.product_id') == $product->id ? 'selected' : '' }}>
+                                                {{ $product->product_title }}
+                                            </option>
                                         @endforeach
                                     </select>
 
@@ -60,9 +57,8 @@
                                     </label>
 
                                     <input type="number"
-                                        class="form-control @error(" products.$i.quantity") is-invalid @enderror"
-                                        name="products[{{ $i }}][quantity]"
-                                        value="{{ old("products.$i.quantity") }}"
+                                        class="form-control @error('products.0.quantity') is-invalid @enderror"
+                                        name="products[0][quantity]" value="{{ old('products.0.quantity') }}"
                                         placeholder="Enter quantity">
 
                                     @error("products.$i.quantity")
@@ -74,22 +70,17 @@
                                 <div class="col-md-4">
                                     <label class="form-label">Notes</label>
                                     <input type="text"
-                                        class="form-control"
-                                        name="products[{{ $i }}][notes]"
-                                        value="{{ old("products.$i.notes") }}"
-                                        placeholder="Enter notes">
+                                        class="form-control @error('products.0.notes') is-invalid @enderror"
+                                        name="products[0][notes]" value="{{ old('products.0.notes') }}"
+                                        placeholder="Enter notes (optional)">
+                                    @error('products.0.notes')
+                                        <div class="invalid-feedback">
+                                            <i class="bi bi-exclamation-circle"></i> {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
 
-                                {{-- BUTTONS --}}
-                                <div class="col-md-1">
-                                    @if($i > 0)
-                                    <button type="button" class="btn btn-danger w-100 removeRow">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                    @endif
-                                </div>
-
-                                <div class="col-md-1">
+                                <div class="col-md-2">
                                     <button type="button" class="btn btn-success w-100 addRow">
                                         <i class="bi bi-plus-lg"></i>
                                     </button>
@@ -161,7 +152,7 @@
                     </label>
                     <select id="productStock${index}" class="form-control" name="products[${index}][product_id]">
                         <option value="">Select product</option>
-                        @foreach($products as $product)
+                        @foreach ($products as $product)
                             <option value="{{ $product->id }}">{{ $product->product_title }}</option>
                         @endforeach
                     </select>

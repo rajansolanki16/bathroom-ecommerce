@@ -75,7 +75,7 @@
                             <tbody>
                                 @forelse($colors as $color)
                                 <tr>
-                                    <td>#{{ $color->id }}</td>
+                                    <td>{{ $loop->iteration }}</td>
 
                                     <td>{{ $color->name }}</td>
 
@@ -152,6 +152,17 @@
 
 <livewire:modals.delete-record />
 
+<script>
+    setupPaginatedTable({
+        searchInputId: "searchColors",
+        tableId: "colorTable",
+        paginationWrapperId: "paginationWrapper",
+        paginationListId: "colorPagination",
+        prevBtnId: "prevColorPage",
+        nextBtnId: "nextColorPage",
+        noResultClass: "noresult"
+    });
+</script>
 
 
 <x-admin.footer />

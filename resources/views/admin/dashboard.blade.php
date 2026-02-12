@@ -11,7 +11,7 @@
                     </div>
                 </div>
                 <h4>{{ $totalOrders }}</h4>
-                <p class="text-muted mb-4">Total Orders</p>
+                <p class="text-muted mb-4">Total Inquiries</p>
             </div>
             <div class="progress progress-sm rounded-0">
                 <div class="progress-bar" style="width: 100%"></div>
@@ -79,7 +79,7 @@
     <div class="col-xl-6">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title mb-0">Recent Orders</h4>
+                <h4 class="card-title mb-0">Recent Inquiries</h4>
             </div>
 
             <div class="card-body">

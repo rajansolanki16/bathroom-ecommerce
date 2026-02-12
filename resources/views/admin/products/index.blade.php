@@ -40,7 +40,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <select class="form-control" name="category">
+                        <select class="form-control choices" name="category">
                             <option value="">All Categories</option>
                             @foreach ($categories as $parent)
                                 <optgroup label="{{ $parent->name }}">

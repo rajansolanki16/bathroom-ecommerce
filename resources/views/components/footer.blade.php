@@ -20,7 +20,7 @@
             <div class="col-lg-2 col-md-6">
                 <h6 class="footer-title">Shop</h6>
                 <ul class="list-unstyled footer-links">
-                    <li><a href="{{ route('user.home') }}">All Products</a></li>
+                    <li><a href="{{ route('view.home') }}">All Products</a></li>
                     <li><a href="{{ route('cart.index') }}">Cart</a></li>
                     <li><a href="{{ route('wishlist.index') }}">Wishlist</a></li>
                 </ul>

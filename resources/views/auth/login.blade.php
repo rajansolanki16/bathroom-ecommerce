@@ -142,8 +142,7 @@
                        name="password"
                        id="password"
                        class="form-control @error('password') is-invalid @enderror"
-                       placeholder="Enter password"
-                       required>
+                       placeholder="Enter password">
 
                 <button type="button"
                         class="btn btn-outline-light"

@@ -101,7 +101,7 @@
 
         <!-- Logo -->
         <div class="text-center mb-4">
-            <a href="{{ route('user.home') }}" class="d-inline-block">
+            <a href="{{ route('view.home') }}" class="d-inline-block">
                 <img src="{{ publicPath(getSetting('site_logo_light')) }}" alt="Logo" class="otp-logo img-fluid">
             </a>
         </div>
@@ -125,7 +125,7 @@
             <div class="mb-3">
                 <label class="form-label">Email address</label>
                 <input type="email" name="email" value="{{ old('email') }}"
-                    class="form-control @error('email') is-invalid @enderror" placeholder="Enter your email" required>
+                    class="form-control @error('email') is-invalid @enderror" placeholder="Enter your email">
 
                 @error('email')
                     <div class="invalid-feedback text-danger">

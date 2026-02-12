@@ -9,32 +9,33 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    //
     public function index()
     {
-        return view('user.home');
+        return $this->list(request());
     }
+
     public function list(Request $request)
     {
-        if (Auth::check()) {
-            $products = Product::with('categories')
-                ->withCount([
-                    'wishlists as is_wishlisted' => function ($q) {
-                        $q->where('user_id', Auth::id());
-                    }
-                ])->paginate(4);
-        } else {
-            $products = Product::with('categories')
-                ->paginate(4);
-        }
+        $query = Product::with('categories');
 
-        if ($request->ajax()) {
-            return response()->json([
-                'html' => view('components.product-card', compact('products'))->render(),
-                'pagination' => $products->links('pagination::bootstrap-4')->render(), 
+        // Wishlist check for logged-in user
+        if (Auth::check()) {
+            $query->withCount([
+                'wishlists as is_wishlisted' => function ($q) {
+                    $q->where('user_id', Auth::id());
+                }
             ]);
         }
 
-        return view('user.home', compact('products'));
+        $products = $query->paginate(4);
+        // AJAX request for pagination
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('components.product-card', compact('products'))->render(),
+                'pagination' => $products->links('pagination::bootstrap-4')->render(),
+            ]);
+        }
+
+        return view('view.home', compact('products'));
     }
 }

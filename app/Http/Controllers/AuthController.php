@@ -209,9 +209,9 @@ class AuthController extends Controller
                         ->orWhere('username', $login_input)
                         ->first();
             
-            if ($user && is_null($user->email_verified_at)) {
-                return back()->withErrors(['email' => 'Your email is not verified. Please try to reset your password.']);
-            }
+            // if ($user && is_null($user->email_verified_at)) {
+            //     return back()->withErrors(['email' => 'Your email is not verified. Please try to reset your password.']);
+            // }
 
             // Attempt login with email or username
             if (Auth::attempt(['email' => $login_input, 'password' => $password], $remember) || 
@@ -280,7 +280,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')
+        return redirect('/login')
             ->withCookie(cookie('guest_wishlist', json_encode($wishlistProductIds), 60 * 24 * 7, '/'))
             ->withCookie(cookie('guest_cart', json_encode($cartItems), 60 * 24 * 7, '/'));
     }
