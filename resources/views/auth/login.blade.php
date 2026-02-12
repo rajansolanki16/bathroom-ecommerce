@@ -1,71 +1,202 @@
-<x-header :meta="array('title'=> 'Login', 'description'=> getSetting('page_home_meta_description'))" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<main class="auth-page">
-    <section class="auth-section">
-        <div class="auth-container">
-            <div class="auth-card">
-                <h1 class="auth-title">{{ __('common.login_heading') }}</h1>
-                <p class="auth-subtitle">Welcome back! Please login to your account.</p>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-                @if (session()->has('message'))
-                    <div class="alert {{ session()->get('status') == 'success' ? 'alert-success' : 'alert-danger' }}">
-                        {{ session('message') }}
-                    </div>
-                @endif
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+        }
 
-                <form action="{{ route('auth.login') }}" method="POST">
-                    @csrf
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            color: #fff;
+        }
 
-                    <!-- Email -->
-                    <div class="auth-group">
-                        <label>{{ __('common.username_or_email') }}</label>
-                        <input type="text"
-                            name="email"
-                            value="{{ old('email') }}"
-                            class="@error('email') is-invalid @enderror"
-                            placeholder="Enter your email"
-                            required>
-                        @error('email')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
+        .login-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
 
-                    <!-- Password -->
-                    <div class="auth-group password-group">
-                        <label>{{ __('common.password') }}</label>
-                        <input type="password"
-                            name="password"
-                            id="password"
-                            class="@error('password') is-invalid @enderror"
-                            placeholder="Enter password"
-                            required>
+        .login-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
 
-                        <span class="toggle-password" onclick="togglePassword()">👁</span>
+        .form-control {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+        }
 
-                        @error('password')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
+        .form-control:focus {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            box-shadow: none;
+        }
 
-                    <!-- Remember -->
-                    <div class="auth-options">
-                        <label class="remember">
-                            <input type="checkbox" name="remember">
-                            {{ __('common.remember_me') }}
-                        </label>
-                    </div>
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
 
-                    <div class="auth-forgot" style="margin-top:10px;">
-                        <a href="{{ route('view.forget_password') }}" class="ko-forgot-pass">Forgot your password?</a>
-                    </div>
+        .btn-login {
+            background: #3b82f6;
+            border: none;
+            padding: 10px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
 
-                    <button type="submit" class="auth-btn">
-                        {{ __('common.login_button') }}
-                    </button>
-                </form>
-            </div>
+        .btn-login:hover {
+            background: #2563eb;
+        }
+
+        .forgot-link {
+            font-size: 13px;
+            color: #cbd5e1;
+            text-decoration: none;
+        }
+
+        .forgot-link:hover {
+            color: #fff;
+        }
+
+        .invalid-feedback {
+            display: block;
+            font-size: 13px;
+        }
+
+        .remember-check label {
+            font-size: 14px;
+        }
+
+        .login-logo {
+            max-height: 60px;
+            width: auto;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+        <!-- Logo -->
+    <div class="text-center mb-4">
+        <img src="{{ publicPath(getSetting('site_logo_light')) }}"
+             alt="Logo"
+             class="login-logo">
+    </div>
+
+    <h3 class="login-title">{{ __('common.login_heading') }}</h3>
+    <p class="login-subtitle">Welcome back! Please login to your account.</p>
+
+    @if (session()->has('message'))
+        <div class="alert {{ session()->get('status') == 'success' ? 'alert-success' : 'alert-danger' }}">
+            {{ session('message') }}
         </div>
-    </section>
-</main>
+    @endif
 
-<x-footer />
+    <form action="{{ route('auth.login') }}" method="POST">
+        @csrf
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label class="form-label">{{ __('common.username_or_email') }}</label>
+            <input type="text"
+                   name="email"
+                   value="{{ old('email') }}"
+                   class="form-control @error('email') is-invalid @enderror"
+                   placeholder="Enter your email">
+
+            @error('email')
+                <div class="invalid-feedback text-danger">
+                    {{ $message }}
+                </div>
+            @enderror
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+            <label class="form-label">{{ __('common.password') }}</label>
+            <div class="input-group">
+                <input type="password"
+                       name="password"
+                       id="password"
+                       class="form-control @error('password') is-invalid @enderror"
+                       placeholder="Enter password"
+                       required>
+
+                <button type="button"
+                        class="btn btn-outline-light"
+                        onclick="togglePassword()">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
+
+            @error('password')
+                <div class="invalid-feedback text-danger">
+                    {{ $message }}
+                </div>
+            @enderror
+        </div>
+
+        <!-- Remember -->
+        <div class="d-flex justify-content-between align-items-center mb-3 remember-check">
+            <div>
+                <input type="checkbox" name="remember" id="remember">
+                <label for="remember">{{ __('common.remember_me') }}</label>
+            </div>
+
+            <a href="{{ route('view.forget_password') }}" class="forgot-link">
+                Forgot password?
+            </a>
+        </div>
+
+        <!-- Button -->
+        <button type="submit" class="btn btn-login w-100">
+            {{ __('common.login_button') }}
+        </button>
+    </form>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function togglePassword() {
+        const input = document.getElementById('password');
+        const icon = event.currentTarget.querySelector('i');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    }
+</script>
+
+</body>
+</html>
