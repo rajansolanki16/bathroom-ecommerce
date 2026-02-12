@@ -38,7 +38,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="subcategory" class="form-label">{{ __('category.Parent_Category') }} <span class="text-danger">{{ __('category.required_mark') }}</span></label>
+                        <label for="subcategory" class="form-label">{{ __('category.Parent_Category') }}</label>
 
                         <select name="parent_id" id="subcategory" class="form-control choices">
                             <option value="">Select parent Category</option>

@@ -47,7 +47,7 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|min:3|unique:brands,name',
+            'name' => 'required|string|min:3|regex:/^[a-zA-Z ]+$/|unique:brands,name',
             'description' => 'nullable|string|max:1000',
             'media_library_logo_id' => 'required|exists:media,id',
             'show_on_home' => 'nullable|boolean',
@@ -93,6 +93,7 @@ class BrandController extends Controller
                 'required',
                 'string',
                 'min:3',
+                'regex:/^[a-zA-Z ]+$/',
                 Rule::unique('brands')->ignore($brand->id),
             ],
             'description' => 'nullable|string|max:1000',

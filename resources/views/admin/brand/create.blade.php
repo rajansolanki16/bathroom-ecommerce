@@ -21,14 +21,14 @@
                     <div class="mb-3">
                         <label for="name" class="form-label">Brand Name <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror"
-                            id="name" name="name" value="{{ old('name') }}" placeholder="Enter brand name" required>
+                            id="name" name="name" value="{{ old('name') }}" placeholder="Enter brand name">
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="logo" class="form-label">Brand Banner Image</label>
+                        <label for="logo" class="form-label">Brand Banner Image</label><span class="text-danger">*</span>
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModal">Choose from Media Library</button>
                         <div class="form-text text-muted mb-2">
                             <i class="bi bi-info-circle me-1"></i> 

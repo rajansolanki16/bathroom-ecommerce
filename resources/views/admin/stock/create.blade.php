@@ -20,72 +20,87 @@
                     @csrf
                     <div id="stockRows">
 
+                        @php
+                        $oldProducts = old('products', [[]]); // default one empty row
+                        @endphp
+
+                        @foreach($oldProducts as $i => $oldProduct)
                         <div class="stock-row mb-4">
-                            <!-- Row 1 -->
                             <div class="row align-items-end">
 
+                                {{-- PRODUCT --}}
                                 <div class="col-md-4">
                                     <label class="form-label">
                                         Product <span class="text-danger">*</span>
                                     </label>
-                                    <select id="productStock" 
-                                            class="form-control @error('products.0.product_id') is-invalid @enderror" 
-                                            name="products[0][product_id]">
+
+                                    <select id="productStock{{ $i }}"
+                                        class="form-control @error(" products.$i.product_id") is-invalid @enderror"
+                                        name="products[{{ $i }}][product_id]">
+
                                         <option value="">Select product</option>
+
                                         @foreach($products as $product)
-                                        <option value="{{ $product->id }}" {{ old('products.0.product_id') == $product->id ? 'selected' : '' }}>
+                                        <option value="{{ $product->id }}"
+                                            {{ old("products.$i.product_id") == $product->id ? 'selected' : '' }}>
                                             {{ $product->product_title }}
                                         </option>
                                         @endforeach
                                     </select>
-                                    @error('products.0.product_id')
-                                        <div class="invalid-feedback d-block">
-                                            <i class="bi bi-exclamation-circle"></i> {{ $message }}
-                                        </div>
+
+                                    @error("products.$i.product_id")
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
 
+                                {{-- QUANTITY --}}
                                 <div class="col-md-2">
                                     <label class="form-label">
                                         Quantity <span class="text-danger">*</span>
                                     </label>
+
                                     <input type="number"
-                                        class="form-control @error('products.0.quantity') is-invalid @enderror"
-                                        name="products[0][quantity]"
-                                        value="{{ old('products.0.quantity') }}"
+                                        class="form-control @error(" products.$i.quantity") is-invalid @enderror"
+                                        name="products[{{ $i }}][quantity]"
+                                        value="{{ old("products.$i.quantity") }}"
                                         placeholder="Enter quantity">
-                                    @error('products.0.quantity')
-                                        <div class="invalid-feedback">
-                                            <i class="bi bi-exclamation-circle"></i> {{ $message }}
-                                        </div>
+
+                                    @error("products.$i.quantity")
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
 
+                                {{-- NOTES --}}
                                 <div class="col-md-4">
                                     <label class="form-label">Notes</label>
                                     <input type="text"
-                                        class="form-control @error('products.0.notes') is-invalid @enderror"
-                                        name="products[0][notes]"
-                                        value="{{ old('products.0.notes') }}"
-                                        placeholder="Enter notes (optional)">
-                                    @error('products.0.notes')
-                                        <div class="invalid-feedback">
-                                            <i class="bi bi-exclamation-circle"></i> {{ $message }}
-                                        </div>
-                                    @enderror
+                                        class="form-control"
+                                        name="products[{{ $i }}][notes]"
+                                        value="{{ old("products.$i.notes") }}"
+                                        placeholder="Enter notes">
                                 </div>
 
-                                <div class="col-md-2">
-                                    <button type="button"
-                                        class="btn btn-success w-100 addRow">
-                                        <i class="bi bi-plus-lg"></i> 
+                                {{-- BUTTONS --}}
+                                <div class="col-md-1">
+                                    @if($i > 0)
+                                    <button type="button" class="btn btn-danger w-100 removeRow">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    @endif
+                                </div>
+
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-success w-100 addRow">
+                                        <i class="bi bi-plus-lg"></i>
                                     </button>
                                 </div>
 
                             </div>
-
                         </div>
+                        @endforeach
+
                     </div>
+
                     <div class="d-flex gap-2 justify-content-end mt-3">
                         <a href="{{ route('stocks.index') }}" class="btn btn-danger"> Cancel
                         </a>
@@ -102,26 +117,39 @@
 <script>
     $(document).ready(function() {
 
-        let index = 1;
+        // let index = 1;
+        let index = {{ count(old('products', [[]])) }};
+
 
         // Initialize Choices.js for any select element
-        function initializeChoices(selector) {
-            const element = $(selector)[0];
-            if (element && !$(element).hasClass('choices__input')) {
-                return new Choices(element, {
-                    searchEnabled: true,
-                    removeItemButton: true,
-                    shouldSort: false,
-                    placeholderValue: 'Select product',
-                });
-            }
-            return null;
+        function initializeChoices(element) {
+
+            if (!element) return;
+
+            // prevent duplicate initialization
+            if (element.dataset.choiceInit === "1") return;
+
+            new Choices(element, {
+                searchEnabled: true,
+                removeItemButton: true,
+                shouldSort: false,
+                placeholder: true,
+                placeholderValue: 'Select product',
+                searchPlaceholderValue: 'Search product...',
+                itemSelectText: '',
+            });
+
+            element.dataset.choiceInit = "1";
         }
 
-        // Initialize first dropdown
-        initializeChoices('#productStock');
 
-        // ADD ROW - Event Delegation
+        // Initialize first dropdown
+        // initializeChoices('#productStock');
+        $('select[id^="productStock"]').each(function() {
+            initializeChoices(this);
+        });
+
+        // ADD ROW 
         $(document).on('click', '.addRow', function() {
 
             let row = `
@@ -131,7 +159,7 @@
                     <label class="form-label">
                         Product <span class="text-danger">*</span>
                     </label>
-                    <select id="productStock${index}" class="form-control" name="products[${index}][product_id]" required>
+                    <select id="productStock${index}" class="form-control" name="products[${index}][product_id]">
                         <option value="">Select product</option>
                         @foreach($products as $product)
                             <option value="{{ $product->id }}">{{ $product->product_title }}</option>
@@ -146,14 +174,14 @@
                            class="form-control"
                            name="products[${index}][quantity]"
                            placeholder="Enter quantity"
-                           required>
+                           >
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Notes</label>
                     <input type="text"
                            class="form-control"
                            name="products[${index}][notes]"
-                           placeholder="Enter notes (optional)">
+                           placeholder="Enter notes">
                 </div>
                 <div class="col-md-1">
                     <button type="button" class="btn btn-danger w-100 removeRow">
@@ -172,16 +200,17 @@
             $('#stockRows').append(row);
 
             // Initialize Choices.js for the newly added dropdown
-            initializeChoices(`#productStock${index}`);
+           // initializeChoices(`#productStock${index}`);
+           initializeChoices($(`#productStock${index}`)[0]);
+
 
             index++;
         });
 
-        // REMOVE ROW - Event Delegation
+        // REMOVE ROW 
         $(document).on('click', '.removeRow', function() {
             const stockRow = $(this).closest('.stock-row');
 
-            // Destroy Choices.js instance before removing the row
             const selectElement = stockRow.find('select')[0];
             if (selectElement && selectElement.choices) {
                 selectElement.choices.destroy();
@@ -189,6 +218,12 @@
             stockRow.remove();
         });
 
+        //take only number
+        $(document).on('keydown', 'input[type=number]', function(e) {
+            if (['e', 'E', '+', '-', '.'].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
     });
 </script>
 

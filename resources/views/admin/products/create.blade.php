@@ -25,8 +25,9 @@
 
                                 <!-- Categories -->
                                 <div class="mb-3">
-                                    <label class="form-label">Categories</label>
+                                    <label class="form-label">Categories <span class="text-danger">*</span></label>
                                     <select class="form-control choices" name="categories[]" multiple>
+                                        <option value="">Select categories</option>
                                         @foreach ($categories as $parent)
                                             <optgroup label="{{ $parent->name }}">
                                                 <option value="{{ $parent->id }}"
@@ -42,11 +43,14 @@
                                             </optgroup>
                                         @endforeach
                                     </select>
+                                      @error('categories')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <!-- Short Description -->
                                 <div class="mb-3">
-                                    <label class="form-label">Short Description</label>
+                                    <label class="form-label">Short Description <span class="text-danger">*</span></label>
                                     <textarea name="short_description" class="form-control" rows="3">{{ old('short_description') }}</textarea>
                                     @error('short_description')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -57,7 +61,7 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label">Brand</label>
+                                            <label class="form-label">Brand <span class="text-danger">*</span></label>
                                             <select name="brand_id" class="form-control choices">
                                                 <option value="">Select Brand</option>
                                                 @foreach ($allbrands as $brand)
@@ -68,6 +72,9 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                          @error('brand_id')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                     </div>
 
                                     <div class="col-lg-6">
@@ -181,7 +188,7 @@
                                 </div><!--end col-->
                                 <div class="col-xxl-8">
                                     <div>
-                                        <label class="form-label">Product Description <span class="text-danger">*</span></label>
+                                        <label class="form-label">Product Description </label>
                                         <textarea class="ckeditor-classic" name="product_decscription" id="productDescription" rows="5">{{ old('product_decscription') }}</textarea>
                                     </div>
                                 </div>
@@ -293,7 +300,7 @@
                                     <div class="row gy-3">
                                         <div class="col-lg-4">
                                             <div>
-                                                <label class="form-label">Stock Status <span class="text-danger">*</span></label>
+                                                <label class="form-label">Stock Status </label>
                                                 <select name="stock_status"
                                                     class="form-control choices">
                                                     <option value="">Select Status</option>

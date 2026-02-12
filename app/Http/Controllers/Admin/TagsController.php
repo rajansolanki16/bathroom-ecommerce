@@ -12,7 +12,7 @@ class TagsController extends Controller
 {
     /**
      * Display a listing of the resource.
-    */
+     */
     public function index()
     {
         //
@@ -36,11 +36,12 @@ class TagsController extends Controller
     {
         //
         $rules = [
-            'name' => 'required|min:3'
+            'name' => 'required|min:3|regex:/^[a-zA-Z ]+$/'
         ];
         $messages = [
             'name.required' => 'The tags field is required.',
             'name.min' => 'The tags must be at least 3 characters.',
+            'name.regex' => 'The tags must be take  only alphabets.',
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
 
@@ -88,13 +89,14 @@ class TagsController extends Controller
     {
         //
         $rules = [
-            'name' => 'required|min:3'
+            'name' => 'required|min:3|regex:/^[a-zA-Z ]+$/'
         ];
         $messages = [
             'name.required' => 'The tags field is required.',
             'name.min' => 'The tags must be at least 3 characters.',
+            'name.regex' => 'The tags must be take  only alphabets.',
         ];
-        $validator = Validator::make($request->all(), $rules, $messages);   
+        $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)

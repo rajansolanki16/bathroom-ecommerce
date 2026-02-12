@@ -4,13 +4,13 @@ namespace App\Enums;
 
 enum ProductVisibility: string
 {
-    case PUBLIC = '0';
-    case HIDDEN = '1';
+    case HIDDEN = '0';
+    case VISIBLE = '1';
 
     public function label(): string
     {
         return match ($this) {
-            self::PUBLIC => 'Public',
+            self::VISIBLE => 'Visible',
             self::HIDDEN => 'Hidden',
         };
     }

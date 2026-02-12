@@ -109,14 +109,16 @@ class ProductController extends Controller
                 'meta_description'          => 'nullable|string|max:160',
                 'meta_keywords'             => 'nullable|string',
 
-                'categories'                => 'nullable|array',
+                'categories'                => 'required|array',
                 'categories.*'              => 'exists:categories,id',
 
                 'tags'                      => 'nullable|array',
                 'tags.*'                    => 'exists:tags,id',
 
-                'short_description'         => 'required|string',
-                'product_decscription'      => 'required',
+                'short_description'         => 'required|string|max:500',
+                'product_decscription'      => 'nullable|string',
+
+                'brand_id'                 => 'required|exists:brands,id',
 
                 'price'                     => 'required|numeric|min:0',
                 'discount'                  => 'nullable|numeric|min:0',
@@ -129,6 +131,8 @@ class ProductController extends Controller
                 'length'                    => 'nullable|numeric|min:0',
                 'width'                     => 'nullable|numeric|min:0',
                 'height'                    => 'nullable|numeric|min:0',
+
+                'media_library_main_image_id' => 'required|exists:media,id',
 
                 'product_image'             => 'nullable|image|mimes:jpg,jpeg,png,webp',
                 'gallery_images.*'          => 'nullable|image|mimes:jpg,jpeg,png,webp',
@@ -385,11 +389,12 @@ class ProductController extends Controller
             'meta_title'        => 'nullable|string|max:160',
             'meta_description'  => 'nullable|string|max:160',
             'meta_keywords'     => 'nullable|string',
-            'categories'        => 'nullable|array',
-            'short_description' => 'nullable|string',
+            'categories'        => 'required|array',
+            'short_description' => 'required|string',
             'price'             => 'nullable|numeric',
             'stock'             => 'nullable|integer',
-            'media_library_main_image_id' => 'nullable|exists:media,id',
+            'brand_id'         => 'required|exists:brands,id',
+            'media_library_main_image_id' => 'required|exists:media,id',
             'media_library_gallery_image_ids' => 'nullable',
             'media_library_gallery_image_ids.*' => 'exists:media,id',
             'product_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp',

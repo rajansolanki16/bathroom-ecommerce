@@ -56,13 +56,10 @@ class StockController extends Controller
             [
 
                 'products.required' => 'At least one product is required.',
-                'products.array' => 'Products must be an array.',
-                'products.min' => 'At least one product is required.',
-
-                'products.*.product_id.required' => 'Product is required for all rows.',
+                'products.*.product_id.required' => 'Product is required.',
                 'products.*.product_id.exists' => 'The selected product does not exist.',
 
-                'products.*.quantity.required' => 'Quantity is required for all rows.',
+                'products.*.quantity.required' => 'Quantity is required.',
                 'products.*.quantity.integer' => 'Quantity must be a number.',
 
             ]

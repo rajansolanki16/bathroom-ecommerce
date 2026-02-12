@@ -27,6 +27,7 @@
                     accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar"
                     style="display:none;">
             </div>
+            <div id="file-error" class="text-danger small mt-2" style="display:none;"></div>
         </div>
         <button type="submit" class="btn btn-primary">Upload</button>
     </form>
@@ -283,7 +284,8 @@
             const files = $('#file-upload')[0].files;
 
             if (!files.length) {
-                alert('Please select at least one file.');
+                // alert('Please select at least one file.');
+                $('#file-error').text('Please select at least one file.').show();
                 return;
             }
 

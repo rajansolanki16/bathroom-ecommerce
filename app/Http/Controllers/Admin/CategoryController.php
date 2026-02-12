@@ -43,6 +43,7 @@ class CategoryController extends Controller
             'name' => [
                 'required',
                 'min:3',
+                'regex:/^[a-zA-Z ]+$/',
                 Rule::unique('categories')->where(fn ($q) =>
                     $q->where('parent_id', $request->parent_id)
                 ),
@@ -101,6 +102,7 @@ class CategoryController extends Controller
             'name' => [
                 'required',
                 'min:3',
+                'regex:/^[a-zA-Z ]+$/',
                 Rule::unique('categories')
                     ->ignore($category->id)
                     ->where(fn ($q) =>
