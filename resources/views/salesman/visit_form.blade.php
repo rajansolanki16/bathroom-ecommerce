@@ -43,7 +43,7 @@
                         <div class="row g-4">
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold text-dark">Select Vendor / Store <span class="text-danger">*</span></label>
-                                <select name="vendor_id" class="form-select border-primary-subtle bg-light-subtle @error('vendor_id') is-invalid @enderror">
+                                <select name="vendor_id" class="form-select choices border-primary-subtle bg-light-subtle @error('vendor_id') is-invalid @enderror">
                                     <option value="">Choose a vendor...</option>
                                     @foreach($vendors as $vendor)
                                     <option value="{{ $vendor->id }}">{{ $vendor->name }} ({{ $vendor->email }})</option>
@@ -58,7 +58,7 @@
 
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold text-dark">Purpose of Visit <span class="text-danger">*</span></label>
-                                <select name="purpose" class="form-select border-primary-subtle bg-light-subtle @error('purpose') is-invalid @enderror">
+                                <select name="purpose" class="form-select choices border-primary-subtle bg-light-subtle @error('purpose') is-invalid @enderror">
                                     <option value="">Choose a purpose...</option>
                                     <option value="new_business">New Business</option>
                                     <option value="follow_up">Follow-up</option>

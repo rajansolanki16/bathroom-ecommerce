@@ -26,7 +26,7 @@ class RedirectController extends Controller
         }
 
         if ($user->hasRole('user')) {
-            return redirect()->route('user.home');
+            return redirect()->route('view.home');
         }
 
 

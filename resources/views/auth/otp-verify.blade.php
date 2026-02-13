@@ -99,7 +99,7 @@
 
     <!-- Logo -->
     <div class="text-center mb-4">
-        <a href="{{ route('user.home') }}">
+        <a href="{{ route('view.home') }}">
             <img src="{{ publicPath(getSetting('site_logo_light')) }}"
                  alt="Logo"
                  class="otp-logo">

@@ -17,7 +17,7 @@
 
                 <nav>
                     <ol class="ko-banner-list justify-content-center">
-                        <li><a href="{{ route('user.home') }}">Home</a></li>
+                        <li><a href="{{ route('view.home') }}">Home</a></li>
                         <li>Wishlist</li>
                     </ol>
                 </nav>

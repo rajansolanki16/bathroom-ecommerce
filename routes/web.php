@@ -49,8 +49,8 @@ Route::post('/states', [AuthController::class, 'getStates'])->name("get.states")
 Route::post('/users/{user}/send-otp', [UserController::class, 'sendOtpEmail'])->name('users.send_otp');
 
 //User
-Route::get('/', [HomeController::class, 'list'])->name('view.home');
-Route::get('/home', [HomeController::class, 'list'])->name('user.home');
+Route::get('/', [RedirectController::class, 'login'])->name('login');;
+Route::get('/home', [HomeController::class, 'list'])->name('view.home');
 Route::get('/product', [HomeController::class, 'list'])->name('user.product');
 
 Route::get('/product/{slug}', [ProductController::class, 'userShow'])->name('product.user.show');

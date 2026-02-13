@@ -67,16 +67,6 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $attributes = ProductAttribute::with('values')->get();
-        $attributesJson = $attributes->map(function ($a) {
-            return [
-                'id' => $a->id,
-                'name' => $a->name,
-                'values' => $a->values->map(function ($v) {
-                    return ['id' => $v->id, 'value' => $v->value];
-                }),
-            ];
-        })->toJson();
 
         return view('admin.products.create', [
             'productTypes'       => ProductType::cases(),
@@ -86,8 +76,6 @@ class ProductController extends Controller
             'allTags'            => Tag::orderBy('name')->get(),
             'allbrands'          => Brand::orderBy('name')->get(),
             'allcolors'          => Color::orderBy('name')->get(),
-            'attributes'         => $attributes,
-            'attributesJson'     => $attributesJson,
         ]);
     }
 
@@ -260,10 +248,6 @@ class ProductController extends Controller
 
         if ($request->filled('tags')) {
             $product->tags()->sync($request->tags);
-        }
-
-        if ($request->filled('product_attributes')) {
-            $product->attributes()->sync($request->product_attributes);
         }
 
 
@@ -488,16 +472,25 @@ class ProductController extends Controller
                 'media_ids' => $validated['media_library_gallery_image_ids'],
             ]);
         }
-
-        /* ===============================
-        SIMPLE / VARIANT DATA
-        =============================== */
        
         $product->update([
             'stock'    => $validated['stock'],
             'price'    => $validated['price'],
             'discount' => $request->discount ?? $product->discount,
         ]);
+
+        // ADD THIS HERE
+        if ($request->has('categories')) {
+            $product->categories()->sync($request->categories);
+        } else {
+            $product->categories()->detach();
+        }
+        
+        if ($request->has('tags')) {
+            $product->tags()->sync($request->tags);
+        } else {
+            $product->tags()->detach();
+        }
 
         Log::info('Product update completed successfully', [
             'product_id' => $product->id,
@@ -512,106 +505,11 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-
-    // public function updateVariants(Request $request, Product $product)
-    // {
-    //     $variants = $request->variants ?? [];
-
-    //     foreach ($variants as $variantData) {
-
-    //         $variant = $product->variants()
-    //             ->updateOrCreate(
-    //                 ['id' => $variantData['id'] ?? null],
-    //                 [
-    //                     'sku'           => $variantData['sku'] ?? null,
-    //                     'price'         => $variantData['price'] ?? 0,
-    //                     'stock'         => $variantData['stock'] ?? 0,
-    //                     'sell_price'    => $variantData['sell_price'] ?? null,
-    //                     'weight'        => $variantData['weight'] ?? null,
-    //                     'length'        => $variantData['length'] ?? null,
-    //                     'width'         => $variantData['width'] ?? null,
-    //                     'height'        => $variantData['height'] ?? null,
-    //                     'exchangeable'  => (int) ($variantData['exchangeable'] ?? 0),
-    //                     'refundable'    => (int) ($variantData['refundable'] ?? 0),
-    //                     'free_shipping' => (int) ($variantData['free_shipping'] ?? 0),
-    //                 ]
-    //             );
-
-    //         if (!empty($variantData['values'])) {
-    //             $variant->attributeValues()->sync($variantData['values']);
-    //         }
-    //     }
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'Variants updated successfully'
-    //     ]);
-    // }
-
-
-    // public function removeVariant(Request $request, Product $product)
-    // {
-    //     $variantId = $request->variant_id;
-
-    //     $variant = ProductVariant::where('id', $variantId)
-    //         ->where('product_id', $product->id)
-    //         ->firstOrFail();
-
-    //     if ($variant->image && Storage::disk('public')->exists($variant->image)) {
-    //         Storage::disk('public')->delete($variant->image);
-    //     }
-
-    //     $variant->delete();
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'variant_id' => $variantId
-    //     ]);
-    // }
-
     public function destroy(Product $product)
     {
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
-
-    // public function generateVariants(Request $request)
-    // {
-    //     $attributes = $request->input('attributes');
-
-    //     if (empty($attributes)) {
-    //         return response()->json(['html' => '']);
-    //     }
-
-    //     $lists = [];
-
-    //     foreach ($attributes as $attr) {
-    //         $lists[] = collect($attr['values'])->map(function ($valId) use ($attr) {
-    //             return [
-    //                 'attribute_id' => $attr['attribute_id'],
-    //                 'value_id'     => $valId,
-    //                 'value_name'   => $attr['values_map'][$valId] ?? ''
-    //             ];
-    //         })->toArray();
-    //     }
-
-    //     // Cartesian product
-    //     $variants = collect($lists)->reduce(function ($carry, $item) {
-    //         if (empty($carry)) return array_map(fn($i) => [$i], $item);
-
-    //         $result = [];
-    //         foreach ($carry as $c) {
-    //             foreach ($item as $i) {
-    //                 $result[] = array_merge($c, [$i]);
-    //             }
-    //         }
-    //         return $result;
-    //     }, []);
-
-    //     return response()->json([
-    //         'html' => view('admin.products.partials.variants-html', compact('variants'))->render()
-    //     ]);
-    // }
 
 
     public function userShow(string $slug)
@@ -639,17 +537,12 @@ class ProductController extends Controller
         }
 
         $ids = [];
-
-        // Handle CSV string format
         if (is_string($newIds)) {
             $ids = array_filter(array_map('trim', explode(',', $newIds)));
         }
-        // Handle array format
         elseif (is_array($newIds)) {
             $ids = array_filter($newIds);
         }
-
-        // Return as JSON if there are IDs, otherwise null
         return !empty($ids) ? json_encode(array_values($ids)) : null;
     }
 }

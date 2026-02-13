@@ -3,7 +3,7 @@
     <div class="navbar-brand-box">
         <a href="{{ route('admin.dashboard') }}" class="logo logo-light">
             <span class="logo-lg">
-                <img class="mt-3" src="{{ publicPath(getSetting('site_logo_light')) }}" alt="" height="80">
+                <img class="mt-3" src="{{ publicPath(getSetting('site_logo_light')) }}" alt="" height="65">
             </span>
         </a>
         <button type="button" class="p-0 btn btn-sm fs-3xl header-item float-end btn-vertical-sm-hover"
@@ -60,7 +60,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('products.index') }}"
-                                    class="nav-link @if (Route::is('products.index')) active @endif">Show</a>
+                                    class="nav-link @if (Route::is('products.index')) active @endif">List</a>
                             </li>
                         </ul>
                     </div>
@@ -87,7 +87,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('brands.index') }}"
-                                    class="nav-link @if (Route::is('brands.index')) active @endif">Show</a>
+                                    class="nav-link @if (Route::is('brands.index')) active @endif">List</a>
                             </li>
                         </ul>
                     </div>
@@ -142,7 +142,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('categories.index') }}"
-                                    class="nav-link @if (Route::is('categories.index')) active @endif">Show</a>
+                                    class="nav-link @if (Route::is('categories.index')) active @endif">List</a>
                             </li>
                         </ul>
                     </div>
@@ -163,7 +163,7 @@
                                 <a href="{{ route('tags.create') }}" class="nav-link">Create</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('tags.index') }}" class="nav-link">Show</a>
+                                <a href="{{ route('tags.index') }}" class="nav-link">List</a>
                             </li>
                         </ul>
                     </div>
@@ -183,7 +183,7 @@
                                 <a href="{{ route('colors.create') }}" class="nav-link">Create</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('colors.index') }}" class="nav-link">Show</a>
+                                <a href="{{ route('colors.index') }}" class="nav-link">List</a>
                             </li>
                         </ul>
                     </div>
@@ -202,7 +202,7 @@
                                 <a href="{{ route('stocks.create') }}" class="nav-link">Create</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('stocks.index') }}" class="nav-link">Show</a>
+                                <a href="{{ route('stocks.index') }}" class="nav-link">List</a>
                             </li>
                         </ul>
                     </div>
@@ -224,7 +224,7 @@
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{ route('orders.show') }}"
-                                    class="nav-link @if (Route::is('orders.show')) active @endif">Show</a>
+                                    class="nav-link @if (Route::is('orders.show')) active @endif">List</a>
                             </li>
                         </ul>
                     </div>

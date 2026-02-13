@@ -149,7 +149,7 @@
             <ul class="nav gap-3 py-2 align-items-center">
                 <li class="nav-item">
                     <a class="nav-link fw-semibold"
-                       href="{{ route('user.home') }}">
+                       href="{{ route('view.home') }}">
                         All Products
                     </a>
                 </li>
