@@ -8,12 +8,15 @@ class DeleteRecord extends Component
 {
     public $recordId;
     public $modelClass;
+    public $entityName; //added
+
 
     #[\Livewire\Attributes\On('confirmDelete')]
     public function confirmDelete($id, $model)
     {
         $this->recordId  = $id;
         $this->modelClass = $model;
+        $this->entityName = strtolower(class_basename($model)); //added
 
         $this->dispatch('open-delete-modal');
     }

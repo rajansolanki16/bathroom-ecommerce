@@ -36,7 +36,7 @@ class TagsController extends Controller
     {
         //
         $rules = [
-            'name' => 'required|min:3|regex:/^[a-zA-Z ]+$/'
+            'name' => 'required|min:3|regex:/^[a-zA-Z ]+$/|unique:tags,name'
         ];
         $messages = [
             'name.required' => 'The tags field is required.',
@@ -89,7 +89,7 @@ class TagsController extends Controller
     {
         //
         $rules = [
-            'name' => 'required|min:3|regex:/^[a-zA-Z ]+$/'
+            'name' => 'required|min:3|regex:/^[a-zA-Z ]+$/|unique:tags,name,' . $id
         ];
         $messages = [
             'name.required' => 'The tags field is required.',

@@ -36,12 +36,12 @@ class ColorController extends Controller
         //
         $request->validate(
             [
-                'name' => 'required|string|min:3|regex:/^[a-zA-Z ]+$/',
+                'name' => 'required|string|min:3|regex:/^[a-zA-Z ]+$/|unique:colors,name',
             ],
             [
                 'name.required' => 'The color name field is required.',
                 'name.min'      => 'The color name must be at least 3 characters.',
-                'name.regex' => 'The tags must be take  only alphabets.',
+                'name.regex' => 'The color name must be take  only alphabets.',
             ]
         );
 
@@ -79,7 +79,7 @@ class ColorController extends Controller
     {
         //
         $request->validate([
-            'name' => 'required|string|min:3|regex:/^[a-zA-Z ]+$/',
+            'name' => 'required|string|min:3|regex:/^[a-zA-Z ]+$/|unique:colors,name,' . $id,
         ]);
         $color = Color::findOrFail($id);
         $color->update([

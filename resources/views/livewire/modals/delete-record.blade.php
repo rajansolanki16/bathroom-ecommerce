@@ -16,7 +16,7 @@
                     <div class="mt-4">
                         <h3 class="mb-2">Are you sure?</h3>
                         <p class="mx-3 mb-0 text-muted fs-lg">
-                            Are you sure you want to remove this user <b>permanently</b>?
+                            Are you sure you want to remove this <b>{{ ucfirst($entityName) }}</b> <b>permanently</b>?
                         </p>
                     </div>
                 </div>
