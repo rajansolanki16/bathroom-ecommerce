@@ -10,7 +10,8 @@ use App\Models\OrderAudit;
 class Order extends Model
 {
     protected $fillable = [
-        'user_id',
+        'salesman_id',
+        'vendor_id',
         'name',
         'email',
         'phone',

@@ -74,10 +74,8 @@
                     </div>
 
                     <div class="d-flex gap-2 justify-content-end">
-                        <a href="{{ route('brands.index') }}" class="btn btn-danger">Back</a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Update Brand
-                        </button>
+                        <a href="{{ route('brands.index') }}" class="btn btn-danger">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>

@@ -115,7 +115,7 @@
 
                             <tbody>
                                 @forelse ($products as $product)
-                                    <tr>
+                                    <tr id="row-product-{{ $product->id }}">
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-xs bg-light rounded p-1 me-2">
@@ -185,9 +185,10 @@
 
                                                     <li>
                                                         <a href="javascript:void(0);" class="dropdown-item text-danger"
-                                                            data-delete-url="{{ route('products.destroy', $product->id) }}"
-                                                            onclick="setDeleteFormAction(this)" data-bs-toggle="modal"
-                                                            data-bs-target="#deleteRecordModal">
+                                                            onclick="Livewire.dispatch('confirmDelete', { 
+                                                                id: {{ $product->id }}, 
+                                                                model: 'App\\Models\\Product' 
+                                                            })">
                                                             <i class="ph-trash me-1"></i> Remove
                                                         </a>
                                                     </li>
@@ -260,5 +261,44 @@
 </div>
 
 <livewire:modals.delete-record />
+
+<script>
+        document.addEventListener('livewire:init', () => {
+
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+
+        Livewire.on('open-delete-modal', () => {
+            deleteModal.show();
+        });
+
+        Livewire.on('close-delete-modal', () => {
+            deleteModal.hide();
+        });
+
+        Livewire.on('record-deleted', (event) => {
+
+            let data = event[0];
+
+            let modelName = data.model.split('\\').pop().toLowerCase();
+            let row = document.getElementById(`row-${modelName}-${data.id}`);
+
+            if (row) {
+                row.remove();
+
+                    // Recalculate index column
+                const rows = document.querySelectorAll('#productTable tbody tr');
+
+                rows.forEach((tr, index) => {
+                    const indexCell = tr.querySelector('td:first-child');
+                    if (indexCell) {
+                        indexCell.textContent = index + 1;
+                    }
+                });
+            }
+
+        });
+
+    });
+</script>
 
 <x-admin.footer />

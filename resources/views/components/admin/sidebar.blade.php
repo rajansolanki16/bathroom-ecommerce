@@ -288,12 +288,12 @@
                     <a href="#sidebarstore_visit" class="nav-link menu-link" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarstore_visit">
                         <i class="bi bi-shop"></i>
-                        <span>Store Visits Report</span>
+                        <span>Store Visits</span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarstore_visit">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('store_visits.index') }}" class="nav-link">Store Visits</a>
+                                <a href="{{ route('store_visits.index') }}" class="nav-link">List</a>
                             </li>
                         </ul>
                     </div>

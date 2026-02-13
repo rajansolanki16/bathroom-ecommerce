@@ -73,7 +73,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="subcategory" class="form-label">{{ __('category.Parent_Category') }} <span class="text-danger">{{ __('category.required_mark') }}</span></label>
+                        <label for="subcategory" class="form-label">{{ __('category.Parent_Category') }} </label>
 
 
                         <select name="parent_id" id="subcategory" class="form-control choices">
@@ -95,8 +95,8 @@
                     </div>
 
                     <div class="gap-2 mb-3 hstack justify-content-end">
-                        <button type="submit" class="btn btn-primary">{{ __('category.Update_Button') }}</button>
                         <a href="{{ route('categories.index') }}" class="btn btn-danger">{{ __('category.Cancel_Button') }}</a>
+                        <button type="submit" class="btn btn-primary">{{ __('category.Create_Button') }}</button>
                     </div>
                 </form>
             </div>

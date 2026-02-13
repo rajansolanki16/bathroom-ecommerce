@@ -13,12 +13,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BrandController;
-use App\Http\Controllers\Admin\AttributeValueController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\FaqController;
-use App\Http\Controllers\Admin\ProductAttributeController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\StockController;
@@ -31,7 +29,7 @@ use App\Http\Controllers\Admin\SalesmanController;
 use App\Http\Controllers\Admin\MediaLibraryController;
 use App\Http\Controllers\Admin\StoreVisitController;
 
-//Auth
+// Auth
 Route::get('/login', [RedirectController::class, 'login'])->name('login');
 
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
@@ -48,7 +46,7 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 Route::post('/states', [AuthController::class, 'getStates'])->name("get.states");
 Route::post('/users/{user}/send-otp', [UserController::class, 'sendOtpEmail'])->name('users.send_otp');
 
-//User
+// User
 Route::get('/', [RedirectController::class, 'login'])->name('login');;
 Route::get('/home', [HomeController::class, 'list'])->name('view.home');
 Route::get('/product', [HomeController::class, 'list'])->name('user.product');
@@ -85,7 +83,6 @@ Route::get('/user/orders/{order}', [OrderController::class, 'show'])->name('user
 // });
 
 //admin panel
-
 Route::get('admin/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard');
 
 Route::middleware(['auth'])->group(function () {
@@ -111,8 +108,6 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/tags', TagsController::class)->names('tags');
         Route::resource('/coupons', CouponController::class)->names('coupons');
         // Route::resource('/payment-options', PaymentOptionsController::class)->names('paymentoptions');
-        Route::resource('/product-attributes', ProductAttributeController::class)->names('product_attributes');
-        Route::resource('/attribute-values', AttributeValueController::class)->names('attribute_values');
 
         Route::get('/wishlist/show', [WishListController::class, 'showadmin'])->name('wishlist.show');
 
@@ -122,7 +117,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
         Route::post('/orders/{order}/notes', [OrderController::class, 'updateNotes'])->name('orders.notes');
 
-        //Color
+        // Color
         Route::get('/colors/create', [ColorController::class, 'create'])->name('colors.create');
         Route::get('/colors', [ColorController::class, 'index'])->name('colors.index');
         Route::post('/colors', [ColorController::class, 'store'])->name('colors.store');
@@ -130,7 +125,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/colors/{id}', [ColorController::class, 'update'])->name('colors.update');
         Route::delete('/colors/{id}', [ColorController::class, 'destroy'])->name('colors.destroy');
 
-        //stock
+        // stock
         Route::get('/stocks/create', [StockController::class, 'create'])->name('stocks.create');
         Route::post('/stocks', [StockController::class, 'store'])->name('stocks.store');
         Route::get('/stocks', [StockController::class, 'index'])->name('stocks.index');
@@ -139,7 +134,7 @@ Route::middleware(['auth'])->group(function () {
         // Route::put('/stocks/{id}', [StockController::class, 'update'])->name('stocks.update');
         Route::delete('/stocks/{id}', [StockController::class, 'destroy'])->name('stocks.destroy');
 
-
+        // settings
         Route::prefix('settings')->group(function () {
 
             Route::get('/about-us', [SettingController::class, 'show_about_us'])->name('view.settings.about');
@@ -185,10 +180,7 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-
-
-
-Route::middleware(['role:admin|salesman'])->group(function () {
+Route::middleware(['role:salesman'])->group(function () {
     Route::get('/salesman/visit/create', [SalesmanController::class, 'createVisit'])->name('salesman.visit.create');
     Route::post('/salesman/visit/store', [SalesmanController::class, 'storeVisit'])->name('salesman.visit.store');
     Route::get('/salesman/visit/{id}/edit', [SalesmanController::class, 'editVisit'])->name('salesman.visit.edit');

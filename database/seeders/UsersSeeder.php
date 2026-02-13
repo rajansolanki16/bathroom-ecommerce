@@ -21,29 +21,38 @@ class UsersSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'email' => 'admin-ecom-123@yopmail.com',
+                'username' => 'admin-ecom-123',
                 'mobile' => '+911234567890',
                 'state' => 'Rajasthan',
                 'country' => 'India',
                 'password' => '123456',
                 'role' => 'admin',
+                'is_active' => true,
+                'is_approved' => true,
             ],
             [
-                'name' => 'Supervisor',
-                'email' => 'supervisor-ecom-123@yopmail.com',
+                'name' => 'Salesman',
+                'email' => 'salesman-ecom-123@yopmail.com',
+                'username' => 'salesman-ecom-123',
                 'mobile' => '+919876543211',
                 'state' => 'Gujarat',
                 'country' => 'India',
                 'password' => '123456',
                 'role' => 'salesman',
+                'is_active' => true,
+                'is_approved' => true,
             ],
             [
                 'name' => 'Vendor',
                 'email' => 'vendor-ecom-123@yopmail.com',
+                'username' => 'vendor-ecom-123',
                 'mobile' => '+919876543212',
                 'state' => 'Maharashtra',
                 'country' => 'India',
                 'password' => '123456',
                 'role' => 'vendor',
+                'is_active' => true,
+                'is_approved' => true,
             ],
         ];
 
@@ -51,9 +60,11 @@ class UsersSeeder extends Seeder
             $user = new User();
             $user->name = $userData['name'];
             $user->email = $userData['email'];
+            $user->username = $userData['username'];
             $user->mobile = $userData['mobile'];
             $user->state = $userData['state'];
             $user->country = $userData['country'];
+            $user->is_active = $userData['is_active'];
             $user->email_verified_at = now();
             $user->password = Hash::make($userData['password']);
             $user->save();

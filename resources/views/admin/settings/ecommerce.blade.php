@@ -89,37 +89,6 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="weight_unit" class="form-label">{{ __('ecommerce.weight_unit') }}<span
-                                        class="text-danger">*</span></label>
-                                <select name="weight_unit" id="weight_unit" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="kg">kg</option>
-                                    <option value="g">g</option>
-                                    <option value="lbs">lbs</option>
-                                    <option value="oz">oz</option>
-                                </select>
-                                @error('weight_unit')
-                                <span class="form-error-message text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="dimension_unit" class="form-label">{{ __('ecommerce.dimension_unit') }}<span
-                                        class="text-danger">*</span></label>
-                                <select name="dimension_unit" id="dimension_unit" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="m">m</option>
-                                    <option value="cm">cm</option>
-                                    <option value="mm">mm</option>
-                                    <option value="in">in</option>
-                                    <option value="yd">yd</option>
-                                </select>
-                                @error('dimension_unit')
-                                <span class="form-error-message text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
                                 <button type="submit" class="btn btn-primary">{{ __('ecommerce.save_settings') }}</button>
                             </div>
                         </div>

@@ -76,7 +76,7 @@
                                 <img class="rounded-circle header-profile-user"
                                     src="{{ publicPath('admin/images/users/32/avatar-1.jpg') }}" alt="Header Avatar">
                                 <span class="text-start ms-xl-2">
-                                    <span class="d-none d-xl-block ms-1 fs-sm user-name-sub-text">Admin</span>
+                                    <span class="d-none d-xl-block ms-1 fs-sm user-name-sub-text">{{ auth()->user()->name }}</span>
                                 </span>
                             </span>
                         </button>

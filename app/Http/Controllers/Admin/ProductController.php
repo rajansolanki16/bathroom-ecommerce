@@ -14,8 +14,6 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
 use App\Models\Tag;
-use App\Models\ProductAttribute;
-use App\Models\ProductVariant;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -91,8 +89,8 @@ class ProductController extends Controller
 
         try {
             $validated = $request->validate([
-                'title'                     => 'required|string|max:255',
-                'sku_number'                => 'nullable|string|max:255|unique:products,sku_number',
+                'title'                     => 'required|string|max:150',
+                'sku_number'                => 'nullable|string|max:64|unique:products,sku_number',
                 'meta_title'                => 'nullable|string|max:160',
                 'meta_description'          => 'nullable|string|max:160',
                 'meta_keywords'             => 'nullable|string',
@@ -111,7 +109,7 @@ class ProductController extends Controller
                 'price'                     => 'required|numeric|min:0',
                 'discount'                  => 'nullable|numeric|min:0',
 
-                'sell_price'                => 'nullable|numeric|min:0',
+                'sell_price'                => 'nullable|numeric|min:0|lte:price',
                 'sell_price_start_date'     => 'nullable|date',
                 'sell_price_end_date'       => 'nullable|date|after_or_equal:sell_price_start_date',
 
@@ -271,47 +269,6 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-
-        $attributes = ProductAttribute::with('values')->get();
-
-        $attributesJson = $attributes->map(function ($a) {
-            return [
-                'id' => $a->id,
-                'name' => $a->name,
-                'values' => $a->values->map(function ($v) {
-                    return ['id' => $v->id, 'value' => $v->value];
-                }),
-            ];
-        })->toJson();
-
-        $product->load(['variants' => function ($query) {
-            $query->with('attributeValues');
-        }]);
-
-        $variantsData = $product->variants->map(function ($variant) {
-            return [
-                'id' => $variant->id,
-                'name' => $variant->attributeValues->pluck('value')->join(' / ') ?: 'Variant #' . $variant->id,
-                'values' => $variant->attributeValues->pluck('id')->toArray(),
-                'sku' => $variant->sku,
-                'price' => $variant->price,
-                'stock' => $variant->stock,
-                'sell_price' => $variant->sell_price,
-                'shipping' => $variant->shipping,
-                'shipping_address' => $variant->shipping_address,
-                'general_info' => $variant->general_info,
-                'weight' => $variant->weight,
-                'length' => $variant->length,
-                'width' => $variant->width,
-                'height' => $variant->height,
-                'exchangeable' => $variant->exchangeable,
-                'refundable' => $variant->refundable,
-                'free_shipping' => $variant->free_shipping,
-                'image' => $variant->image,
-            ];
-        });
-
-        $variantsJson = json_encode($variantsData);
         $galleryImages = $product->getMedia('gallery');
 
         if (empty($product->media_library_main_image_id)) {
@@ -347,9 +304,6 @@ class ProductController extends Controller
             'allTags'            => Tag::orderBy('name')->get(),
             'allbrands'          => Brand::orderBy('name')->get(),
             'allcolors'          => Color::orderBy('name')->get(),
-            'attributes'         => $attributes,
-            'attributesJson'     => $attributesJson,
-            'variantsJson'       => $variantsJson,
             'galleryImages'      => $galleryImages,
             'galleryIds'         => $galleryIds,
         ]);

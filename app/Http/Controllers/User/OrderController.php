@@ -16,7 +16,7 @@ class OrderController extends Controller
     // Orders list page
     public function index()
     {
-        $orders = Order::where('user_id', auth()->id())
+        $orders = Order::where('vendor_id', auth()->id())
             ->withCount('items')
             ->latest()
             ->paginate(10);

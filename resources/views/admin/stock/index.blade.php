@@ -110,7 +110,7 @@
 
                             <tbody>
                                 @forelse($stocks as $stock)
-                                    <tr>
+                                    <tr id="row-stock-{{ $stock->id }}">
                                         <td>{{ $loop->iteration }}</td>
 
                                         <td class="fw-medium">
@@ -141,9 +141,10 @@
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
                                                         <a href="javascript:void(0);" class="dropdown-item text-danger"
-                                                            data-delete-url="{{ route('stocks.destroy', $stock->id) }}"
-                                                            onclick="setDeleteFormAction(this)" data-bs-toggle="modal"
-                                                            data-bs-target="#deleteRecordModal">
+                                                            onclick="Livewire.dispatch('confirmDelete', { 
+                                                                            id: {{ $stock->id }}, 
+                                                                            model: 'App\\Models\\Stock' 
+                                                                        })">
                                                             <i class="ph-trash me-1"></i> Remove
                                                         </a>
                                                     </li>
@@ -198,6 +199,42 @@
         prevBtnId: "prevStockPage",
         nextBtnId: "nextStockPage",
         noResultClass: "noresult"
+    });
+
+        document.addEventListener('livewire:init', () => {
+
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+
+        Livewire.on('open-delete-modal', () => {
+            deleteModal.show();
+        });
+
+        Livewire.on('close-delete-modal', () => {
+            deleteModal.hide();
+        });
+
+        Livewire.on('record-deleted', (event) => {
+
+            let data = event[0];
+
+            let modelName = data.model.split('\\').pop().toLowerCase();
+            let row = document.getElementById(`row-${modelName}-${data.id}`);
+
+            if (row) {
+                row.remove();
+
+                // Recalculate index column
+                const rows = document.querySelectorAll('#stockTable tbody tr');
+
+                rows.forEach((tr, index) => {
+                    const indexCell = tr.querySelector('td:first-child');
+                    if (indexCell) {
+                        indexCell.textContent = index + 1;
+                    }
+                });
+            }
+
+        });
     });
 </script>
 

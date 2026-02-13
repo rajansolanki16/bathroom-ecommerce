@@ -34,11 +34,3 @@
     table-layout: fixed;
     width: 100%;
 }
-
-.variant-card .ph-caret-down {
-    transition: transform .2s ease;
-}
-
-.variant-card.open .ph-caret-down {
-    transform: rotate(180deg);
-}

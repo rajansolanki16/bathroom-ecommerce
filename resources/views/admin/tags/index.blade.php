@@ -69,7 +69,7 @@
 
                             <tbody>
                                 @forelse($tags as $tag)
-                                    <tr>
+                                    <tr id="row-tag-{{ $tag->id }}">
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $tag->name }}</td>
                                         <td>
@@ -84,20 +84,22 @@
 
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <a href="{{ route('tags.edit', $tag->id) }}" class="dropdown-item">
+                                                        <a href="{{ route('tags.edit', $tag->id) }}"
+                                                            class="dropdown-item">
                                                             <i class="ph-pencil me-1"></i> Edit
                                                         </a>
                                                     </li>
 
-                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
 
                                                     <li>
-                                                        <a href="javascript:void(0);"
-                                                            class="dropdown-item text-danger"
-                                                            data-delete-url="{{ route('tags.destroy', $tag->id) }}"
-                                                            onclick="setDeleteFormAction(this)"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#deleteRecordModal">
+                                                        <a href="javascript:void(0);" class="dropdown-item text-danger"
+                                                            onclick="Livewire.dispatch('confirmDelete', { 
+                                                                            id: {{ $tag->id }}, 
+                                                                            model: 'App\\Models\\Tag' 
+                                                                        })">
                                                             <i class="ph-trash me-1"></i> Remove
                                                         </a>
                                                     </li>
@@ -154,6 +156,44 @@
         prevBtnId: "prevTagPage",
         nextBtnId: "nextTagPage",
         noResultClass: "noresult"
+    });
+
+
+    document.addEventListener('livewire:init', () => {
+
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+
+        Livewire.on('open-delete-modal', () => {
+            deleteModal.show();
+        });
+
+        Livewire.on('close-delete-modal', () => {
+            deleteModal.hide();
+        });
+
+        Livewire.on('record-deleted', (event) => {
+
+            let data = event[0];
+
+            let modelName = data.model.split('\\').pop().toLowerCase();
+            let row = document.getElementById(`row-${modelName}-${data.id}`);
+
+            if (row) {
+                row.remove();
+
+                // Recalculate index column
+                const rows = document.querySelectorAll('#tagTable tbody tr');
+
+                rows.forEach((tr, index) => {
+                    const indexCell = tr.querySelector('td:first-child');
+                    if (indexCell) {
+                        indexCell.textContent = index + 1;
+                    }
+                });
+            }
+
+        });
+
     });
 </script>
 

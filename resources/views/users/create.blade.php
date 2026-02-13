@@ -25,7 +25,7 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Full Name <span class="text-danger">*</span></label>
                                 <input type="text" name="name"
-                                    class="form-control @error('name') is-invalid @enderror"
+                                    class="form-control @error('name') is-invalid @enderror"  pattern="[A-Za-z ]+"
                                     value="{{ old('name') }}">
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -47,9 +47,10 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
-                                <input type="text" name="mobile"
+                                <input type="number" name="mobile"
                                     class="form-control @error('mobile') is-invalid @enderror"
-                                    value="{{ old('mobile') }}">
+                                    value="{{ old('mobile') }}"
+                                    onkeydown="return !['e','E','+','-'].includes(event.key)">
                                 @error('mobile')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -160,6 +161,29 @@
         document.getElementById('btnText').classList.add('d-none');
         document.getElementById('btnLoader').classList.remove('d-none');
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const nameInput = document.querySelector('input[name="name"]');
+
+        nameInput.addEventListener('input', function () {
+            this.value = this.value.replace(/[^A-Za-z ]/g, '');
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+    function allowOnlyNumbers(selector) {
+        document.querySelectorAll(selector).forEach(input => {
+            input.addEventListener('input', function () {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+        });
+    }
+
+    allowOnlyNumbers('input[name="mobile"]');
+    allowOnlyNumbers('input[name="whatsapp_number"]');
+
+});
 </script>
 
 <x-admin.footer />

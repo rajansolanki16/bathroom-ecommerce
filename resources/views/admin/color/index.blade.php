@@ -26,10 +26,10 @@
     </div>
 
     @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     @endif
 
     <div class="row">
@@ -48,7 +48,8 @@
                         <div class="col-sm">
                             <div class="d-flex justify-content-sm-end gap-2">
                                 <div class="search-box ms-2">
-                                    <input type="text" class="form-control" id="searchColors" placeholder="Search...">
+                                    <input type="text" class="form-control" id="searchColors"
+                                        placeholder="Search...">
                                     <i class="ri-search-line search-icon"></i>
                                 </div>
 
@@ -74,55 +75,54 @@
 
                             <tbody>
                                 @forelse($colors as $color)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <tr id="row-color-{{ $color->id }}">
+                                        <td>{{ $loop->iteration }}</td>
 
-                                    <td>{{ $color->name }}</td>
+                                        <td>{{ $color->name }}</td>
 
-                                    <td>
-                                        <span class="badge bg-info">{{ $color->slug }}</span>
-                                    </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ $color->slug }}</span>
+                                        </td>
 
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-subtle-secondary btn-icon"
-                                                data-bs-toggle="dropdown">
-                                                <i class="bi bi-three-dots-vertical"></i>
-                                            </button>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-subtle-secondary btn-icon"
+                                                    data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
 
-                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                <li>
-                                                    <a href="{{ route('colors.edit', $color->id) }}" class="dropdown-item">
-                                                        <i class="ph-pencil me-1"></i> Edit
-                                                    </a>
-                                                </li>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a href="{{ route('colors.edit', $color->id) }}"
+                                                            class="dropdown-item">
+                                                            <i class="ph-pencil me-1"></i> Edit
+                                                        </a>
+                                                    </li>
 
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
 
-                                                <li>
-                                                    <a href="javascript:void(0);"
-                                                        class="dropdown-item text-danger"
-                                                        data-delete-url="{{ route('colors.destroy', $color->id) }}"
-                                                        onclick="setDeleteFormAction(this)"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#deleteRecordModal">
-                                                        <i class="ph-trash me-1"></i> Remove
-                                                    </a>
-                                                </li>
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="dropdown-item text-danger"
+                                                            onclick="Livewire.dispatch('confirmDelete', { 
+                                                                            id: {{ $color->id }}, 
+                                                                            model: 'App\\Models\\Color' 
+                                                                        })">
+                                                            <i class="ph-trash me-1"></i> Remove
+                                                        </a>
+                                                    </li>
 
-                                               
-                                            </ul>
-                                        </div>
-                                    </td> 
-                                </tr>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="6" class="text-center py-4 text-muted">
-                                        No Color found
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            No Color found
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -162,7 +162,42 @@
         nextBtnId: "nextColorPage",
         noResultClass: "noresult"
     });
+
+    document.addEventListener('livewire:init', () => {
+
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+
+        Livewire.on('open-delete-modal', () => {
+            deleteModal.show();
+        });
+
+        Livewire.on('close-delete-modal', () => {
+            deleteModal.hide();
+        });
+
+        Livewire.on('record-deleted', (event) => {
+
+            let data = event[0];
+
+            let modelName = data.model.split('\\').pop().toLowerCase();
+            let row = document.getElementById(`row-${modelName}-${data.id}`);
+
+            if (row) {
+                row.remove();
+
+                // Recalculate index column
+                const rows = document.querySelectorAll('#colorTable tbody tr');
+
+                rows.forEach((tr, index) => {
+                    const indexCell = tr.querySelector('td:first-child');
+                    if (indexCell) {
+                        indexCell.textContent = index + 1;
+                    }
+                });
+            }
+
+        });
+
+    });
 </script>
-
-
 <x-admin.footer />

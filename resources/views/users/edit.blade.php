@@ -194,4 +194,28 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const nameInput = document.querySelector('input[name="name"]');
+
+        nameInput.addEventListener('input', function () {
+            this.value = this.value.replace(/[^A-Za-z ]/g, '');
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+    function allowOnlyNumbers(selector) {
+        document.querySelectorAll(selector).forEach(input => {
+            input.addEventListener('input', function () {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+        });
+    }
+
+    allowOnlyNumbers('input[name="mobile"]');
+    allowOnlyNumbers('input[name="whatsapp_number"]');
+    }); 
+</script>
+
 <x-admin.footer />

@@ -82,7 +82,7 @@ class CheckoutController extends Controller
 
             /* ---------------- CREATE ORDER ---------------- */
             $order = Order::create([
-                'user_id'   => Auth::id(), 
+                'vendor_id'   => Auth::id(), 
                 'name'      => $request->name,
                 'email'     => $request->email,
                 'phone'     => $request->phone,

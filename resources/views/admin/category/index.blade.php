@@ -52,6 +52,14 @@
                                         placeholder="Search...">
                                     <i class="ri-search-line search-icon"></i>
                                 </div>
+                                @php
+                                    $visible = request()->get('visible');
+                                @endphp
+
+                                <a href="{{ $visible == 1 ? route('categories.index') : route('categories.index', ['visible' => 1]) }}"
+                                    class="btn btn-outline-info ms-2">
+                                    {{ $visible == 1 ? 'Show All' : 'Show Visible' }}
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -227,6 +235,16 @@
 
             if (row) {
                 row.remove();
+
+                // Recalculate index column
+                const rows = document.querySelectorAll('#categoryTable tbody tr');
+
+                rows.forEach((tr, index) => {
+                    const indexCell = tr.querySelector('td:first-child');
+                    if (indexCell) {
+                        indexCell.textContent = index + 1;
+                    }
+                });
             }
 
         });

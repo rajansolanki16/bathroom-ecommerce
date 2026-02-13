@@ -125,7 +125,8 @@
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
                                         <input type="number" step="0.01" name="price" class="form-control"
-                                            value="{{ old('price') }}" placeholder="0.00">
+                                            value="{{ old('price') }}" placeholder="0.00" 
+                                             onkeydown="return !['e','E','+','-'].includes(event.key)">
                                     </div>
                                     @error('price')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -542,7 +543,7 @@
             </div> --}}
 
             <div class="hstack gap-2 justify-content-end mb-3">
-                <a href="{{ route('products.index') }}" class="btn btn-danger">Back</a>
+                <a href="{{ route('products.index') }}" class="btn btn-danger">Cancel</a>
                 <button class="btn btn-primary">Submit</button>
             </div>
 

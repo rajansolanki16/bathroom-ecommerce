@@ -15,11 +15,17 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-
         $parentCategories = Category::whereNull('parent_id')->get();
-        $categories = Category::all();
+
+        $categories = Category::when($request->filled('visible'), function ($query) use ($request) {
+                $query->where('is_visible', $request->visible);
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.category.index', compact('parentCategories', 'categories'));
     }
 
@@ -44,7 +50,8 @@ class CategoryController extends Controller
                 'required',
                 'min:3',
                 'regex:/^[a-zA-Z ]+$/',
-                Rule::unique('categories')->where(fn ($q) =>
+                Rule::unique('categories')->where(
+                    fn($q) =>
                     $q->where('parent_id', $request->parent_id)
                 ),
             ],
@@ -105,7 +112,8 @@ class CategoryController extends Controller
                 'regex:/^[a-zA-Z ]+$/',
                 Rule::unique('categories')
                     ->ignore($category->id)
-                    ->where(fn ($q) =>
+                    ->where(
+                        fn($q) =>
                         $q->where('parent_id', $request->parent_id)
                     ),
             ],
@@ -133,12 +141,12 @@ class CategoryController extends Controller
     {
         //
         $category = Category::findOrFail($id);
-        
+
         // Delete image if exists
         if ($category->image && Storage::disk('public')->exists($category->image)) {
             Storage::disk('public')->delete($category->image);
         }
-        
+
         $category->delete();
         return redirect()->route('categories.index');
     }

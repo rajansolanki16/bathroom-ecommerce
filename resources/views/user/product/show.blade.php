@@ -53,16 +53,15 @@
             <div class="col-lg-6">
 
                 <div class="bg-white rounded-3 shadow-sm p-4">
-                    <img id="mainImage" src="{{ $product->getFirstMediaUrl('main_image') ?: asset('assets/images/no-image.png') }}"
+                    <img id="mainImage"
+                        src="{{ $product->getFirstMediaUrl('main_image') ?: asset('assets/images/no-image.png') }}"
                         class="img-fluid rounded-2 w-100" style="aspect-ratio:1/1;object-fit:cover;">
                 </div>
 
-                @if($product->hasMedia('gallery'))
+                @if ($product->hasMedia('gallery'))
                     <div class="d-flex gap-3 mt-3">
-                        @foreach($product->getMedia('gallery') as $media)
-                            <img
-                                src="{{ $media->getUrl() }}"
-                                class="border rounded-2 p-1 bg-white"
+                        @foreach ($product->getMedia('gallery') as $media)
+                            <img src="{{ $media->getUrl() }}" class="border rounded-2 p-1 bg-white"
                                 style="width:80px;height:80px;object-fit:cover;cursor:pointer"
                                 onclick="document.getElementById('mainImage').src='{{ $media->getUrl() }}'">
                         @endforeach
@@ -87,8 +86,10 @@
                     </h1>
 
                     {{-- BRAND / VENDOR --}}
-                    @if($product->brand)
-                        <div class="mb-2"><a href="{{ route('brands.show', $product->brand->id ?? '#') }}" class="text-decoration-none text-secondary small">By {{ $product->brand->name }}</a></div>
+                    @if ($product->brand)
+                        <div class="mb-2"><a href="{{ route('brands.show', $product->brand->id ?? '#') }}"
+                                class="text-decoration-none text-secondary small">By {{ $product->brand->name }}</a>
+                        </div>
                     @endif
 
                     {{-- PRICE --}}
@@ -161,35 +162,6 @@
                 </div>
             </div>
         </div>
-
-<script>
-    // Buy now: add to cart via AJAX then redirect to checkout
-    document.getElementById('buyNowBtn')?.addEventListener('click', function () {
-        var id = this.getAttribute('data-id');
-        var qty = document.querySelector('input[name="qty"]').value || 1;
-        var token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-        fetch("{{ route('cart.add') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': token,
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({ product_id: id, qty: qty })
-        }).then(function (res) { return res.json(); })
-        .then(function (data) {
-            // CartController returns { status: 'added', ... } on success
-            if (data && (data.status === 'added' || data.status === 'success')) {
-                window.location.href = '{{ route('checkout') }}';
-            } else {
-                alert(data.message || 'Unable to proceed to checkout');
-            }
-        }).catch(function () {
-            alert('Server error while processing Buy Now');
-        });
-    });
-</script>
 
         {{-- PRODUCT DETAILS --}}
         <div class="bg-white rounded-3 shadow-sm mt-5 p-5">
@@ -266,7 +238,7 @@
                         @endif
 
                     @endauth
-
+                            
                     {{-- REVIEWS LIST --}}
                     @forelse($product->reviews as $review)
                         <div class="review-card">
@@ -278,16 +250,16 @@
                             </div>
 
                             <div class="text-warning mb-2">
-                                @for($i=1;$i<=5;$i++)
+                                @for ($i = 1; $i <= 5; $i++)
                                     <i class="bi {{ $i <= $review->rating ? 'bi-star-fill' : 'bi-star' }}"></i>
                                 @endfor
                             </div>
 
                             <p class="text-muted mb-0">{{ $review->review }}</p>
                         </div>
-                        @empty
+                    @empty
                         <p class="text-muted">No reviews yet.</p>
-                        @endforelse
+                    @endforelse
 
                 </div>
             </div>
@@ -318,5 +290,37 @@
     window.cartAddUrl = "{{ route('cart.add') }}";
     window.cartRemoveUrl = "{{ route('cart.remove', ':id') }}";
     window.cartUpdateUrl = "{{ route('cart.update', ':id') }}";
+
+    // Buy now: add to cart via AJAX then redirect to checkout
+    document.getElementById('buyNowBtn')?.addEventListener('click', function() {
+        var id = this.getAttribute('data-id');
+        var qty = document.querySelector('input[name="qty"]').value || 1;
+        var token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+        fetch("{{ route('cart.add') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    product_id: id,
+                    qty: qty
+                })
+            }).then(function(res) {
+                return res.json();
+            })
+            .then(function(data) {
+                // CartController returns { status: 'added', ... } on success
+                if (data && (data.status === 'added' || data.status === 'success')) {
+                    window.location.href = '{{ route('checkout') }}';
+                } else {
+                    alert(data.message || 'Unable to proceed to checkout');
+                }
+            }).catch(function() {
+                alert('Server error while processing Buy Now');
+            });
+    });
 </script>
 <x-footer />

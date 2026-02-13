@@ -106,9 +106,9 @@
 
                                         <td>
                                             <button class="btn btn-sm toggle-home-btn
-                                                {{ $brand->show_on_homepage ? 'btn-success' : 'btn-outline-secondary' }}"
+                                                {{ $brand->show_on_home ? 'btn-success' : 'btn-outline-secondary' }}"
                                                 data-id="{{ $brand->id }}">
-                                                {{ $brand->show_on_homepage ? 'Enabled' : 'Disabled' }}
+                                                {{ $brand->show_on_home ? 'Enabled' : 'Disabled' }}
                                             </button>
                                         </td>
 
@@ -245,6 +245,15 @@
 
         if (row) {
             row.remove();
+
+                const rows = document.querySelectorAll('#brandTable tbody tr');
+
+                rows.forEach((tr, index) => {
+                    const indexCell = tr.querySelector('td:first-child');
+                    if (indexCell) {
+                        indexCell.textContent = index + 1;
+                    }
+                });
         }
 
     });

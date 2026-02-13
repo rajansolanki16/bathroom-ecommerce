@@ -388,15 +388,11 @@ class SettingController extends Controller
             'store_address' => 'required|string',
             'store_city' => 'required|string',
             'store_country' => 'required|exists:country,id',
-            'weight_unit' => 'required|string',
-            'dimension_unit' => 'required|string',
         ];
         $messages = [
             'store_address.required' => 'The store address field is required.',
             'store_city.required' => 'The store city field is required.',
             'store_country.required' => 'The store country field is required.',
-            'weight_unit.required' => 'The weight unit field is required.',
-            'dimension_unit.required' => 'The dimension unit field is required.',
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
 
@@ -414,8 +410,6 @@ class SettingController extends Controller
             'store_city'        => $request->store_city,
             'store_country'     => $request->store_country,
             'store_postal_code' => $request->store_postal_code,
-            'weight_unit'       => $request->weight_unit,
-            'dimension_unit'    => $request->dimension_unit,
         ]);
 
         return redirect()

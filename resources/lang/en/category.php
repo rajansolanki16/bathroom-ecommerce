@@ -17,7 +17,7 @@ return [
     //form labels
     'Category_Title'=> 'Category Title',
     'required_mark'=> '*',
-    'Parent_Category'=> 'Parent Category Title',
+    'Parent_Category'=> 'Sub Category Title',
 
     //button
     'Create_Button'=> 'Submit',

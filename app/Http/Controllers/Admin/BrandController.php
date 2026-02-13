@@ -24,8 +24,8 @@ class BrandController extends Controller
                     ->orWhere('slug', 'like', '%' . $request->search . '%');
             });
         })
-            ->when($request->has('enabled'), function ($query) {
-                $query->where('is_active', 1);
+            ->when($request->filled('enabled'), function ($query) use ($request) {
+                $query->where('show_on_home', $request->enabled);
             })
             ->latest()
             ->paginate(10)
@@ -46,12 +46,27 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|min:3|regex:/^[a-zA-Z ]+$/|unique:brands,name',
-            'description' => 'nullable|string|max:1000',
-            'media_library_logo_id' => 'required|exists:media,id',
-            'show_on_home' => 'nullable|boolean',
-        ]);
+        $request->validate(
+            [
+                'name' => 'required|string|min:3|regex:/^[a-zA-Z ]+$/|unique:brands,name',
+                'description' => 'nullable|string|max:1000',
+                'media_library_logo_id' => 'required|exists:media,id',
+                'show_on_home' => 'nullable|boolean',
+            ],
+            [
+                'name.required' => 'Brand name is required.',
+                'name.min' => 'Brand name must be at least 3 characters.',
+                'name.regex' => 'Brand name may only contain letters and spaces.',
+                'name.unique' => 'This brand name already exists. Please choose another.',
+
+                'description.max' => 'Description cannot exceed 1000 characters.',
+
+                'media_library_logo_id.required' => 'Please select a brand banner image from the media library.',
+                'media_library_logo_id.exists' => 'The selected image is invalid. Please choose a valid media file.',
+
+                'show_on_home.boolean' => 'Invalid value for Show on Home Page.',
+            ]
+        );
 
         $brand = Brand::create([
             'name'        => $request->name,
@@ -59,11 +74,10 @@ class BrandController extends Controller
             'description' => $request->description,
             'media_library_logo_id' => $request->media_library_logo_id,
             'show_on_home' => $request->boolean('show_on_home'),
-
         ]);
 
         return redirect()->route('brands.index')
-            ->with('success', 'Brand created successfully');
+            ->with('success', 'Brand created successfully.');
     }
 
 
@@ -88,29 +102,54 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
-        $request->validate([
-            'name' => [
-                'required',
-                'string',
-                'min:3',
-                'regex:/^[a-zA-Z ]+$/',
-                Rule::unique('brands')->ignore($brand->id),
+        $request->validate(
+            [
+                'name' => [
+                    'required',
+                    'string',
+                    'min:3',
+                    'regex:/^[a-zA-Z ]+$/',
+                    Rule::unique('brands')->ignore($brand->id),
+                ],
+                'media_library_logo_id' => 'required|exists:media,id',
+                'description' => 'nullable|string|max:1000',
+                'show_on_home' => 'nullable|boolean',
             ],
-            'description' => 'nullable|string|max:1000',
-            'show_on_home' => 'nullable|boolean',
-        ]);
+            [
+                'name.required' => 'Brand name is required.',
+                'name.min' => 'Brand name must be at least 3 characters.',
+                'name.regex' => 'Brand name may only contain letters and spaces.',
+                'name.unique' => 'This brand name already exists. Please choose another.',
+
+                'description.max' => 'Description cannot exceed 1000 characters.',
+
+                'show_on_home.boolean' => 'Invalid value for Show on Home Page.',
+
+                'media_library_logo_id.required' => 'Please select a brand banner image from the media library.',
+                'media_library_logo_id.exists' => 'The selected image is invalid. Please choose a valid media file.',
+            ]
+        );
+
+        // Handle remove logo
+        if ($request->remove_logo) {
+            $brand->media_library_logo_id = null;
+        }
+
+        // Handle new selected logo
+        if ($request->filled('media_library_logo_id')) {
+            $brand->media_library_logo_id = $request->media_library_logo_id;
+        }
 
         $brand->update([
             'name'        => $request->name,
             'slug'        => Str::slug($request->name),
             'description' => $request->description,
             'is_active'   => $request->boolean('is_active'),
-            'media_library_logo_id' => $request->media_library_logo_id,
             'show_on_home' => $request->boolean('show_on_home'),
         ]);
 
         return redirect()->route('brands.index')
-            ->with('success', 'Brand updated successfully');
+            ->with('success', 'Brand updated successfully.');
     }
 
     /**
@@ -136,9 +175,8 @@ class BrandController extends Controller
 
         $brand = Brand::findOrFail($request->brand_id);
 
-        $brand->update([
-            'show_on_home' => ! $brand->show_on_home
-        ]);
+        $brand->show_on_home = ! $brand->show_on_home;
+        $brand->save();
 
         return response()->json([
             'status' => true,

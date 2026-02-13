@@ -16,14 +16,13 @@ return new class extends Migration
 
             $table->string('product_title')->unique();
             $table->string('slug')->unique();
-            $table->tinyInteger('product_type')->comment('0=simple,1=classified');//0=simple,1=classified
             $table->longText('short_description');
            // $table->string('brand')->nullable(); 
             $table->tinyInteger('exchangeable')->comment('0=no,1=yes')->default(0);
             $table->tinyInteger('refundable')->comment('0=no,1=yes')->default(0);
             $table->longText('product_decscription')->nullable();
 
-            // $table->integer('stock')->nullable();
+            $table->integer('stock')->nullable();
             $table->decimal('price', 10, 2);
             $table->decimal('discount', 10, 2)->nullable();
             $table->tinyInteger('status')->comment('0=draft,1=published,2=scheduled')->default(1);//0=draft,1=published,2=scheduled

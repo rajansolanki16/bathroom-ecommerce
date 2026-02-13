@@ -12894,8 +12894,6 @@ span.flatpickr-weekday {
 
 .pricing-box li.active::marker {
   color: var(--tb-primary);
-}r;
-     object-fit: cover;
 }
 .profile-user .profile-img-file-input {
   display: none;
