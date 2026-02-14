@@ -57,6 +57,7 @@ class SalesmanController extends Controller
             'follow_up_required' => $request->has('follow_up_required'),
             'next_follow_up_date' => $request->next_date,
             'location_address'   => $request->location_address,
+            'is_approve'        => null, // Pending approval
         ];
 
         // 3. Create Record
@@ -105,6 +106,7 @@ class SalesmanController extends Controller
             'follow_up_required' => $followUpRequired,
             'next_follow_up_date' =>  $followUpRequired ? $request->next_follow_up_date : null,
             'location_address'   => $request->location_address,
+            'is_approve'        => null, 
         ]);
 
         return redirect()->route('admin.dashboard')->with('success', 'Store visit report has been updated successfully!');

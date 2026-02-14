@@ -44,7 +44,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Category Banner</label>
+                        <label class="form-label">Category Banner</label><span class="text-danger">{{ __('category.required_mark') }}</span></label>
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModal">Choose from Media Library</button>
                         <div class="form-text text-muted mb-2">
                             <i class="bi bi-info-circle me-1"></i> 

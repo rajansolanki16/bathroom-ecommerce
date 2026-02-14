@@ -107,7 +107,7 @@
                                     <th>Category</th>
                                     <th>Brand</th>
                                     <th>Price</th>
-                                    <th>Rating</th>
+                                    {{-- <th>Rating</th> --}}
                                     <th>Published</th>
                                     <th>Action</th>
                                 </tr>
@@ -150,11 +150,11 @@
 
                                         <td>₹{{ number_format($product->price, 2) }}</td>
 
-                                        <td>
+                                        {{-- <td>
                                             <span class="badge bg-warning-subtle text-warning">
                                                 <i class="bi bi-star-fill"></i> 4.5
                                             </span>
-                                        </td>
+                                        </td> --}}
 
                                         <td>{{ $product->created_at->format('d M, Y') }}</td>
 

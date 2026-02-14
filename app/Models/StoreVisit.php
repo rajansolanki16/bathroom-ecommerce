@@ -17,13 +17,16 @@ class StoreVisit extends Model
         'follow_up_required',
         'next_follow_up_date',
         'location_address',
-        'is_approve'
+        'is_approve',
+        'status',
+        'reject_reason',
+        'approved_by'
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'next_follow_up_date' => 'datetime', // Add this line
+        'next_follow_up_date' => 'datetime', 
         'follow_up_required' => 'boolean',
     ];
 

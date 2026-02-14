@@ -27,7 +27,9 @@ class AdminController extends Controller
         $totalProducts = Product::count();
         $totalBrands = Brand::count();
         $totalCategories = Category::count();
-        $totalUsers = User::whereDoesntHave('roles', fn ($q) =>
+        $totalUsers = User::whereDoesntHave(
+            'roles',
+            fn($q) =>
             $q->where('name', 'admin')
         )->count();
 
@@ -70,7 +72,9 @@ class AdminController extends Controller
         /* =======================
         VENDOR DROPDOWN
         ======================= */
-        $vendors = User::whereHas('roles', fn ($q) =>
+        $vendors = User::whereHas(
+            'roles',
+            fn($q) =>
             $q->where('name', 'vendor')
         )->select('id', 'name')->get();
 
@@ -78,7 +82,7 @@ class AdminController extends Controller
         STORE VISIT QUERY
         ======================= */
         $recentVisitsQuery = StoreVisit::with('vendor')
-            ->where('salesman_id', Auth::id()) 
+            ->where('salesman_id', Auth::id())
             ->latest();
 
         // Vendor filter
@@ -99,10 +103,10 @@ class AdminController extends Controller
 
             $recentVisitsQuery->where(function ($q) use ($search) {
                 $q->where('purpose', 'like', "%{$search}%")
-                ->orWhere('outcome', 'like', "%{$search}%")
-                ->orWhereHas('vendor', function ($vendor) use ($search) {
-                    $vendor->where('name', 'like', "%{$search}%");
-                });
+                    ->orWhere('outcome', 'like', "%{$search}%")
+                    ->orWhereHas('vendor', function ($vendor) use ($search) {
+                        $vendor->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -113,6 +117,11 @@ class AdminController extends Controller
             ->paginate(5)
             ->withQueryString();
 
+        $totalVendors = User::whereHas(
+            'roles',
+            fn($q) =>
+            $q->where('name', 'vendor')
+        )->count();
         /* =======================
         VIEW
         ======================= */
@@ -132,6 +141,7 @@ class AdminController extends Controller
             'lowStockProducts',
             'totalVisits',
             'todayVisits',
+            'totalVendors',
             'recentVisits',
             'vendors'
         ));

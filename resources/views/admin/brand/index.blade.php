@@ -48,12 +48,13 @@
                         <div class="col-sm">
                             <div class="d-flex justify-content-sm-end gap-2">
                                 <div class="search-box ms-2">
-                                    <input type="text" class="form-control" id="searchBrands" placeholder="Search...">
+                                    <input type="text" class="form-control" id="searchBrands"
+                                        placeholder="Search...">
                                     <i class="ri-search-line search-icon"></i>
                                 </div>
 
                                 <a href="{{ request()->has('enabled') ? route('brands.index') : route('brands.index', ['enabled' => 1]) }}"
-                                   class="btn btn-outline-info">
+                                    class="btn btn-outline-info">
                                     {{ request()->has('enabled') ? 'Show All' : 'Show Enabled' }}
                                 </a>
                             </div>
@@ -64,9 +65,9 @@
                     <div class="table-responsive table-card mt-3 mb-1">
                         <table class="table align-middle table-nowrap" id="brandTable">
                             <thead class="table-light">
-                            <tr>
+                                <tr>
                                     <th>Index</th>
-                                    <th>Logo</th>
+                                    <th>Banner Image</th>
                                     <th>Name</th>
                                     <th>Slug</th>
                                     <th>Show on Home</th>
@@ -83,16 +84,27 @@
                                             @php
                                                 $logoUrl = null;
                                                 if ($brand->media_library_logo_id) {
-                                                    $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($brand->media_library_logo_id);
-                                                    if ($media && file_exists(storage_path('app/public/'.$media->id.'/'.$media->file_name))) {
-                                                        $logoUrl = asset('storage/'.$media->id.'/'.$media->file_name);
+                                                    $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find(
+                                                        $brand->media_library_logo_id,
+                                                    );
+                                                    if (
+                                                        $media &&
+                                                        file_exists(
+                                                            storage_path(
+                                                                'app/public/' . $media->id . '/' . $media->file_name,
+                                                            ),
+                                                        )
+                                                    ) {
+                                                        $logoUrl = asset(
+                                                            'storage/' . $media->id . '/' . $media->file_name,
+                                                        );
                                                     }
                                                 }
                                             @endphp
 
-                                            @if($logoUrl)
+                                            @if ($logoUrl)
                                                 <img src="{{ $logoUrl }}" class="rounded"
-                                                     style="width:40px;height:40px;object-fit:cover;">
+                                                    style="width:40px;height:40px;object-fit:cover;">
                                             @else
                                                 <span class="badge bg-secondary">No Image</span>
                                             @endif
@@ -105,7 +117,8 @@
                                         </td>
 
                                         <td>
-                                            <button class="btn btn-sm toggle-home-btn
+                                            <button
+                                                class="btn btn-sm toggle-home-btn
                                                 {{ $brand->show_on_home ? 'btn-success' : 'btn-outline-secondary' }}"
                                                 data-id="{{ $brand->id }}">
                                                 {{ $brand->show_on_home ? 'Enabled' : 'Disabled' }}
@@ -121,17 +134,19 @@
 
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <a href="{{ route('brands.edit', $brand->id) }}" class="dropdown-item">
+                                                        <a href="{{ route('brands.edit', $brand->id) }}"
+                                                            class="dropdown-item">
                                                             <i class="ph-pencil me-1"></i> Edit
                                                         </a>
                                                     </li>
 
-                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
 
                                                     <li>
-                                                        <a href="javascript:void(0);"
-                                                        class="dropdown-item text-danger"
-                                                        onclick="Livewire.dispatch('confirmDelete', { 
+                                                        <a href="javascript:void(0);" class="dropdown-item text-danger"
+                                                            onclick="Livewire.dispatch('confirmDelete', { 
                                                                 id: {{ $brand->id }}, 
                                                                 model: 'App\\Models\\Brand' 
                                                         })">
@@ -195,56 +210,56 @@
             button.disabled = true;
 
             fetch("{{ route('brands.toggle-home') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({ brand_id: button.dataset.id })
-            })
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                return res.json();
-            })
-            .then(data => {
-                if (data.status) {
-                    button.classList.toggle('btn-success', data.show_on_home);
-                    button.classList.toggle('btn-outline-secondary', !data.show_on_home);
-                    button.textContent = data.show_on_home ? 'Enabled' : 'Disabled';
-                } else {
-                    console.error('Toggle failed:', data);
-                    alert('Failed to update brand status');
-                }
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-                alert('Error: ' + error.message);
-            })
-            .finally(() => button.disabled = false);
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({
+                        brand_id: button.dataset.id
+                    })
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.status) {
+                        button.classList.toggle('btn-success', data.show_on_home);
+                        button.classList.toggle('btn-outline-secondary', !data.show_on_home);
+                        button.textContent = data.show_on_home ? 'Enabled' : 'Disabled';
+                    } else {
+                        console.error('Toggle failed:', data);
+                        alert('Failed to update brand status');
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    alert('Error: ' + error.message);
+                })
+                .finally(() => button.disabled = false);
         }
     });
 
     document.addEventListener('livewire:init', () => {
 
-    const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+        Livewire.on('open-delete-modal', () => {
+            deleteModal.show();
+        });
 
-    Livewire.on('open-delete-modal', () => {
-        deleteModal.show();
-    });
+        Livewire.on('close-delete-modal', () => {
+            deleteModal.hide();
+        });
 
-    Livewire.on('close-delete-modal', () => {
-        deleteModal.hide();
-    });
+        Livewire.on('record-deleted', (event) => {
 
-    Livewire.on('record-deleted', (event) => {
+            let data = event[0];
+            let modelName = data.model.split('\\').pop().toLowerCase();
+            let row = document.getElementById(`row-${modelName}-${data.id}`);
 
-        let data = event[0];
-
-        let modelName = data.model.split('\\').pop().toLowerCase();
-        let row = document.getElementById(`row-${modelName}-${data.id}`);
-
-        if (row) {
-            row.remove();
+            if (row) {
+                row.remove();
 
                 const rows = document.querySelectorAll('#brandTable tbody tr');
 
@@ -254,12 +269,11 @@
                         indexCell.textContent = index + 1;
                     }
                 });
-        }
+            }
+
+        });
 
     });
-
-});
-
 </script>
 
 

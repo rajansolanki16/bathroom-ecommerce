@@ -60,7 +60,7 @@
                         <table class="table align-middle table-nowrap" id="tagTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Index</th>
+                                    {{-- <th>Index</th> --}}
                                     <th>Name</th>
                                     <th>Slug</th>
                                     <th>Action</th>
@@ -70,7 +70,7 @@
                             <tbody>
                                 @forelse($tags as $tag)
                                     <tr id="row-tag-{{ $tag->id }}">
-                                        <td>{{ $loop->iteration }}</td>
+                                        {{-- <td>{{ $loop->iteration }}</td> --}}
                                         <td>{{ $tag->name }}</td>
                                         <td>
                                             <span class="badge bg-info">{{ $tag->slug }}</span>

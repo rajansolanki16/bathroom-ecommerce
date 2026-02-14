@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-                   <div class="card-body">
+                    <div class="card-body">
                         <div class="row">
 
                             <!-- Left Info -->
@@ -52,16 +52,29 @@
                                             </optgroup>
                                         @endforeach
                                     </select>
-                                     @error('categories')
+                                    @error('categories')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <!-- Short Description -->
                                 <div class="mb-3">
-                                    <label class="form-label">Short Description <span class="text-danger">*</span></label>
+                                    <label class="form-label">Short Description <span
+                                            class="text-danger">*</span></label>
                                     <textarea name="short_description" class="form-control" rows="3">{{ old('short_description', $product->short_description) }}</textarea>
                                     @error('short_description')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Price <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" step="0.01" name="price" class="form-control"
+                                            value="{{ old('price', $product->price) }}" placeholder="0.00"
+                                            onkeydown="return !['e','E','+','-'].includes(event.key)">
+                                    </div>
+                                    @error('price')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -80,9 +93,9 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                             @error('brand_id')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
+                                            @error('brand_id')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -174,8 +187,11 @@
                         <div class="row">
                             <div class="col-xxl-4">
                                 <h5 class="card-title mb-3">Description</h5>
-                                <p class="text-muted">Product Information refers to any information held by an organization
-                                    about the products it produces, buys, sells or distributes.</p>
+                                <p class="text-muted">Provide a detailed and engaging description of the product,
+                                    including key features, specifications, materials, dimensions, and usage
+                                    information.
+                                    This content helps customers understand the product better and improves search
+                                    visibility and conversions.</p>
                             </div><!--end col-->
                             <div class="col-xxl-8">
                                 <div>
@@ -198,8 +214,12 @@
                         <div class="row">
                             <div class="col-xxl-4">
                                 <h5 class="card-title mb-3">Images</h5>
-                                <p class="text-muted">Product Information refers to any information held by an organization
-                                    about the products it produces, buys, sells or distributes.</p>
+                                <p class="text-muted">Upload a high-quality main product image that clearly represents
+                                    the item.
+                                    You can also add multiple gallery images to showcase different angles, details, or
+                                    usage of the product.
+                                    Supported formats include JPG, PNG, and WEBP. Recommended size is at least 800×800
+                                    pixels for best display.</p>
                             </div><!--end col-->
                             <div class="col-xxl-8">
                                 <div class="mb-4">
@@ -209,10 +229,11 @@
                                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
                                             data-bs-target="#mediaPickerModalMain">Choose from Media Library</button>
                                     </div>
-                                    <input type="hidden" name="media_library_main_image_id" id="media_library_main_image_id"
+                                    <input type="hidden" name="media_library_main_image_id"
+                                        id="media_library_main_image_id"
                                         value="{{ old('media_library_main_image_id', $product->media_library_main_image_id ?? optional($product->getFirstMedia('main_image'))->id) }}">
                                     <div id="selected-main-image-preview" class="mt-2 mb-2"></div>
-                                     @error('media_library_main_image_id')
+                                    @error('media_library_main_image_id')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -224,7 +245,8 @@
 
                                     <div class="d-flex gap-2 mb-2">
                                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                                            data-bs-target="#mediaPickerModalGallery">Choose from Media Library</button>
+                                            data-bs-target="#mediaPickerModalGallery">Choose from Media
+                                            Library</button>
                                     </div>
                                     {{-- Use CSV-formatted IDs so picker can correctly preselect and highlight existing images --}}
                                     <input type="hidden" name="media_library_gallery_image_ids"
@@ -249,13 +271,15 @@
                         <div class="row">
                             <div class="col-xxl-4">
                                 <h5 class="card-title mb-3">SEO Settings</h5>
-                                <p class="text-muted">Add SEO meta tags to help search engines understand your product better.
+                                <p class="text-muted">Add SEO meta tags to help search engines understand your product
+                                    better.
                                 </p>
                             </div><!--end col-->
                             <div class="col-xxl-8">
                                 <div class="mb-3">
                                     <label for="metaTitle" class="form-label">Meta Title</label>
-                                    <input type="text" class="form-control @error('meta_title') is-invalid @enderror"
+                                    <input type="text"
+                                        class="form-control @error('meta_title') is-invalid @enderror"
                                         name="meta_title" id="metaTitle"
                                         value="{{ old('meta_title', $product->meta_title) }}"
                                         placeholder="Enter meta title (max 160 characters)" maxlength="160">
@@ -291,7 +315,7 @@
             </div><!--end col-->
         </div><!--end row-->
 
-        <div class="row" id="vec_general_Info_Section">
+        {{-- <div class="row" id="vec_general_Info_Section">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
@@ -402,7 +426,8 @@
                     </div>
                 </div>
             </div><!--end col-->
-        </div><!--end row-->
+        </div> --}}
+        <!--end row-->
 
         {{-- <div class="row" class="vec_shipping_section" id="vec_shipping_section">
             <div class="col-lg-12">
@@ -672,13 +697,14 @@
                     // Build URL manually - /admin/media-library/{id}
                     var mediaUrl = '/admin/media-library/' + id;
                     console.log('Loading gallery image from:', mediaUrl);
-                    
+
                     $.ajax({
                         url: mediaUrl,
                         type: 'GET',
                         dataType: 'json',
                         success: function(response) {
-                            console.log('✓ Successfully loaded gallery image:', id, response);
+                            console.log('✓ Successfully loaded gallery image:', id,
+                                response);
                             if (response && response.url) {
                                 displayGalleryMedia(id, response.url);
                             }
@@ -720,25 +746,25 @@
                 });
             }
         }
-        
+
         // Initialize on page load
         loadExistingGalleryImages();
         loadExistingMainImage();
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
 
-    const elements = document.querySelectorAll('.choices');
+        const elements = document.querySelectorAll('.choices');
 
-    elements.forEach(function(el) {
-        new Choices(el, {
-            removeItemButton: true,
-            searchEnabled: true,
-            shouldSort: false,
+        elements.forEach(function(el) {
+            new Choices(el, {
+                removeItemButton: true,
+                searchEnabled: true,
+                shouldSort: false,
+            });
         });
-    });
 
-});
+    });
 </script>
 
 <x-admin.footer />

@@ -5,7 +5,7 @@
         <div class="ms-auto d-flex gap-2 align-items-center">
             <select id="sort-by" class="form-select form-select-sm" style="width: 140px;">
                 <option value="date">Sort by Date</option>
-                <option value="author">Sort by Author</option>
+                {{-- <option value="author">Sort by Author</option> --}}
                 <option value="type">Sort by Type</option>
             </select>
             <input type="text" id="media-search" class="form-control form-control-sm" style="width: 200px;"
@@ -93,7 +93,7 @@
                         <th>File Name</th>
                         <th>Type</th>
                         <th>Date</th>
-                        <th>Author</th>
+                        {{-- <th>Author</th> --}}
                         <th>Delete</th>
                     </tr>
                 </thead>
@@ -138,7 +138,7 @@
                             <td>{{ $item->file_name }}</td>
                             <td>{{ $item->mime_type }}</td>
                             <td>{{ $item->created_at }}</td>
-                            <td>{{ $item->model_id }}</td>
+                            {{-- <td>{{ $item->model_id }}</td> --}}
                             <td>
                                 <form class="delete-media-form" data-id="{{ $item->id }}">
                                     @csrf

@@ -10,7 +10,8 @@
                         <div class="row">
                             <div class="col-xxl-4">
                                 <h5 class="card-title mb-3">Product Information</h5>
-                                <p class="text-muted">Product Information refers to any information held by an organisation about the products it produces, buys, sells or distributes.</p>
+                                <p class="text-muted">Product Information refers to any information held by an
+                                    organisation about the products it produces, buys, sells or distributes.</p>
                             </div>
                             <div class="col-xxl-8">
                                 <!-- Product Title -->
@@ -43,14 +44,15 @@
                                             </optgroup>
                                         @endforeach
                                     </select>
-                                      @error('categories')
+                                    @error('categories')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <!-- Short Description -->
                                 <div class="mb-3">
-                                    <label class="form-label">Short Description <span class="text-danger">*</span></label>
+                                    <label class="form-label">Short Description <span
+                                            class="text-danger">*</span></label>
                                     <textarea name="short_description" class="form-control" rows="3">{{ old('short_description') }}</textarea>
                                     @error('short_description')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -72,9 +74,9 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                          @error('brand_id')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
+                                        @error('brand_id')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-lg-6">
@@ -113,8 +115,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">SKU Number</label>
                                             <input type="text" name="sku_number" class="form-control"
-                                                value="{{ old('sku_number') }}"
-                                                placeholder="SKU-ABC-001">
+                                                value="{{ old('sku_number') }}" placeholder="SKU-ABC-001">
                                         </div>
                                     </div>
                                 </div>
@@ -125,8 +126,8 @@
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
                                         <input type="number" step="0.01" name="price" class="form-control"
-                                            value="{{ old('price') }}" placeholder="0.00" 
-                                             onkeydown="return !['e','E','+','-'].includes(event.key)">
+                                            value="{{ old('price') }}" placeholder="0.00"
+                                            onkeydown="return !['e','E','+','-'].includes(event.key)">
                                     </div>
                                     @error('price')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -173,121 +174,135 @@
                                 </div>
                             </div>
                         </div>
-                        </div>
                     </div>
-                </div><!--end col-->
-            </div><!--end row-->
+                </div>
+            </div><!--end col-->
+        </div><!--end row-->
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-xxl-4">
-                                    <h5 class="card-title mb-3">Description</h5>
-                                    <p class="text-muted">Product Information refers to any information held by an organization about the products it produces, buys, sells or distributes.</p>
-                                </div><!--end col-->
-                                <div class="col-xxl-8">
-                                    <div>
-                                        <label class="form-label">Product Description </label>
-                                        <textarea class="ckeditor-classic" name="product_decscription" id="productDescription" rows="5">{{ old('product_decscription') }}</textarea>
-                                    </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xxl-4">
+                                <h5 class="card-title mb-3">Description</h5>
+                                <p class="text-muted">Provide a detailed and engaging description of the product,
+                                    including key features, specifications, materials, dimensions, and usage
+                                    information.
+                                    This content helps customers understand the product better and improves search
+                                    visibility and conversions.</p>
+                            </div><!--end col-->
+                            <div class="col-xxl-8">
+                                <div>
+                                    <label class="form-label">Product Description </label>
+                                    <textarea class="ckeditor-classic" name="product_decscription" id="productDescription" rows="5">{{ old('product_decscription') }}</textarea>
                                 </div>
-                            </div><!--end row-->
-                        </div>
+                            </div>
+                        </div><!--end row-->
                     </div>
-                </div><!--end col-->
-            </div><!--end row-->
+                </div>
+            </div><!--end col-->
+        </div><!--end row-->
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-xxl-4">
-                                    <h5 class="card-title mb-3">SEO Settings</h5>
-                                    <p class="text-muted">Add SEO meta tags to help search engines understand your product better.</p>
-                                </div><!--end col-->
-                                <div class="col-xxl-8">
-                                    <div class="mb-3">
-                                        <label for="metaTitle" class="form-label">Meta Title</label>
-                                        <input type="text" class="form-control @error('meta_title') is-invalid @enderror"
-                                            name="meta_title" id="metaTitle"
-                                            value="{{ old('meta_title') }}"
-                                            placeholder="Enter meta title (max 160 characters)"
-                                            maxlength="160">
-                                        <small class="text-muted">Recommended: 50-60 characters</small>
-                                        @error('meta_title')
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xxl-4">
+                                <h5 class="card-title mb-3">Images</h5>
+                                <p class="text-muted">Upload a high-quality main product image that clearly represents
+                                    the item.
+                                    You can also add multiple gallery images to showcase different angles, details, or
+                                    usage of the product.
+                                    Supported formats include JPG, PNG, and WEBP. Recommended size is at least 800×800
+                                    pixels for best display.</p>
+                            </div>
+                            <div class="col-xxl-8">
+                                <div class="mb-4">
+                                    <label class="form-label">Product Main Image <span
+                                            class="text-danger">*</span></label>
+                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#mediaPickerModalMain">Choose from Media Library</button>
+                                    <input type="hidden" name="media_library_main_image_id"
+                                        id="media_library_main_image_id"
+                                        value="{{ old('media_library_main_image_id', '') }}">
+                                    <div id="selected-main-image-preview" class="mt-2"></div>
+                                    @error('media_library_main_image_id')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="metaDescription" class="form-label">Meta Description</label>
-                                        <textarea class="form-control @error('meta_description') is-invalid @enderror"
-                                            name="meta_description" id="metaDescription"
-                                            rows="3"
-                                            placeholder="Enter meta description (max 160 characters)"
-                                            maxlength="160">{{ old('meta_description') }}</textarea>
-                                        <small class="text-muted">Recommended: 150-160 characters</small>
-                                        @error('meta_description')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="metaKeywords" class="form-label">Meta Keywords</label>
-                                        <textarea class="form-control @error('meta_keywords') is-invalid @enderror"
-                                            name="meta_keywords" id="metaKeywords"
-                                            rows="3"
-                                            placeholder="Enter meta keywords separated by comma">{{ old('meta_keywords') }}</textarea>
-                                        <small class="text-muted">Example: bathroom fixtures, tiles, faucets</small>
-                                        @error('meta_keywords')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                    @enderror
                                 </div>
-                            </div><!--end row-->
-                        </div>
-                    </div>
-                </div><!--end col-->
-            </div><!--end row-->
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-xxl-4">
-                                    <h5 class="card-title mb-3">Images</h5>
-                                    <p class="text-muted">Product Information refers to any information held by an organization about the products it produces, buys, sells or distributes.</p>
-                                </div>
-                                <div class="col-xxl-8">
-                                    <div class="mb-4">
-                                        <label class="form-label">Product Main Image <span class="text-danger">*</span></label>
-                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModalMain">Choose from Media Library</button>
-                                        <input type="hidden" name="media_library_main_image_id" id="media_library_main_image_id" value="{{ old('media_library_main_image_id', '') }}">
-                                        <div id="selected-main-image-preview" class="mt-2"></div>
-                                        @error('media_library_main_image_id')
+                                <div class="mb-4">
+                                    <label class="form-label">Gallery Images</label>
+                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#mediaPickerModalGallery">Choose from Media Library</button>
+                                    <input type="hidden" name="media_library_gallery_image_ids"
+                                        id="media_library_gallery_image_ids"
+                                        value="{{ old('media_library_gallery_image_ids', '') }}">
+                                    <div id="selected-gallery-images-preview" class="mt-2 d-flex flex-wrap"
+                                        style="gap:10px;"></div>
+                                    @error('media_library_gallery_image_ids')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                    <div class="mb-4">
-                                        <label class="form-label">Gallery Images</label>
-                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaPickerModalGallery">Choose from Media Library</button>
-                                        <input type="hidden" name="media_library_gallery_image_ids" id="media_library_gallery_image_ids" value="{{ old('media_library_gallery_image_ids', '') }}">
-                                        <div id="selected-gallery-images-preview" class="mt-2 d-flex flex-wrap" style="gap:10px;"></div>
-                                        @error('media_library_gallery_image_ids')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xxl-4">
+                                <h5 class="card-title mb-3">SEO Settings</h5>
+                                <p class="text-muted">Add SEO meta tags to help search engines understand your product
+                                    better.</p>
+                            </div><!--end col-->
+                            <div class="col-xxl-8">
+                                <div class="mb-3">
+                                    <label for="metaTitle" class="form-label">Meta Title</label>
+                                    <input type="text"
+                                        class="form-control @error('meta_title') is-invalid @enderror"
+                                        name="meta_title" id="metaTitle" value="{{ old('meta_title') }}"
+                                        placeholder="Enter meta title (max 160 characters)" maxlength="160">
+                                    <small class="text-muted">Recommended: 50-60 characters</small>
+                                    @error('meta_title')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="metaDescription" class="form-label">Meta Description</label>
+                                    <textarea class="form-control @error('meta_description') is-invalid @enderror" name="meta_description"
+                                        id="metaDescription" rows="3" placeholder="Enter meta description (max 160 characters)" maxlength="160">{{ old('meta_description') }}</textarea>
+                                    <small class="text-muted">Recommended: 150-160 characters</small>
+                                    @error('meta_description')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="metaKeywords" class="form-label">Meta Keywords</label>
+                                    <textarea class="form-control @error('meta_keywords') is-invalid @enderror" name="meta_keywords" id="metaKeywords"
+                                        rows="3" placeholder="Enter meta keywords separated by comma">{{ old('meta_keywords') }}</textarea>
+                                    <small class="text-muted">Example: bathroom fixtures, tiles, faucets</small>
+                                    @error('meta_keywords')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div><!--end row-->
+                    </div>
+                </div>
+            </div><!--end col-->
+        </div><!--end row-->
+
+
+        {{-- 
             <div class="row" id="vec_general_Info_Section" style="display: none">
                 <div class="col-lg-12">
                     <div class="card">
@@ -402,9 +417,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
-            {{-- <div class="row" id="vec_shipping_section">
+        {{-- <div class="row" id="vec_shipping_section">
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
@@ -500,7 +515,7 @@
                 </div><!--end col-->
             </div> --}}
 
-            {{-- <div class="row" id="vec_variantSection" style="display:none;">
+        {{-- <div class="row" id="vec_variantSection" style="display:none;">
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
@@ -542,15 +557,16 @@
                 </div>
             </div> --}}
 
-            <div class="hstack gap-2 justify-content-end mb-3">
-                <a href="{{ route('products.index') }}" class="btn btn-danger">Cancel</a>
-                <button class="btn btn-primary">Submit</button>
-            </div>
+        <div class="hstack gap-2 justify-content-end mb-3">
+            <a href="{{ route('products.index') }}" class="btn btn-danger">Cancel</a>
+            <button class="btn btn-primary">Submit</button>
+        </div>
 
     </form>
 </div>
 <!-- Media Picker Modals -->
-<div class="modal fade" id="mediaPickerModalMain" tabindex="-1" aria-labelledby="mediaPickerModalMainLabel" aria-hidden="true">
+<div class="modal fade" id="mediaPickerModalMain" tabindex="-1" aria-labelledby="mediaPickerModalMainLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -563,7 +579,8 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="mediaPickerModalGallery" tabindex="-1" aria-labelledby="mediaPickerModalGalleryLabel" aria-hidden="true">
+<div class="modal fade" id="mediaPickerModalGallery" tabindex="-1" aria-labelledby="mediaPickerModalGalleryLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -573,7 +590,7 @@
             <div class="modal-body" id="mediaPickerModalGalleryBody">
                 <!-- Media grid will be loaded here -->
             </div>
-        </div>          
+        </div>
     </div>
 </div>
 <script>
@@ -761,86 +778,99 @@
 </script>
 <script src="{{ asset('admin/js/pages/ecommerce-create-product.init.js') }}"></script>
 
-<script>
-
-</script>
+<script></script>
 
 <script>
-$(document).ready(function () {
-    // Main image picker
-    window.initMediaPicker({
-        pickerBtnSelector: '[data-bs-target="#mediaPickerModalMain"]',
-        modalBodySelector: '#mediaPickerModalMainBody',
-        modalSelector: '#mediaPickerModalMain',
-        hiddenInputSelector: '#media_library_main_image_id',
-        previewSelector: '#selected-main-image-preview',
-        pickerUrl: "{{ route('media-library.picker') }}",
-        formSelector: 'form[action*="products.store"]'
-    });
-    // Gallery picker (multi-select)
-    window.initMediaPicker({
-        pickerBtnSelector: '[data-bs-target="#mediaPickerModalGallery"]',
-        modalBodySelector: '#mediaPickerModalGalleryBody',
-        modalSelector: '#mediaPickerModalGallery',
-        hiddenInputSelector: '#media_library_gallery_image_ids',
-        previewSelector: '#selected-gallery-images-preview',
-        pickerUrl: "{{ route('media-library.picker') }}?multi=1",
-        formSelector: 'form[action*="products.store"]',
-        multi: true
-    });
+    $(document).ready(function() {
+        // Main image picker
+        window.initMediaPicker({
+            pickerBtnSelector: '[data-bs-target="#mediaPickerModalMain"]',
+            modalBodySelector: '#mediaPickerModalMainBody',
+            modalSelector: '#mediaPickerModalMain',
+            hiddenInputSelector: '#media_library_main_image_id',
+            previewSelector: '#selected-main-image-preview',
+            pickerUrl: "{{ route('media-library.picker') }}",
+            formSelector: 'form[action*="products.store"]'
+        });
+        // Gallery picker (multi-select)
+        window.initMediaPicker({
+            pickerBtnSelector: '[data-bs-target="#mediaPickerModalGallery"]',
+            modalBodySelector: '#mediaPickerModalGalleryBody',
+            modalSelector: '#mediaPickerModalGallery',
+            hiddenInputSelector: '#media_library_gallery_image_ids',
+            previewSelector: '#selected-gallery-images-preview',
+            pickerUrl: "{{ route('media-library.picker') }}?multi=1",
+            formSelector: 'form[action*="products.store"]',
+            multi: true
+        });
 
-    function getGalleryIds() {
-        var val = $('#media_library_gallery_image_ids').val() || '';
-        if (!val) return [];
-        return String(val).split(',').filter(function(i){ return i !== ''; });
-    }
-    function setGalleryIds(arr) {
-        $('#media_library_gallery_image_ids').val(arr.join(','));
-    }
-    
-    function appendGalleryMedia(id, url) {
-        var ids = getGalleryIds();
-        if (ids.indexOf(String(id)) !== -1) return;
-        ids.push(String(id));
-        setGalleryIds(ids);
+        function getGalleryIds() {
+            var val = $('#media_library_gallery_image_ids').val() || '';
+            if (!val) return [];
+            return String(val).split(',').filter(function(i) {
+                return i !== '';
+            });
+        }
 
-        var $card = $('<div class="position-relative me-2 mb-2" style="width:100px;height:100px;border:1px solid #e9e9e9;border-radius:6px;overflow:hidden">');
-        var $img = $('<img>').attr('src', url).css({width: '100%', height: '100%', objectFit: 'cover'});
-        var $btn = $('<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-gallery-image" data-id="'+id+'">✕</button>');
-        $card.append($img).append($btn);
-        $('#selected-gallery-images-preview').append($card);
-    }
+        function setGalleryIds(arr) {
+            $('#media_library_gallery_image_ids').val(arr.join(','));
+        }
 
-    $(document).on('click', '.remove-gallery-image', function() {
-        var id = $(this).data('id');
-        var ids = getGalleryIds().filter(function(i){ return i !== String(id); });
-        setGalleryIds(ids);
-        $(this).closest('.position-relative').remove();
-    });
+        function appendGalleryMedia(id, url) {
+            var ids = getGalleryIds();
+            if (ids.indexOf(String(id)) !== -1) return;
+            ids.push(String(id));
+            setGalleryIds(ids);
 
-    // Load existing IDs on page load (e.g., after validation error)
-    $(function(){
-        var ids = getGalleryIds();
-        if (ids && ids.length) {
-            ids.forEach(function(id){
-                var url = '{{ route("media-library.show", ":id") }}'.replace(':id', id);
-                $.get(url, function(meta){
-                    if (meta && meta.url) appendGalleryMedia(id, meta.url);
+            var $card = $(
+                '<div class="position-relative me-2 mb-2" style="width:100px;height:100px;border:1px solid #e9e9e9;border-radius:6px;overflow:hidden">'
+            );
+            var $img = $('<img>').attr('src', url).css({
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+            });
+            var $btn = $(
+                '<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-gallery-image" data-id="' +
+                id + '">✕</button>');
+            $card.append($img).append($btn);
+            $('#selected-gallery-images-preview').append($card);
+        }
+
+        $(document).on('click', '.remove-gallery-image', function() {
+            var id = $(this).data('id');
+            var ids = getGalleryIds().filter(function(i) {
+                return i !== String(id);
+            });
+            setGalleryIds(ids);
+            $(this).closest('.position-relative').remove();
+        });
+
+        // Load existing IDs on page load (e.g., after validation error)
+        $(function() {
+            var ids = getGalleryIds();
+            if (ids && ids.length) {
+                ids.forEach(function(id) {
+                    var url = '{{ route('media-library.show', ':id') }}'.replace(':id', id);
+                    $.get(url, function(meta) {
+                        if (meta && meta.url) appendGalleryMedia(id, meta.url);
+                    });
                 });
-            });
-        }
+            }
 
-        // Load main image preview if set
-        var mainId = $('#media_library_main_image_id').val();
-        if (mainId) {
-            var url = '{{ route("media-library.show", ":id") }}'.replace(':id', mainId);
-            $.get(url, function(meta){
-                if (meta && meta.url) {
-                    $('#selected-main-image-preview').html(`<img src="${meta.url}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`);
-                }
-            });
-        }
+            // Load main image preview if set
+            var mainId = $('#media_library_main_image_id').val();
+            if (mainId) {
+                var url = '{{ route('media-library.show', ':id') }}'.replace(':id', mainId);
+                $.get(url, function(meta) {
+                    if (meta && meta.url) {
+                        $('#selected-main-image-preview').html(
+                            `<img src="${meta.url}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`
+                        );
+                    }
+                });
+            }
+        });
     });
-});
 </script>
 <x-admin.footer />

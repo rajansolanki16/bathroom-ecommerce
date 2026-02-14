@@ -17,36 +17,36 @@
     <div class="row">
 
         <!-- LEFT : IMAGES -->
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-body text-center">
+       <div class="col-lg-4">
+    <div class="card">
+        <div class="card-body text-center">
 
-                    <h6 class="fw-semibold mb-3">Product Image</h6>
+            <h6 class="fw-semibold mb-3">Product Image</h6>
 
-                    <img
-                        src="{{ $product->product_image ? asset('storage/'.$product->product_image) : asset('admin/images/no-image.png') }}"
-                        class="img-fluid rounded mb-3"
-                        style="max-height: 260px; object-fit: cover"
-                        alt="Product Image">
+            <img
+                src="{{ $product->getFirstMediaUrl('main_image') ?: asset('admin/images/no-image.png') }}"
+                class="img-fluid rounded mb-3"
+                style="max-height:260px;object-fit:cover"
+                alt="Product Image">
 
-                    @if (!empty($product->gallery_images))
-                        <hr>
-                        <h6 class="fw-semibold mb-2">Gallery Images</h6>
-                        <div class="row g-2">
-                            @foreach ($product->gallery_images as $image)
-                                <div class="col-4">
-                                    <img
-                                        src="{{ asset('storage/'.$image) }}"
-                                        class="img-fluid rounded"
-                                        style="height:80px; object-fit:cover">
-                                </div>
-                            @endforeach
+            @if ($product->getMedia('gallery')->count())
+                <hr>
+                <h6 class="fw-semibold mb-2">Gallery Images</h6>
+                <div class="row g-2">
+                    @foreach ($product->getMedia('gallery') as $image)
+                        <div class="col-4">
+                            <img
+                                src="{{ $image->getUrl() }}"
+                                class="img-fluid rounded"
+                                style="height:80px;object-fit:cover">
                         </div>
-                    @endif
-
+                    @endforeach
                 </div>
-            </div>
+            @endif
+
         </div>
+    </div>
+</div>
 
         <!-- RIGHT : DETAILS -->
         <div class="col-lg-8">

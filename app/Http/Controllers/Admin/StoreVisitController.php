@@ -42,19 +42,39 @@ class StoreVisitController extends Controller
     public function approve($id)
     {
         $visit = StoreVisit::findOrFail($id);
-        $visit->update(['is_approve' => 1]);
 
-        return redirect()->back()->with('success', 'Visit approved successfully!');
+        if (!is_null($visit->is_approve)) {
+            return back()->with('error', 'Already reviewed.');
+        }
+
+        $visit->update([
+            'is_approve' => 1,
+            'reject_reason' => null
+        ]);
+
+        return redirect()->route('store_visits.index')
+            ->with('success', 'Visit report approved successfully.');
     }
 
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
+        $request->validate([
+            'reject_reason' => 'required|string|max:500'
+        ]);
+
         $visit = StoreVisit::findOrFail($id);
-        $visit->update(['is_approve' => 0]);
 
-        return redirect()->back()->with('success', 'Visit rejected successfully!');
+        if (!is_null($visit->is_approve)) {
+            return back()->with('error', 'Already reviewed.');
+        }
+
+        $visit->update([
+            'is_approve' => 0,
+            'reject_reason' => $request->reject_reason
+        ]);
+
+        return back()->with('success', 'Visit report rejected.');
     }
-
     public function exportExcel(Request $request)
     {
         $filters = [
@@ -104,7 +124,6 @@ class StoreVisitController extends Controller
 
         $pdf = Pdf::loadView('admin.salesman.pdf', compact('visits'))
                   ->setPaper('a4', 'landscape');
-        
         return $pdf->download('store_visits_' . date('Y-m-d_His') . '.pdf');
     }
 }

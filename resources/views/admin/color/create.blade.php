@@ -20,12 +20,25 @@
 
                     <div class="mb-3">
                         <label for="name" class="form-label">Color Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror"
-                            id="name" name="name" value="{{ old('name') }}" placeholder="Enter Color name" >
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
+                            name="name" value="{{ old('name') }}" placeholder="Enter Color name">
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Show on Home</label>
+
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="show_on_home" name="show_on_home"
+                                value="1" {{ old('show_on_home') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="show_on_home">
+                                Enabled
+                            </label>
+                        </div>
+                    </div>
+
 
                     <div class="d-flex gap-2 justify-content-end">
                         <a href="{{ route('colors.index') }}" class="btn btn-danger">Back</a>
@@ -40,5 +53,3 @@
 </div>
 
 <x-admin.footer />
-
-

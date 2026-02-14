@@ -27,7 +27,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function import(Request $request) 
+    public function import(Request $request)
     {
         $request->validate([
             'import_file' => 'required|mimes:xlsx,xls,csv'
@@ -104,9 +104,9 @@ class ProductController extends Controller
                 'short_description'         => 'required|string|max:500',
                 'product_decscription'      => 'nullable|string',
 
-                'brand_id'                 => 'required|exists:brands,id',
+                'brand_id'                  => 'required|exists:brands,id',
 
-                'price'                     => 'required|numeric|min:0',
+                'price'                     => 'nullable|numeric|min:0',
                 'discount'                  => 'nullable|numeric|min:0',
 
                 'sell_price'                => 'nullable|numeric|min:0|lte:price',
@@ -122,6 +122,66 @@ class ProductController extends Controller
 
                 'product_image'             => 'nullable|image|mimes:jpg,jpeg,png,webp',
                 'gallery_images.*'          => 'nullable|image|mimes:jpg,jpeg,png,webp',
+            ], [
+
+                // Title
+                'title.required' => 'Product title is required.',
+                'title.max'      => 'Product title cannot exceed 150 characters.',
+
+                // SKU
+                'sku_number.unique' => 'This SKU already exists. Please use a different SKU.',
+
+                // Categories
+                'categories.required' => 'Please select at least one category.',
+                'categories.array'    => 'Invalid category selection.',
+                'categories.*.exists' => 'Selected category is invalid.',
+
+                // Tags
+                'tags.*.exists' => 'Selected tag is invalid.',
+
+                // Short description
+                'short_description.required' => 'Short description is required.',
+                'short_description.max'      => 'Short description cannot exceed 500 characters.',
+
+                // Brand
+                'brand_id.required' => 'Please select a brand.',
+                'brand_id.exists'   => 'Selected brand is invalid.',
+
+                // Price
+                'price.required' => 'Price is required.',
+                'price.numeric'  => 'Price must be a number.',
+                'price.min'      => 'Price must be at least 0.',
+
+                // Discount
+                'discount.numeric' => 'Discount must be a number.',
+                'discount.min'     => 'Discount cannot be negative.',
+
+                // Sell price
+                'sell_price.numeric' => 'Sell price must be a number.',
+                'sell_price.lte'     => 'Sell price must be less than or equal to the original price.',
+
+                // Sell price dates
+                'sell_price_start_date.date' => 'Start date must be a valid date.',
+                'sell_price_end_date.date'   => 'End date must be a valid date.',
+                'sell_price_end_date.after_or_equal' => 'End date must be after or equal to start date.',
+
+                // Dimensions
+                'weight.numeric' => 'Weight must be a number.',
+                'length.numeric' => 'Length must be a number.',
+                'width.numeric'  => 'Width must be a number.',
+                'height.numeric' => 'Height must be a number.',
+
+                // Main image
+                'media_library_main_image_id.required' => 'Main product image is required.',
+                'media_library_main_image_id.exists'   => 'Selected main image is invalid.',
+
+                // Product image
+                'product_image.image' => 'Product image must be an image file.',
+                'product_image.mimes' => 'Product image must be JPG, JPEG, PNG, or WEBP.',
+
+                // Gallery images
+                'gallery_images.*.image' => 'Each gallery file must be an image.',
+                'gallery_images.*.mimes' => 'Gallery images must be JPG, JPEG, PNG, or WEBP.',
             ]);
 
             Log::info('=== INITIAL VALIDATION PASSED ===', ['validated' => $validated]);
@@ -131,8 +191,6 @@ class ProductController extends Controller
             ]);
             throw $e;
         }
-
-        
 
         /* ===============================
         Create Product
@@ -229,7 +287,6 @@ class ProductController extends Controller
                     }
                 }
             }
-
         } catch (\Exception $e) {
             Log::error('=== PRODUCT SAVE FAILED ===', [
                 'error' => $e->getMessage(),
@@ -261,7 +318,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load('categories');
+        $product->load(['categories', 'brand', 'tags', 'media']);
         return view('admin.products.show', compact('product'));
     }
     /**
@@ -337,6 +394,43 @@ class ProductController extends Controller
             'media_library_gallery_image_ids.*' => 'exists:media,id',
             'product_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp',
             'gallery_images.*'  => 'nullable|image|mimes:jpg,jpeg,png,webp',
+        ], [
+
+            // Title
+            'title.required' => 'Product title is required.',
+            'title.max'      => 'Product title cannot exceed 255 characters.',
+
+            // Categories
+            'categories.required' => 'Please select at least one category.',
+            'categories.array'    => 'Invalid category format.',
+
+            // Short description
+            'short_description.required' => 'Short description is required.',
+
+            // Price
+            'price.numeric' => 'Price must be a valid number.',
+
+            // Stock
+            'stock.integer' => 'Stock must be a valid integer value.',
+
+            // Brand
+            'brand_id.required' => 'Please select a brand.',
+            'brand_id.exists'   => 'Selected brand is invalid.',
+
+            // Main image
+            'media_library_main_image_id.required' => 'Main product image is required.',
+            'media_library_main_image_id.exists'   => 'Selected main image is invalid.',
+
+            // Gallery IDs
+            'media_library_gallery_image_ids.*.exists' => 'One or more selected gallery images are invalid.',
+
+            // Product image upload
+            'product_image.image' => 'Product image must be an image file.',
+            'product_image.mimes' => 'Product image must be JPG, JPEG, PNG, or WEBP.',
+
+            // Gallery uploads
+            'gallery_images.*.image' => 'Each gallery file must be an image.',
+            'gallery_images.*.mimes' => 'Gallery images must be JPG, JPEG, PNG, or WEBP.',
         ]);
 
         if ($validator->fails()) {
@@ -358,24 +452,23 @@ class ProductController extends Controller
         /* ===============================
         CONDITIONAL SIMPLE PRODUCT VALIDATION
         =============================== */
-            $simpleValidator = Validator::make($request->all(), [
-                'price' => 'required|numeric',
-                'stock' => 'required|integer',
-            ]);
+        $simpleValidator = Validator::make($request->all(), [
+            'price' => 'nullable|numeric',
+            'stock' => 'nullable|integer',
+        ]);
 
-            if ($simpleValidator->fails()) {
-                Log::error('Simple product validation failed', [
-                    'product_id' => $product->id,
-                    'errors' => $simpleValidator->errors()->toArray(),
-                ]);
-
-                return back()->withErrors($simpleValidator)->withInput();
-            }
-
-            Log::info('Simple product validation passed', [
+        if ($simpleValidator->fails()) {
+            Log::error('Simple product validation failed', [
                 'product_id' => $product->id,
+                'errors' => $simpleValidator->errors()->toArray(),
             ]);
-        
+
+            return back()->withErrors($simpleValidator)->withInput();
+        }
+
+        Log::info('Simple product validation passed', [
+            'product_id' => $product->id,
+        ]);
 
         /* ===============================
         PRODUCT UPDATE
@@ -396,7 +489,7 @@ class ProductController extends Controller
             'status'               => $request->status ?? $product->status,
             'visibility'           => $request->visibility ?? $product->visibility,
             'sell_price'           => $request->sell_price,
-            'sell_price_start_date'=> $request->sell_price_start_date,
+            'sell_price_start_date' => $request->sell_price_start_date,
             'sell_price_end_date'  => $request->sell_price_end_date,
             'weight'               => $request->weight,
             'length'               => $request->length,
@@ -404,7 +497,7 @@ class ProductController extends Controller
             'stock'                => $validated['stock'] ?? $product->stock,
             'height'               => $request->height,
             'media_library_main_image_id' =>
-                $validated['media_library_main_image_id'] ?? $product->media_library_main_image_id,
+            $validated['media_library_main_image_id'] ?? $product->media_library_main_image_id,
             'media_library_gallery_image_ids' => $this->formatGalleryIds($validated['media_library_gallery_image_ids'] ?? null, $product->media_library_gallery_image_ids),
         ]);
 
@@ -428,7 +521,7 @@ class ProductController extends Controller
         }
        
         $product->update([
-            'stock'    => $validated['stock'],
+           // 'stock'    => $validated['stock'],
             'price'    => $validated['price'],
             'discount' => $request->discount ?? $product->discount,
         ]);
@@ -493,8 +586,7 @@ class ProductController extends Controller
         $ids = [];
         if (is_string($newIds)) {
             $ids = array_filter(array_map('trim', explode(',', $newIds)));
-        }
-        elseif (is_array($newIds)) {
+        } elseif (is_array($newIds)) {
             $ids = array_filter($newIds);
         }
         return !empty($ids) ? json_encode(array_values($ids)) : null;

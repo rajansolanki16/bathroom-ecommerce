@@ -124,6 +124,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/colors/{id}/edit', [ColorController::class, 'edit'])->name('colors.edit');
         Route::put('/colors/{id}', [ColorController::class, 'update'])->name('colors.update');
         Route::delete('/colors/{id}', [ColorController::class, 'destroy'])->name('colors.destroy');
+        Route::post('/colors/toggle-home', [ColorController::class, 'toggleHome'])
+            ->name('colors.toggle-home');
 
         // stock
         Route::get('/stocks/create', [StockController::class, 'create'])->name('stocks.create');
@@ -163,12 +165,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/users/{user}/toggle-approval', [UserController::class, 'toggleApproval'])->name('users.toggle-approval');
 
         Route::resource('/store_visits', StoreVisitController::class)->names('store_visits');
-        Route::get('/store_visits/{storeVisit}', [StoreVisitController::class, 'show'])->name('visit_report.view');
-        Route::post('/store_visits/{id}/approve', [StoreVisitController::class, 'approve'])->name('visit_report.approve');
-        Route::post('/store_visits/{id}/reject', [StoreVisitController::class, 'reject'])->name('visit_report.reject');
+        Route::get('/visits/{storeVisit}', [StoreVisitController::class, 'show'])->name('visit_report.view');
+        Route::post('/visits/{id}/approve', [StoreVisitController::class, 'approve'])->name('visit_report.approve');
+        Route::post('/visits/{id}/reject', [StoreVisitController::class, 'reject'])->name('visit_report.reject');
         // Export routes
-        Route::get('/store_visits-export/excel', [StoreVisitController::class, 'exportExcel'])->name('visit_report.export.excel');
-        Route::get('/store_visits-export/pdf', [StoreVisitController::class, 'exportPdf'])->name('visit_report.export.pdf');
+        Route::get('/visits-export/excel', [StoreVisitController::class, 'exportExcel'])->name('visit_report.export.excel');
+        Route::get('/visits-export/pdf', [StoreVisitController::class, 'exportPdf'])->name('visit_report.export.pdf');
 
         Route::post('media/delete/{media}', function (
             \Spatie\MediaLibrary\MediaCollections\Models\Media $media

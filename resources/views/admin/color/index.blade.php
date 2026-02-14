@@ -69,6 +69,7 @@
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Slug</th>
+                                    <th>Home</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -82,6 +83,13 @@
 
                                         <td>
                                             <span class="badge bg-info">{{ $color->slug }}</span>
+                                        </td>
+                                        <td>
+                                            <button
+                                                class="btn btn-sm toggle-home-btn {{ $color->show_on_home ? 'btn-success' : 'btn-outline-secondary' }}"
+                                                data-id="{{ $color->id }}">
+                                                {{ $color->show_on_home ? 'Enabled' : 'Disabled' }}
+                                            </button>
                                         </td>
 
                                         <td>
@@ -199,5 +207,40 @@
         });
 
     });
+
+   $('#colorTable').on('click', '.toggle-home-btn', function () {
+
+    const button = $(this);
+    button.prop('disabled', true);
+
+    $.ajax({
+        url: "{{ route('colors.toggle-home') }}", 
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            color_id: button.data('id')
+        },
+        success: function (data) {
+
+            if (data.status) {
+
+                button.toggleClass('btn-success', data.show_on_home);
+                button.toggleClass('btn-outline-secondary', !data.show_on_home);
+                button.text(data.show_on_home ? 'Enabled' : 'Disabled');
+                        
+            } else {
+                alert('Toggle failed');
+            }
+        },
+        error: function (xhr) {
+            console.log(xhr.responseText);
+            alert('AJAX error');
+        },
+        complete: function () {
+            button.prop('disabled', false);
+        }
+    });
+});
+
 </script>
 <x-admin.footer />

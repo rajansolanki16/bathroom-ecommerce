@@ -12,10 +12,12 @@ class ColorController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $colors = Color::all();
+        $colors = Color::when($request->filled('enabled'), function ($query) use ($request) {
+            $query->where('show_on_home', $request->enabled);
+        })->latest()->get();
+
         return view('admin.color.index', compact('colors'));
     }
 
@@ -37,6 +39,8 @@ class ColorController extends Controller
         $request->validate(
             [
                 'name' => 'required|string|min:3|regex:/^[a-zA-Z ]+$/|unique:colors,name',
+                'show_on_home' => $request->has('show_on_home') ? 1 : 0,
+
             ],
             [
                 'name.required' => 'The color name field is required.',
@@ -101,5 +105,23 @@ class ColorController extends Controller
         $color->delete();
         return redirect()->route('colors.index')
             ->with('success', 'color deleted successfully');
+    }
+
+    public function toggleHome(Request $request)
+    {
+        $request->validate([
+            'color_id' => 'required|exists:colors,id',
+        ]);
+
+        $color = Color::findOrFail($request->color_id);
+
+        $color->update([
+            'show_on_home' => ! $color->show_on_home
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'show_on_home' => $color->show_on_home,
+        ]);
     }
 }
