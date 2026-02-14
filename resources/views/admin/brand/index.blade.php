@@ -66,9 +66,10 @@
                         <table class="table align-middle table-nowrap" id="brandTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Index</th>
-                                    <th>Banner Image</th>
-                                    <th>Name</th>
+                                    {{-- <th>Index</th> --}}
+                                     <th>Name</th>
+                                    {{-- <th>Banner Image</th> --}}
+                                   
                                     <th>Slug</th>
                                     <th>Show on Home</th>
                                     <th>Action</th>
@@ -78,9 +79,10 @@
                             <tbody>
                                 @forelse($brands as $index => $brand)
                                     <tr id="row-brand-{{ $brand->id }}">
-                                        <td>{{ $index + 1 }}</td>
+                                        {{-- <td>{{ $index + 1 }}</td> --}}
+                                          <td>{{ $brand->name }}</td>
 
-                                        <td>
+                                        {{-- <td>
                                             @php
                                                 $logoUrl = null;
                                                 if ($brand->media_library_logo_id) {
@@ -108,9 +110,9 @@
                                             @else
                                                 <span class="badge bg-secondary">No Image</span>
                                             @endif
-                                        </td>
+                                        </td> --}}
 
-                                        <td>{{ $brand->name }}</td>
+                                      
 
                                         <td>
                                             <span class="badge bg-info">{{ $brand->slug }}</span>

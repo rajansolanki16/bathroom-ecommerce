@@ -99,7 +99,7 @@
                         <table class="table align-middle table-nowrap" id="stockTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Index</th>
+                                    {{-- <th>Index</th> --}}
                                     <th>Product</th>
                                     <th>Quantity</th>
                                     <th>Notes</th>
@@ -111,7 +111,7 @@
                             <tbody>
                                 @forelse($stocks as $stock)
                                     <tr id="row-stock-{{ $stock->id }}">
-                                        <td>{{ $loop->iteration }}</td>
+                                        {{-- <td>{{ $loop->iteration }}</td> --}}
 
                                         <td class="fw-medium">
                                             {{ $stock->product->product_title }}

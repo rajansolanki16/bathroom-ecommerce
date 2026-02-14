@@ -66,7 +66,7 @@
                         <table class="table align-middle table-nowrap" id="colorTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th>ID</th>
+                                    {{-- <th>ID</th> --}}
                                     <th>Name</th>
                                     <th>Slug</th>
                                     <th>Home</th>
@@ -77,7 +77,7 @@
                             <tbody>
                                 @forelse($colors as $color)
                                     <tr id="row-color-{{ $color->id }}">
-                                        <td>{{ $loop->iteration }}</td>
+                                        {{-- <td>{{ $loop->iteration }}</td> --}}
 
                                         <td>{{ $color->name }}</td>
 
@@ -227,7 +227,7 @@
                 button.toggleClass('btn-success', data.show_on_home);
                 button.toggleClass('btn-outline-secondary', !data.show_on_home);
                 button.text(data.show_on_home ? 'Enabled' : 'Disabled');
-                        
+
             } else {
                 alert('Toggle failed');
             }

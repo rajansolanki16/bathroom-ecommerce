@@ -58,7 +58,7 @@
                         <table class="table align-middle table-nowrap" id="userTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Index</th>
+                                    {{-- <th>Index</th> --}}
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>OTP Code</th>
@@ -72,7 +72,7 @@
                             <tbody>
                                 @forelse($users as $index => $user)
                                     <tr id="row-user-{{ $user->id }}">
-                                        <td>{{ $index + 1 }}</td>
+                                        {{-- <td>{{ $index + 1 }}</td> --}}
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>

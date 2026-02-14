@@ -26,7 +26,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-xxl-8">
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="currency_symbol" class="form-label">{{ __('ecommerce.currency_symbol') }}</label>
                                 <input type="text" name="currency_symbol" id="currency_symbol" class="form-control"
                                     placeholder="Enter currency symbol">
@@ -37,7 +37,7 @@
                                 <input type="text" name="currency_word" id="currency_word" class="form-control"
                                     placeholder="Enter currency word">
 
-                            </div>
+                            </div> --}}
 
 
 

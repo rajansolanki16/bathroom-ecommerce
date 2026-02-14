@@ -69,7 +69,7 @@
                         <table class="table align-middle table-nowrap" id="categoryTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Index</th>
+                                    {{-- <th>Index</th> --}}
                                     {{-- <th>Image</th> --}}
                                     <th>Name</th>
                                     <th>Slug</th>
@@ -81,7 +81,7 @@
                             <tbody>
                                 @forelse($categories as $category)
                                     <tr id="row-category-{{ $category->id }}">
-                                        <td>{{ $loop->iteration }}</td>
+                                        {{-- <td>{{ $loop->iteration }}</td> --}}
 
                                         {{-- <td>
                                             @php
