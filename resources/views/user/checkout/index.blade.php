@@ -1,8 +1,7 @@
 <x-header :meta="array(
-    'title' => 'Checkout -  E-commerce Store',
-    'description' => 'Secure checkout'
+    'title' => 'Product Inquiry - E-commerce Store',
+    'description' => 'Send your inquiry'
 )" />
-
 
 @if ($errors->any()) <div class="alert alert-danger"> {{ $errors->first() }} </div> @endif
 @if (session('error'))<div class="alert alert-danger"> {{ session('error') }} </div> @endif
@@ -11,14 +10,15 @@
 <main class="ko-container py-5">
     <div class="row mb-4">
         <div class="col">
-            <h2 class="fw-bold">Checkout</h2>
-            <p class="text-muted mb-0">Complete your purchase securely</p>
+            <h2 class="fw-bold">Product Inquiry</h2>
+            <p class="text-muted mb-0">Submit your inquiry for the selected products</p>
         </div>
     </div>
-    @if(session('applied_coupon'))
+
+    {{-- @if(session('applied_coupon'))
         <div class="alert alert-success d-flex justify-content-between align-items-center">
             <span>
-                Coupon <strong>{{ session('applied_coupon')['code'] }}</strong> applied
+                Reference Code <strong>{{ session('applied_coupon')['code'] }}</strong> attached
             </span>
 
             <form method="POST" action="{{ route('checkout.remove.coupon') }}">
@@ -30,21 +30,21 @@
         <form method="POST" action="{{ route('checkout.apply.coupon') }}" class="mb-3">
             @csrf
             <div class="input-group">
-                <input type="text" name="code" class="form-control" placeholder="Enter coupon code">
-                <button class="btn btn-outline-secondary">Apply</button>
+                <input type="text" name="code" class="form-control" placeholder="Enter reference code (optional)">
+                <button class="btn btn-outline-secondary">Attach</button>
             </div>
         </form>
-    @endif
+    @endif --}}
 
     <form method="POST" action="{{ route('checkout.place') }}">
         @csrf
 
         <div class="row g-4">
-            <!-- LEFT : Billing Details -->
+            <!-- LEFT : Inquiry Details -->
             <div class="col-lg-7">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
-                        <h5 class="fw-semibold mb-4">Billing Details</h5>
+                        <h5 class="fw-semibold mb-4">Your Details</h5>
 
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -78,12 +78,12 @@
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Full Address</label>
+                                <label class="form-label">Message / Inquiry Details</label>
                                 <textarea
                                     name="address"
                                     rows="3"
                                     class="form-control"
-                                    placeholder="House no, Street, City, State, Pincode"
+                                    placeholder="Write your inquiry, quantity requirement, company name, or any specific request..."
                                     required></textarea>
                             </div>
                         </div>
@@ -91,11 +91,11 @@
                 </div>
             </div>
 
-            <!-- RIGHT : Order Summary -->
+            <!-- RIGHT : Inquiry Summary -->
             <div class="col-lg-5">
                 <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
                     <div class="card-body p-4">
-                        <h5 class="fw-semibold mb-4">Order Summary</h5>
+                        <h5 class="fw-semibold mb-4">Selected Products</h5>
 
                         @foreach($cart as $item)
                             <div class="d-flex align-items-center justify-content-between mb-3">
@@ -115,46 +115,31 @@
                                     </div>
                                 </div>
 
-                                <div class="fw-semibold">
-                                    ₹{{ number_format($item['price'] * $item['quantity']) }}
+                                <div class="fw-semibold text-muted">
+                                    For Inquiry
                                 </div>
                             </div>
                         @endforeach
 
                         <hr>
 
-                       <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal</span>
-                            <span>₹{{ number_format($subtotal) }}</span>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Total Items</span>
+                            <span>{{ $cart->sum('quantity') }}</span>
                         </div>
 
-                        @if($discount > 0)
-                        <div class="d-flex justify-content-between mb-2 text-success">
-                            <span>Discount</span>
-                            <span>- ₹{{ number_format($discount) }}</span>
-                        </div>
-                        @endif
-
-                        <div class="d-flex justify-content-between fs-5 fw-bold mb-4">
-                            <span>Total</span>
-                            <span>₹{{ number_format($total) }}</span>
-                        </div>
-
-                        {{-- COUPON --}}
-                        
-
-                        <div class="d-flex justify-content-between fs-5 fw-bold mb-4">
-                            <span>Total</span>
-                            <span>₹{{ number_format($total) }}</span>
+                        <div class="d-flex justify-content-between fs-6 fw-bold mb-4">
+                            <span>Inquiry Type</span>
+                            <span>Product Inquiry</span>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 py-2">
-                            Place Order
+                            Submit Inquiry
                         </button>
 
                         <div class="text-center mt-3">
                             <small class="text-muted">
-                                🔒 Secure checkout · Your data is protected
+                                📩 Our team will contact you soon
                             </small>
                         </div>
                     </div>
@@ -163,6 +148,7 @@
         </div>
     </form>
 </main>
+
 <script>
 @if ($errors->any())
     <div class="alert alert-danger">
@@ -182,4 +168,5 @@
     </div>
 @endif
 </script>
+
 <x-footer />

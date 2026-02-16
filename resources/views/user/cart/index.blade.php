@@ -1,21 +1,21 @@
-<x-header :meta="array('title' => 'Cart - E-commerce Store', 'description' => 'Your shopping cart')" />
+<x-header :meta="array('title' => 'Inquiry - E-commerce Store', 'description' => 'Your product inquiry')" />
 
 <main class="ko-container py-4">
     <section class="ko-bann">
         <div class="ko-container">
             <div class="ko-banner-content">
-                <h2><i class="bi bi-cart" style="font-size:30px;color:black;"></i></h2>
+                <h2><i class="bi bi-envelope" style="font-size:30px;color:black;"></i></h2>
             </div>
         </div>
 
         <div class="row g-4">
             <div class="col-12">
-                <h2 class="mb-3">My Cart</h2>
+                <h2 class="mb-3">My Inquiry</h2>
             </div>
 
             @if(empty($cart))
             <div class="col-12">
-                <div class="alert alert-info">Your cart is empty.</div>
+                <div class="alert alert-info">No products added for inquiry.</div>
             </div>
             @else
             <div class="col-12 col-lg-8">
@@ -114,14 +114,14 @@
             <div class="col-12 col-lg-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Order Summary</h5>
+                        <h5 class="card-title">Inquiry Summary</h5>
                         <hr>
                         <div class="d-flex justify-content-between">
-                            <span>Grand Total</span>
+                            <span>Total Estimated Value</span>
                             <strong id="grand-total">₹{{ $grandTotal }}</strong>
                         </div>
                         <div class="mt-3 d-grid">
-                            <a href="{{ route('checkout') ?? '#' }}" class="btn btn-primary">Proceed to Checkout</a>
+                            <a href="{{ route('checkout') ?? '#' }}" class="btn btn-primary">Proceed to Inquiry</a>
                             <a href="{{ route('wishlist.index') }}" class="btn btn-outline-secondary mt-2">← Back to Wishlist</a>
                         </div>
                     </div>
@@ -131,6 +131,7 @@
         </div>
     </section>
 </main>
+
 <script>
     window.cartAddUrl = "{{ route('cart.add') }}";
     window.cartRemoveUrl = "{{ route('cart.remove', ':id') }}";

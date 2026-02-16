@@ -58,7 +58,7 @@
         <div class="d-flex align-items-center justify-content-between py-3">
 
             {{-- LOGO --}}
-            <a href="/" class="logo-link d-flex align-items-center">
+            <a href="{{ route('view.home') }}" class="logo-link d-flex align-items-center">
                 <img src="{{ publicPath(getSetting('site_logo_light')) }}"
                     alt="Logo"
                     class="site-logo">

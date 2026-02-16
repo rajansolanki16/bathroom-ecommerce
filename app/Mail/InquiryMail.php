@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Order;
 
-class OrderMail extends Mailable
+class InquiryMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -22,13 +22,14 @@ class OrderMail extends Mailable
     {
         $this->order = $order;
     }
+
     /**
      * Get the message envelope.
      */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New Order #' . $this->order->id . ' - ' . $this->order->name,
+            subject: 'New Product Inquiry #' . $this->order->id . ' - ' . $this->order->name,
         );
     }
 
@@ -38,7 +39,7 @@ class OrderMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.order-confirmation',
+            view: 'mail.inquiry',
             with: [
                 'order' => $this->order,
             ]
@@ -47,8 +48,6 @@ class OrderMail extends Mailable
 
     /**
      * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
     public function attachments(): array
     {

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Coupon;
-use App\Mail\OrderMail;
+use App\Mail\InquiryMail;
 
 
 class CheckoutController extends Controller
@@ -118,7 +118,7 @@ class CheckoutController extends Controller
             
             // Send email to admin 
             $adminEmail = getSetting('admin_email');
-            Mail::to($adminEmail)->send(new OrderMail($order));
+            Mail::to($adminEmail)->send(new InquiryMail($order));
         });
 
         return redirect()
