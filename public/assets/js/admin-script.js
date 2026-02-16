@@ -1,5 +1,55 @@
-// Reusable Media Picker Logic
+// 🔹 Wait for images inside media grid
+function waitForMediaImages(container) {
+    var $grid = container.find('.picker-media-grid-inner');
+    var $loader = container.find('.picker-loader');
+
+    // If loader not present, create it
+    if (!$loader.length) {
+        $loader = $(`
+            <div class="picker-loader text-center py-4">
+                <div class="spinner-border text-primary"></div>
+                <div class="small text-muted mt-2">Loading media...</div>
+            </div>
+        `);
+        container.prepend($loader);
+    }
+
+    $grid.hide();
+
+    var $images = $grid.find('img');
+
+    if ($images.length === 0) {
+        $loader.remove();
+        $grid.fadeIn(150);
+        return;
+    }
+
+    var loaded = 0;
+
+    $images.each(function () {
+        if (this.complete) {
+            loaded++;
+        } else {
+            $(this).one('load error', function () {
+                loaded++;
+                if (loaded === $images.length) {
+                    $loader.remove();
+                    $grid.fadeIn(150);
+                }
+            });
+        }
+    });
+
+    if (loaded === $images.length) {
+        $loader.remove();
+        $grid.fadeIn(150);
+    }
+}
+
+
+// 🔹 Reusable Media Picker Logic
 window.initMediaPicker = function(options) {
+
     var pickerBtn = $(options.pickerBtnSelector);
     var modalBody = $(options.modalBodySelector);
     var modal = $(options.modalSelector);
@@ -8,35 +58,42 @@ window.initMediaPicker = function(options) {
     var selectedMediaId = hiddenInput.val() || null;
 
     function openMediaPicker() {
+
         modal.attr('data-multi', options.multi ? '1' : '0');
+
+        // 🔹 Show loader immediately
+        modalBody.html(`
+            <div class="picker-loader text-center py-5">
+                <div class="spinner-border text-primary"></div>
+                <div class="small text-muted mt-2">Loading media...</div>
+            </div>
+        `);
 
         $.ajax({
             url: options.pickerUrl,
             type: "GET",
             success: function (html) {
+
                 modalBody.html(html);
 
+                // 🔹 Wait for images before showing grid
+                waitForMediaImages(modalBody);
+
                 if (options.multi) {
+
                     var selectedIds = [];
                     var existing = (hiddenInput.val() || '');
+
                     if (existing) {
-                        // Try to read JSON first, then fall back to CSV.
                         try {
                             var parsed = JSON.parse(existing);
-                            if (Array.isArray(parsed)) {
-                                selectedIds = parsed.map(String);
-                            } else if (parsed) {
-                                selectedIds = [String(parsed)];
-                            }
+                            if (Array.isArray(parsed)) selectedIds = parsed.map(String);
+                            else if (parsed) selectedIds = [String(parsed)];
                         } catch (e) {
                             selectedIds = String(existing)
                                 .split(',')
-                                .map(function(id) {
-                                    return String(id).replace(/[\[\]"]/g, '').trim();
-                                })
-                                .filter(function(id) {
-                                    return id !== '';
-                                });
+                                .map(id => String(id).replace(/[\[\]"]/g, '').trim())
+                                .filter(id => id !== '');
                         }
                     }
 
@@ -47,10 +104,11 @@ window.initMediaPicker = function(options) {
                         }
                     });
 
-                    modalBody.on('click', '.media-thumb', function (e) {
+                    modalBody.on('click', '.media-thumb', function () {
                         var $thumb = $(this);
                         var id = String($thumb.data('id'));
                         var idx = selectedIds.indexOf(id);
+
                         if (idx === -1) {
                             selectedIds.push(id);
                             $thumb.addClass('picker-selected').css('outline', '3px solid #0d6efd');
@@ -60,28 +118,28 @@ window.initMediaPicker = function(options) {
                         }
                     });
 
-                    // ensure modal footer has confirm button
                     var $footer = modal.find('.modal-footer');
                     if (!$footer.length) {
                         $footer = $('<div class="modal-footer"></div>');
                         modal.find('.modal-content').append($footer);
                     }
+
                     $footer.html('');
                     var $confirm = $('<button type="button" class="btn btn-primary">Confirm selection</button>');
                     var $cancel = $('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>');
                     $footer.append($cancel).append($confirm);
 
                     $confirm.on('click', function () {
-                        // Always normalize and store the IDs on the hidden input
+
                         hiddenInput.val(selectedIds.join(','));
 
-                        // If a custom handler is provided (e.g. product edit gallery),
-                        // delegate rendering/handling to that instead of duplicating UI logic here.
                         if (typeof options.onMediaSelected === 'function') {
+
                             var selectedMediaData = selectedIds.map(function(id) {
                                 var $thumb = modalBody.find('.media-thumb').filter(function () {
                                     return String($(this).data('id')) === String(id);
                                 });
+
                                 return {
                                     id: id,
                                     url: $thumb.find('img').attr('src') || ''
@@ -89,18 +147,21 @@ window.initMediaPicker = function(options) {
                             });
 
                             options.onMediaSelected(selectedMediaData);
+
                         } else {
-                            // Default behavior: render simple thumbnails with a remove button
+
                             previewDiv.empty();
+
                             if (selectedIds.length === 0) {
                                 previewDiv.html('<div class="text-muted">No images selected</div>');
                             } else {
                                 selectedIds.forEach(function(id) {
-                                    var $thumb = $('.media-thumb').filter(function () {
-                                        return String($(this).data('id')) === String(id);
-                                    });
+
+                                    var $thumb = modalBody.find('.media-thumb[data-id="' + id + '"]');
                                     var img = $thumb.find('img').attr('src') || '';
+
                                     var $card = $('<div class="position-relative me-2 mb-2" style="width:100px;height:100px;border:1px solid #e9e9e9;border-radius:6px;overflow:hidden">');
+
                                     if (img) {
                                         $card.append(
                                             $('<img>')
@@ -108,6 +169,7 @@ window.initMediaPicker = function(options) {
                                                 .css({width: '100%', height: '100%', objectFit: 'cover'})
                                         );
                                     }
+
                                     var $btn = $('<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-gallery-image" data-id="'+id+'">✕</button>');
                                     $card.append($btn);
                                     previewDiv.append($card);
@@ -119,7 +181,9 @@ window.initMediaPicker = function(options) {
                     });
 
                 } else {
+
                     var existing = hiddenInput.val() || '';
+
                     if (existing) {
                         modalBody.find('.media-thumb').each(function() {
                             if (String($(this).data('id')) === String(existing)) {
@@ -129,36 +193,43 @@ window.initMediaPicker = function(options) {
                         });
                     }
 
-                    // Clean previous footer and add Select/Cancel
                     var $footer = modal.find('.modal-footer');
                     if (!$footer.length) {
                         $footer = $('<div class="modal-footer"></div>');
                         modal.find('.modal-content').append($footer);
                     }
+
                     $footer.html('');
+
                     var $selectBtn = $('<button type="button" class="btn btn-primary">Select</button>');
                     var $cancelBtn = $('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>');
                     $footer.append($cancelBtn).append($selectBtn);
 
                     $selectBtn.on('click', function () {
+
                         var sel = modal.data('picker-selected-id') || null;
+
                         if (!sel) {
                             var $first = modalBody.find('.media-thumb').first();
                             if ($first.length) sel = $first.data('id');
                         }
-                        if (!sel) {
-                            return;
-                        }
+
+                        if (!sel) return;
 
                         hiddenInput.val(sel);
+
                         var $thumb = modalBody.find('.media-thumb[data-id="' + sel + '"]');
                         var imgUrl = $thumb.find('img').attr('src');
-                        if (imgUrl) previewDiv.html(`<img src="${imgUrl}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`);
-                        else previewDiv.html('<span class="badge bg-secondary">No Image</span>');
+
+                        if (imgUrl) {
+                            previewDiv.html(`<img src="${imgUrl}" style="height:100px;width:100px;object-fit:cover;border-radius:4px;">`);
+                        } else {
+                            previewDiv.html('<span class="badge bg-secondary">No Image</span>');
+                        }
+
                         modal.find('.btn-close').trigger('click');
                     });
                 }
-
             }
         });
     }
@@ -177,6 +248,7 @@ window.initMediaPicker = function(options) {
         hiddenInput.val(selectedMediaId || '');
     });
 };
+
 // Admin JS
 function setDeleteFormAction(element) {
     let deleteUrl = element.getAttribute("data-delete-url");

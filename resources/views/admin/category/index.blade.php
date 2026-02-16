@@ -74,6 +74,7 @@
                                     <th>Name</th>
                                     <th>Slug</th>
                                     <th>Visibility</th>
+                                    <th>Published</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -133,6 +134,10 @@
                                             @else
                                                 <span class="badge bg-danger">Hidden</span>
                                             @endif
+                                        </td>
+
+                                        <td>
+                                            {{ $category->created_at->format('d M, Y') }}
                                         </td>
 
                                         <td>

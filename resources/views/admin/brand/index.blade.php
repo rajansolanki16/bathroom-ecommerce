@@ -72,6 +72,7 @@
                                    
                                     <th>Slug</th>
                                     <th>Show on Home</th>
+                                    <th>Published</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -125,6 +126,10 @@
                                                 data-id="{{ $brand->id }}">
                                                 {{ $brand->show_on_home ? 'Enabled' : 'Disabled' }}
                                             </button>
+                                        </td>
+
+                                        <td>
+                                            {{ $brand->created_at->format('d M, Y') }}
                                         </td>
 
                                         <td>

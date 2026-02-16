@@ -63,6 +63,7 @@
                                     {{-- <th>Index</th> --}}
                                     <th>Name</th>
                                     <th>Slug</th>
+                                    <th>Published</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -74,6 +75,9 @@
                                         <td>{{ $tag->name }}</td>
                                         <td>
                                             <span class="badge bg-info">{{ $tag->slug }}</span>
+                                        </td>
+                                        <td>
+                                            {{ $tag->created_at->format('d M, Y') }}
                                         </td>
                                         <td>
                                             <div class="dropdown">

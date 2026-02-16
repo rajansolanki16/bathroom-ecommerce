@@ -20,7 +20,6 @@ class MediaLibraryController extends Controller
     }
     public function index()
     {
-        // Only show media attached to Setting model and 'uploads' collection
         $media = Media::where('model_type', 'App\\Models\\Setting')
             ->where('collection_name', 'uploads')
             ->latest()->paginate(30);
@@ -31,23 +30,37 @@ class MediaLibraryController extends Controller
     {
         $request->validate([
             'file' => 'required',
+            'file.*' => 'file|max:20480' // 20MB per file
         ]);
-        $model = Setting::first();
+
+        $model = \App\Models\Setting::firstOrCreate(['id' => 1]);
+
         $uploaded = [];
+
         $files = $request->file('file');
+
         if (!is_array($files)) {
             $files = [$files];
         }
+
         foreach ($files as $file) {
-            $media = $model->addMedia($file)->toMediaCollection('uploads');
+
+            $media = $model
+                ->addMedia($file)
+                ->toMediaCollection('uploads');
+
             $uploaded[] = [
-                'id' => $media->id,
-                'file_name' => $media->file_name,
-                'mime_type' => $media->mime_type,
+                'id'           => $media->id,
+                'file_name'    => $media->file_name,
+                'mime_type'    => $media->mime_type,
                 'original_url' => $media->getUrl(),
             ];
         }
-        return response()->json(['success' => true, 'media' => $uploaded]);
+
+        return response()->json([
+            'success' => true,
+            'media'   => $uploaded
+        ]);
     }
 
     public function destroy(Media $media)
@@ -81,5 +94,4 @@ class MediaLibraryController extends Controller
             'description' => $media->getCustomProperty('description'),
         ]);
     }
-
 }

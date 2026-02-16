@@ -70,6 +70,7 @@
                                     <th>Name</th>
                                     <th>Slug</th>
                                     <th>Home</th>
+                                    <th>Published</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -91,6 +92,9 @@
                                                 {{ $color->show_on_home ? 'Enabled' : 'Disabled' }}
                                             </button>
                                         </td>
+                                            <td>
+                                                {{ $color->created_at->format('d M, Y') }}
+                                            </td>
 
                                         <td>
                                             <div class="dropdown">

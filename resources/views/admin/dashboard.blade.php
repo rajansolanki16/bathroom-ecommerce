@@ -281,7 +281,17 @@
                                                 {{ ucfirst($visit->outcome) }}
                                             </span>
                                         </td>
-                                        <td>{{ $visit->purpose ?? '-' }}</td>
+                                        @php
+                                            $purposes = [
+                                                'new_business' => 'New Business',
+                                                'follow_up' => 'Follow-up',
+                                                'product_demo' => 'Product Demo',
+                                                'complaint_resolution' => 'Complaint Resolution',
+                                                'other' => 'Other',
+                                            ];
+                                        @endphp
+
+                                        <td>{{ $purposes[$visit->purpose] ?? '-' }}</td>
                                         <td>{{ $visit->created_at->format('M d, Y') }}</td>
                                         <td>
                                             <a href="{{ route('salesman.visit.edit', $visit->id) }}" class="btn btn-sm">

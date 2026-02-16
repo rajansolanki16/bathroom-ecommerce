@@ -22,28 +22,32 @@
 
                 <!-- DASHBOARD -->
                 <li class="nav-item">
-                    <a href="{{ route('admin.dashboard') }}/" class="nav-link menu-link collapsed">
+                    @php $dashboardActive = Route::is('admin.dashboard'); @endphp
+                    <a href="{{ route('admin.dashboard') }}/"
+                        class="nav-link menu-link @if ($dashboardActive) active @endif">
                         <i class="ri-home-line"></i><span>Dashboard</span>
                     </a>
                 </li>
 
                 @role('admin')
+                <!-- CORE -->
+                <li class="menu-title"><span>Core</span></li>
+
                 <!-- MEDIA LIBRARY -->
                 <li class="nav-item">
-                    @php
-                    $mediaActive = Route::is('media-library.index');
-                    @endphp
+                    @php $mediaActive = Route::is('media-library.index'); @endphp
                     <a href="{{ route('media-library.index') }}"
                         class="nav-link menu-link @if ($mediaActive) active @endif">
                         <i class="ri-image-line"></i><span>Media Library</span>
                     </a>
                 </li>
-                <!-- END MEDIA LIBRARY -->
+                <!-- CATALOG -->
+                <li class="menu-title"><span>Catalog</span></li>
 
                 <!-- PRODUCT -->
                 <li class="nav-item">
                     @php
-                    $productActive = Route::is('products.create') || Route::is('products.index');
+                        $productActive = Route::is('products.create') || Route::is('products.index');
                     @endphp
                     <a class="nav-link menu-link @if ($productActive) ""@else collapsed @endif"
                         href="#sidebarProduct" data-bs-toggle="collapse" role="button"
@@ -51,8 +55,7 @@
                         <i class="ri-shopping-bag-3-line"></i>
                         <span>Product</span>
                     </a>
-                    <div class="menu-dropdown collapse @if ($productActive) show @endif"
-                        id="sidebarProduct">
+                    <div class="menu-dropdown collapse @if ($productActive) show @endif" id="sidebarProduct">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{ route('products.create') }}"
@@ -65,12 +68,11 @@
                         </ul>
                     </div>
                 </li>
-                <!-- END PRODUCT -->
 
                 <!-- BRANDS -->
                 <li class="nav-item">
                     @php
-                    $brandsActive = Route::is('brands.create') || Route::is('brands.index');
+                        $brandsActive = Route::is('brands.create') || Route::is('brands.index');
                     @endphp
                     <a class="nav-link menu-link @if ($brandsActive) ""@else collapsed @endif"
                         href="#sidebarBrands" data-bs-toggle="collapse" role="button"
@@ -78,8 +80,7 @@
                         <i class="ri-price-tag-3-line"></i>
                         <span>Brands</span>
                     </a>
-                    <div class="collapse menu-dropdown @if ($brandsActive) show @endif"
-                        id="sidebarBrands">
+                    <div class="collapse menu-dropdown @if ($brandsActive) show @endif" id="sidebarBrands">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{ route('brands.create') }}"
@@ -92,40 +93,11 @@
                         </ul>
                     </div>
                 </li>
-                <!-- END BRANDS -->
 
-                <!-- Product Attribute -->
-                {{-- <li class="nav-item">
-                    @php
-                        $productAttributeActive =
-                            Route::is('product_attributes.create') || Route::is('product_attributes.index');
-                    @endphp
-                    <a class="nav-link menu-link @if ($productAttributeActive) ""@else collapsed @endif"
-                        href="#sidebarProductAttribute" data-bs-toggle="collapse" role="button"
-                        aria-expanded="{{ $productAttributeActive ? 'true' : 'false' }}"
-                aria-controls="sidebarProductAttribute">
-                <i class="ri-list-settings-line"></i>
-                <span>Product Attribute</span>
-                </a>
-                <div class="collapse menu-dropdown @if ($productAttributeActive) show @endif"
-                    id="sidebarProductAttribute">
-                    <ul class="nav nav-sm flex-column">
-                        <li class="nav-item">
-                            <a href="{{ route('product_attributes.create') }}"
-                                class="nav-link @if (Route::is('product_attributes.create')) active @endif">Create</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('product_attributes.index') }}"
-                                class="nav-link @if (Route::is('product_attributes.index')) active @endif">Show</a>
-                        </li>
-                    </ul>
-                </div>
-                </li> --}}
-
-                <!-- Category -->
+                <!-- CATEGORY -->
                 <li class="nav-item">
                     @php
-                    $categoryActive = Route::is('categories.create') || Route::is('categories.index');
+                        $categoryActive = Route::is('categories.create') || Route::is('categories.index');
                     @endphp
                     <a class="nav-link menu-link @if ($categoryActive) ""@else collapsed @endif"
                         href="#sidebarCategory" data-bs-toggle="collapse" role="button"
@@ -133,8 +105,7 @@
                         <i class="ri-folder-2-line"></i>
                         <span>Category</span>
                     </a>
-                    <div class="collapse menu-dropdown @if ($categoryActive) show @endif"
-                        id="sidebarCategory">
+                    <div class="collapse menu-dropdown @if ($categoryActive) show @endif" id="sidebarCategory">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{ route('categories.create') }}"
@@ -148,79 +119,101 @@
                     </div>
                 </li>
 
-                <!-- tags -->
-
+                <!-- TAGS -->
                 <li class="nav-item">
-                    <a href="#sidebarproduct_tags" class="nav-link menu-link" data-bs-toggle="collapse" role="button"
-                        aria-expanded="false" aria-controls="sidebarproduct_tags">
+                    @php
+                        $tagsActive = Route::is('tags.create') || Route::is('tags.index');
+                    @endphp
+                    <a href="#sidebarproduct_tags"
+                        class="nav-link menu-link @if ($tagsActive) active @endif"
+                        data-bs-toggle="collapse" role="button"
+                        aria-expanded="{{ $tagsActive ? 'true' : 'false' }}"
+                        aria-controls="sidebarproduct_tags">
                         <i class="ri-hashtag"></i>
                         <span>Tags</span>
                     </a>
-
-                    <div class="collapse menu-dropdown" id="sidebarproduct_tags">
+                    <div class="collapse menu-dropdown @if ($tagsActive) show @endif" id="sidebarproduct_tags">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('tags.create') }}" class="nav-link">Create</a>
+                                <a href="{{ route('tags.create') }}"
+                                    class="nav-link @if (Route::is('tags.create')) active @endif">Create</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('tags.index') }}" class="nav-link">List</a>
+                                <a href="{{ route('tags.index') }}"
+                                    class="nav-link @if (Route::is('tags.index')) active @endif">List</a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
-                <!-- Colors -->
+                <!-- COLORS -->
                 <li class="nav-item">
-                    <a href="#sidebarproduct_color" class="nav-link menu-link" data-bs-toggle="collapse" role="button"
-                        aria-expanded="false" aria-controls="sidebarproduct_color">
+                    @php
+                        $colorsActive = Route::is('colors.create') || Route::is('colors.index');
+                    @endphp
+                    <a href="#sidebarproduct_color"
+                        class="nav-link menu-link @if ($colorsActive) active @endif"
+                        data-bs-toggle="collapse" role="button"
+                        aria-expanded="{{ $colorsActive ? 'true' : 'false' }}"
+                        aria-controls="sidebarproduct_color">
                         <i class="bi bi-palette"></i>
                         <span>Colors</span>
                     </a>
-
-                    <div class="collapse menu-dropdown" id="sidebarproduct_color">
+                    <div class="collapse menu-dropdown @if ($colorsActive) show @endif" id="sidebarproduct_color">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('colors.create') }}" class="nav-link">Create</a>
+                                <a href="{{ route('colors.create') }}"
+                                    class="nav-link @if (Route::is('colors.create')) active @endif">Create</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('colors.index') }}" class="nav-link">List</a>
+                                <a href="{{ route('colors.index') }}"
+                                    class="nav-link @if (Route::is('colors.index')) active @endif">List</a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
+                <!-- STOCKS -->
                 <li class="nav-item">
-                    <a href="#sidebarproduct_stocks" class="nav-link menu-link" data-bs-toggle="collapse" role="button"
-                        aria-expanded="false" aria-controls="sidebarproduct_stocks">
+                    @php
+                        $stocksActive = Route::is('stocks.create') || Route::is('stocks.index');
+                    @endphp
+                    <a href="#sidebarproduct_stocks"
+                        class="nav-link menu-link @if ($stocksActive) active @endif"
+                        data-bs-toggle="collapse" role="button"
+                        aria-expanded="{{ $stocksActive ? 'true' : 'false' }}"
+                        aria-controls="sidebarproduct_stocks">
                         <i class="ri-stack-line"></i>
                         <span>Stocks</span>
                     </a>
-
-                    <div class="collapse menu-dropdown" id="sidebarproduct_stocks">
+                    <div class="collapse menu-dropdown @if ($stocksActive) show @endif" id="sidebarproduct_stocks">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('stocks.create') }}" class="nav-link">Create</a>
+                                <a href="{{ route('stocks.create') }}"
+                                    class="nav-link @if (Route::is('stocks.create')) active @endif">Create</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('stocks.index') }}" class="nav-link">List</a>
+                                <a href="{{ route('stocks.index') }}"
+                                    class="nav-link @if (Route::is('stocks.index')) active @endif">List</a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
+                <!-- SALES -->
+                <li class="menu-title"><span>Sales</span></li>
 
+                <!-- ORDERS -->
                 <li class="nav-item">
-                    @php
-                    $orderActive = Route::is('orders.show');
-                    @endphp
+                    @php $orderActive = Route::is('orders.show'); @endphp
                     <a class="nav-link menu-link @if ($orderActive) ""@else collapsed @endif"
                         href="#sidebarorder" data-bs-toggle="collapse" role="button"
-                        aria-expanded="{{ $orderActive ? 'true' : 'false' }}" aria-controls="sidebarorder">
+                        aria-expanded="{{ $orderActive ? 'true' : 'false' }}"
+                        aria-controls="sidebarorder">
                         <i class="ri-file-list-3-line"></i>
-                        <span>Order</span>
+                        <span>Orders</span>
                     </a>
-                    <div class="collapse menu-dropdown @if ($orderActive) show @endif"
-                        id="sidebarorder">
+                    <div class="collapse menu-dropdown @if ($orderActive) show @endif" id="sidebarorder">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{ route('orders.show') }}"
@@ -230,78 +223,84 @@
                     </div>
                 </li>
 
-
-                {{--
+                <!-- STORE VISITS -->
                 <li class="nav-item">
-                    @php
-                        $activityActive = Route::is('admin.activity.index');
-                    @endphp
-                    <a class="nav-link menu-link @if ($activityActive) @else collapsed @endif"
-                        href="#sidebarActivity" data-bs-toggle="collapse" role="button"
-                        aria-expanded="{{ $activityActive ? 'true' : 'false' }}" aria-controls="sidebarActivity">
-                <i class="ri-pulse-line"></i> <span>Activity Monitor</span>
-                </a>
-                <div class="collapse menu-dropdown @if ($activityActive) show @endif" id="sidebarActivity">
-                    <ul class="nav nav-sm flex-column">
-                        <li class="nav-item">
-                            <a href="{{ route('admin.activity.index') }}"
-                                class="nav-link @if (Route::is('admin.activity.index')) active @endif">
-                                Live Tracking
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                </li> --}}
-
-                <!-- Store visit Management -->
-                <li class="nav-item">
-                    <a href="#sidebarstore_visit" class="nav-link menu-link" data-bs-toggle="collapse" role="button"
-                        aria-expanded="false" aria-controls="sidebarstore_visit">
+                    @php $storeVisitActive = Route::is('store_visits.index'); @endphp
+                    <a href="#sidebarstore_visit"
+                        class="nav-link menu-link @if ($storeVisitActive) active @endif"
+                        data-bs-toggle="collapse" role="button"
+                        aria-expanded="{{ $storeVisitActive ? 'true' : 'false' }}"
+                        aria-controls="sidebarstore_visit">
                         <i class="bi bi-shop"></i>
                         <span>Store Visits</span>
                     </a>
-                    <div class="collapse menu-dropdown" id="sidebarstore_visit">
+                    <div class="collapse menu-dropdown @if ($storeVisitActive) show @endif"
+                        id="sidebarstore_visit">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('store_visits.index') }}" class="nav-link">List</a>
+                                <a href="{{ route('store_visits.index') }}"
+                                    class="nav-link @if (Route::is('store_visits.index')) active @endif">List</a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
-                                <!-- SETTINGS -->
+                <!-- CONFIGURATION -->
+                <li class="menu-title"><span>Configuration</span></li>
+
+                <!-- SETTINGS -->
                 <li class="nav-item">
-                    @if (Route::is('view.settings.*') || Route::is('faqs.*'))
-                    <a href="#sidebarSettings" class="nav-link menu-link" data-bs-toggle="collapse"
-                        role="button" aria-expanded="true" aria-controls="sidebarSettings">
-                        <i class="ri-home-gear-line"></i><span>Settings</span>
+                    @php
+                        $settingsActive =
+                            Route::is('view.settings.general') ||
+                            Route::is('view.settings.home') ||
+                            Route::is('view.settings.pages') ||
+                            Route::is('view.settings.ecommerce') ||
+                            Route::is('faqs.*');
+                    @endphp
+
+                    <a class="nav-link menu-link @if ($settingsActive) "" @else collapsed @endif"
+                        href="#sidebarSettings" data-bs-toggle="collapse" role="button"
+                        aria-expanded="{{ $settingsActive ? 'true' : 'false' }}"
+                        aria-controls="sidebarSettings">
+                        <i class="ri-home-gear-line"></i>
+                        <span>Settings</span>
                     </a>
-                    <div class="menu-dropdown" id="sidebarSettings">
-                        @else
-                        <a href="#sidebarSettings" class="nav-link menu-link collapsed" data-bs-toggle="collapse"
-                            role="button" aria-expanded="false" aria-controls="sidebarSettings">
-                            <i class="ri-home-gear-line"></i><span>Settings</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="sidebarSettings">
-                            @endif
-                            <ul class="nav nav-sm flex-column">
-                                <li class="nav-item">
-                                    <a href="{{ route('view.settings.general') }}/" class="nav-link">General</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('view.settings.home') }}/" class="nav-link">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('view.settings.pages') }}/" class="nav-link">Pages</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('view.settings.ecommerce') }}/" class="nav-link">E-Commerce</a>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="collapse menu-dropdown @if ($settingsActive) show @endif"
+                        id="sidebarSettings">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('view.settings.general') }}"
+                                    class="nav-link @if (Route::is('view.settings.general')) active @endif">
+                                    General
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('view.settings.home') }}"
+                                    class="nav-link @if (Route::is('view.settings.home')) active @endif">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('view.settings.pages') }}"
+                                    class="nav-link @if (Route::is('view.settings.pages')) active @endif">
+                                    Pages
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('view.settings.ecommerce') }}"
+                                    class="nav-link @if (Route::is('view.settings.ecommerce')) active @endif">
+                                    E-Commerce
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
-                
-                <!-- Users -->
+
+                <!-- ADMINISTRATION -->
+                <li class="menu-title"><span>Administration</span></li>
+
+                <!-- USERS -->
                 <li class="nav-item">
                     <a href="{{ route('users.index') }}" class="nav-link menu-link collapsed">
                         <i class="ph-user-circle"></i><span>Users</span>
@@ -310,6 +309,7 @@
                 @endrole
 
                 @role('salesman')
+                <li class="menu-title"><span>Salesman</span></li>
                 <li class="nav-item">
                     @php
                     $visitActive = Route::is('salesman.visit.create') || Route::is('salesman.visit.store');
@@ -328,7 +328,6 @@
                             </li>
                         </ul>
                     </div>
-
                 </li>
                 @endrole
             </ul>

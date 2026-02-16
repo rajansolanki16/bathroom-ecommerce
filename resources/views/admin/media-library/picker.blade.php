@@ -1,4 +1,13 @@
-<div class="d-flex justify-content-between align-items-center mb-3">
+
+<style>
+    .picker-media-grid-inner {
+    display: grid;
+    width: 100%;
+}
+
+.modal-body {
+    overflow-x: hidden;
+}</style><div class="d-flex justify-content-between align-items-center mb-3">
     {{-- <h5 class="mb-0">Select Media</h5> --}}
     <button type="button" class="btn btn-sm btn-outline-primary picker-upload-toggle"><i class="bi bi-upload"></i> Upload</button>
 </div>
@@ -10,8 +19,13 @@
     </div>
     <div class="picker-upload-progress small text-muted mt-1"></div>
 </form>
-<div class="picker-media-grid">
-<div class="picker-media-grid-inner" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 16px;">
+<div class="picker-media-grid w-100">
+<div class="picker-loader text-center py-4">
+    <div class="spinner-border text-primary" role="status"></div>
+    <div class="small text-muted mt-2">Loading media...</div>
+</div>    
+<div class="picker-media-grid-inner w-100"
+     style="display:none; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px;">
 @foreach($media as $item)
     @php
         $mime = $item->mime_type;
@@ -150,4 +164,6 @@ $(document).off('submit', '.picker-upload-form').on('submit', '.picker-upload-fo
         }
     });
 });
+
+
 </script>
