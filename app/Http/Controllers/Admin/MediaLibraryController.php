@@ -33,7 +33,7 @@ class MediaLibraryController extends Controller
             'file.*' => 'file|max:20480' // 20MB per file
         ]);
 
-        $model = \App\Models\Setting::firstOrCreate(['id' => 1]);
+        $model = Setting::firstOrCreate(['id' => 1]);
 
         $uploaded = [];
 

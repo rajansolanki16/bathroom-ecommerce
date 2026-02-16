@@ -567,7 +567,6 @@ class ProductController extends Controller
             ->with([
                 'categories',
                 'tags',
-                'variants.attributeValues.attribute'
             ])
             ->firstOrFail();
 

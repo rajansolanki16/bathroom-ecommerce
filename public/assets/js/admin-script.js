@@ -605,57 +605,6 @@ $(document).ready(function () {
 });
 
 //admin panel e-commerce
-
-function previewSingleImage(event) {
-    const reader = new FileReader();
-    reader.onload = function () {
-        document.getElementById('productImagePreview').src = reader.result;
-    };
-    reader.readAsDataURL(event.target.files[0]);
-}
-
-function previewMultipleImages(event) {
-    const preview = document.getElementById('galleryPreview');
-    preview.innerHTML = '';
-
-    Array.from(event.target.files).forEach(file => {
-        const reader = new FileReader();
-
-        reader.onload = function () {
-            const col = document.createElement('div');
-            col.classList.add('col-md-3', 'mb-3');
-
-            col.innerHTML = `
-                <div class="card shadow-sm">
-                    <img src="${reader.result}" class="card-img-top" style="height:150px;object-fit:cover">
-                </div>
-            `;
-            preview.appendChild(col);
-        };
-
-        reader.readAsDataURL(file);
-    });
-}
-
-// product type hide/show
-function toggleSections() {
-    const type = $('#productType').val();
-
-    if (type == 1) {
-        $('#vec_shipping_section').hide();
-        $('#vec_variantSection').stop(true, true).slideDown();
-        $('#vec_general_Info_Section').hide();
-    } else {
-        $('#vec_variantSection').hide();
-        $('#vec_general_Info_Section').stop(true, true).slideDown();
-        $('#vec_shipping_section').show();
-    }
-}
-
-toggleSections();
-$('#productType').on('change', toggleSections);
-
-
 document.addEventListener('DOMContentLoaded', function() {
     const categorySelect = document.querySelector('#productCategories');
     if (categorySelect) {

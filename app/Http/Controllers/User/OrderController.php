@@ -168,7 +168,6 @@ class OrderController extends Controller
             // Write BOM for proper UTF-8 encoding in Excel
             fwrite($handle, "\xEF\xBB\xBF");
 
-            // Write headers
             $headers = [
                 'Order ID',
                 'Customer Name',
@@ -204,7 +203,6 @@ class OrderController extends Controller
         ]);
     }
 
-    // Order details page
     public function show($id) {
         $order = Order::with('items.product')->findOrFail($id);
             $statuses = OrderStatus::cases();

@@ -30,8 +30,8 @@ class OrderItem extends Model
 
         return self::where('product_id', $productId)
             ->whereHas('order', function ($q) {
-                $q->where('user_id', Auth::id())
-                  ->where('status', 'completed');
+                $q->where('vendor_id', Auth::id())
+                  ->where('status', '5');
             })
             ->exists();
     }

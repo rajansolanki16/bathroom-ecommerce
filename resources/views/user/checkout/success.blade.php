@@ -19,7 +19,7 @@
 
                     <div class="d-flex justify-content-center gap-3">
 
-                        <a href="{{ url('/') }}" class="btn btn-primary">
+                        <a href="{{ url('/home') }}" class="btn btn-primary">
                             Continue Browsing
                         </a>
 

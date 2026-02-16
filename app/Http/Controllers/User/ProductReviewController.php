@@ -23,8 +23,8 @@ class ProductReviewController extends Controller
 
         $orderItem = OrderItem::where('product_id', $request->product_id)
             ->whereHas('order', function ($q) {
-                $q->where('user_id', auth()->id())
-                  ->where('status', 'completed');
+                $q->where('vendor_id', auth()->id())
+                  ->where('status', '5');
             })
             ->latest()->first();
 
