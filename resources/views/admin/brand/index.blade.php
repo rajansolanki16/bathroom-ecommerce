@@ -1,12 +1,4 @@
 <x-admin.header :title="'Brands'" />
-
-<style>
-    /* Same fix used in Users */
-    .table-responsive {
-        overflow: visible !important;
-    }
-</style>
-
 <div class="container-fluid">
 
     <!-- Page Title -->
@@ -268,14 +260,6 @@
             if (row) {
                 row.remove();
 
-                const rows = document.querySelectorAll('#brandTable tbody tr');
-
-                rows.forEach((tr, index) => {
-                    const indexCell = tr.querySelector('td:first-child');
-                    if (indexCell) {
-                        indexCell.textContent = index + 1;
-                    }
-                });
             }
 
         });

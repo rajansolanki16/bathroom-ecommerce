@@ -201,38 +201,6 @@ $(document).on('click', '.add-to-cart', function (e) {
     });
 });
 
-// Remove from cart
-$(document).on('click', '.remove-from-cart', function(e) {
-    e.preventDefault();
-    
-    var button = $(this);
-    var productId = button.data('id');
-    var rowId = button.data('row');
-    
-    $.ajax({
-        url: window.cartRemoveUrl.replace(':id', productId),
-        type: 'POST',
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(response) {
-            if (response.status === 'success') {
-                $('#' + rowId).fadeOut(400, function() {
-                    $(this).remove();
-                    
-                    $('#cart-count').text(response.count);
-                    $('#grand-total').text('₹' + response.grandTotal);
-                });
-                
-                console.log('Product removed from cart');
-            }
-        },
-        error: function(xhr) {
-            button.prop('disabled', false).text('Remove');
-            alert(xhr.responseJSON?.message || 'Failed to remove product');
-        }
-    });
-});
 
 
 var updateTimeout;

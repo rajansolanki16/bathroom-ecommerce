@@ -22,7 +22,7 @@ class CartController extends Controller
                 foreach ($dbCart->items as $item) {
                     $cart[] = [
                         'id'       => $item->product_id,
-                        'name'     => $item->product->name,
+                        'name'     => $item->product->product_title,
                         'price'    => $item->price,
                         'quantity' => $item->quantity,
                         'image'    => $item->product->getFirstMediaUrl('main_image') ?: ($item->product->product_image ? asset('storage/'.$item->product->product_image) : asset('assets/images/no-image.png')),

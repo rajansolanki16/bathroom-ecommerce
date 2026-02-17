@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
-    // Orders list page
     public function index()
     {
         $orders = Order::where('vendor_id', auth()->id())
@@ -209,4 +208,10 @@ class OrderController extends Controller
 
     return view('user.orders.details', compact('order','statuses'));
     }
+
+    public function details($id) {
+    $order = Order::with(['items.product', 'user'])->findOrFail($id);
+    $statuses = OrderStatus::cases();
+    return view('admin.orders.details', compact('order', 'statuses'));
+}
 }

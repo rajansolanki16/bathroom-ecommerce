@@ -1,11 +1,5 @@
 <x-admin.header :title="'Stocks'" />
 
-<style>
-    .table-responsive {
-        overflow: visible !important;
-    }
-</style>
-
 <div class="container-fluid">
 
     <!-- Page Title -->

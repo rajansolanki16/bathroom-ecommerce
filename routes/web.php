@@ -60,7 +60,7 @@ Route::post('/wishlist/delete/{id}', [WishListController::class, 'deleteById'])-
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/remove/{productId}', [CartController::class, 'remove'])->name('cart.remove');
+Route::delete('/cart/remove/{productId}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/update/{productId}', [CartController::class, 'update'])->name('cart.update');
 
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
@@ -83,7 +83,8 @@ Route::get('/user/orders/{order}', [OrderController::class, 'show'])->name('user
 // });
 
 //admin panel
-Route::get('admin/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard');
+    Route::get('admin/dashboard', [AdminController::class, 'show_admin'])->name('admin.dashboard')->middleware('role:admin|salesman');
+
 
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
@@ -116,6 +117,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/orders', [OrderController::class, 'indexshow'])->name('orders.show');
         Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
         Route::post('/orders/{order}/notes', [OrderController::class, 'updateNotes'])->name('orders.notes');
+        Route::get('/orders/{id}', [OrderController::class, 'details'])->name('orders.details');
 
         // Color
         Route::get('/colors/create', [ColorController::class, 'create'])->name('colors.create');

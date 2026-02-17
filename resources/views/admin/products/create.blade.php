@@ -126,6 +126,9 @@
                                             <label class="form-label">SKU Number</label>
                                             <input type="text" name="sku_number" class="form-control"
                                                 value="{{ old('sku_number') }}" placeholder="SKU-ABC-001">
+                                                  @error('sku_number')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                         </div>
                                     </div>
                                 </div>

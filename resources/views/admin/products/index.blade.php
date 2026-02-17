@@ -1,12 +1,4 @@
 <x-admin.header :title="'Products'" />
-
-<style>
-    /* Fix dropdown scrollbar issue */
-    .table-responsive {
-        overflow: visible !important;
-    }
-</style>
-
 <div class="container-fluid">
 
     <!-- Page Title -->

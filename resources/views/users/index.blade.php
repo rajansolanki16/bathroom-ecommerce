@@ -1,9 +1,4 @@
 <x-admin.header :title="'Users'" />
-<style>
-    .table-responsive {
-    overflow: visible !important;
-}
-</style>
 <div class="container-fluid">
 
     <!-- Page Title -->
@@ -213,8 +208,6 @@
     </div>
 </div>
 <livewire:modals.delete-record />
-
-
 <script>
         setupPaginatedTable({
         searchInputId: "searchUsers",

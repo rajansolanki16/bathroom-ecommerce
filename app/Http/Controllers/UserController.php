@@ -256,7 +256,7 @@ class UserController extends Controller
         $user->update(['is_approved' => !$user->is_approved]);
 
         $status = $user->is_approved ? 'approved' : 'blocked';
-        return back()->with('success', "User access ha  s been {$status} successfully.");
+        return back()->with('success', "User access has been {$status} successfully.");
     }
 
     /**

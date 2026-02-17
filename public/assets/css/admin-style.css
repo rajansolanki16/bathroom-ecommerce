@@ -34,3 +34,57 @@
     table-layout: fixed;
     width: 100%;
 }
+  /* Collapsed (sm) mode: add breathing room between icons */
+    [data-sidebar-size="sm"] .app-menu .navbar-nav .nav-item {
+        margin-bottom: 4px;
+    }
+
+    [data-sidebar-size="sm"] .app-menu .navbar-nav .nav-link.menu-link {
+        padding: 10px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    [data-sidebar-size="sm"] .app-menu .navbar-nav .nav-link.menu-link i {
+        font-size: 1.25rem;
+        line-height: 1;
+        margin: 0;
+    }
+
+    /* Show logo-sm, hide logo-lg when collapsed */
+    [data-sidebar-size="sm"] .logo .logo-lg {
+        display: none !important;
+    }
+
+    [data-sidebar-size="sm"] .logo .logo-sm {
+        display: inline-block !important;
+    }
+
+    /* Show logo-lg, hide logo-sm when expanded */
+    [data-sidebar-size="lg"] .logo .logo-sm,
+    .logo .logo-sm {
+        display: none !important;
+    }
+
+    [data-sidebar-size="lg"] .logo .logo-lg,
+    .logo .logo-lg {
+        display: inline-block !important;
+    }
+
+    /* Center the small logo in brand box */
+    [data-sidebar-size="sm"] .navbar-brand-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 0;
+    }
+
+    [data-sidebar-size="sm"] .navbar-brand-box .btn-vertical-sm-hover {
+        display: none;
+    }
+
+    /* Section titles hidden when collapsed */
+    [data-sidebar-size="sm"] .menu-title {
+        display: none !important;
+    }

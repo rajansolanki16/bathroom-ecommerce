@@ -94,7 +94,7 @@ class AuthController extends Controller
                 'user_name' => $user->name,
             ];
 
-            Mail::to($user->email)->send(new OTPMail($mailData));
+            // Mail::to($user->email)->send(new OTPMail($mailData));
             return redirect()->route('view.otp_verify', $token)->with('message', 'User Registered Successfully. Check your mail for verification!')->with("email", $user->email);
         }
     }

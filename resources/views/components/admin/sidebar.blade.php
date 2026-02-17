@@ -2,9 +2,14 @@
     <!-- LOGO -->
     <div class="navbar-brand-box">
         <a href="{{ route('admin.dashboard') }}" class="logo logo-light">
+            {{-- Full logo: shown when sidebar is expanded (lg) --}}
             <span class="logo-lg">
                 <img class="mt-3" src="{{ publicPath(getSetting('site_logo_light')) }}" alt="" height="65">
             </span>
+            {{-- Small logo: shown when sidebar is collapsed (sm) --}}
+            {{-- <span class="logo-sm">
+                <img class="mt-2" src="{{ publicPath(getSetting('site_logo_light')) }}" alt="" height="36">
+            </span> --}}
         </a>
         <button type="button" class="p-0 btn btn-sm fs-3xl header-item float-end btn-vertical-sm-hover"
             id="vertical-hover">
@@ -41,15 +46,14 @@
                         <i class="ri-image-line"></i><span>Media Library</span>
                     </a>
                 </li>
+
                 <!-- CATALOG -->
                 <li class="menu-title"><span>Catalog</span></li>
 
                 <!-- PRODUCT -->
                 <li class="nav-item">
-                    @php
-                        $productActive = Route::is('products.create') || Route::is('products.index');
-                    @endphp
-                    <a class="nav-link menu-link @if ($productActive) ""@else collapsed @endif"
+                    @php $productActive = Route::is('products.create') || Route::is('products.index'); @endphp
+                    <a class="nav-link menu-link @if ($productActive) @else collapsed @endif"
                         href="#sidebarProduct" data-bs-toggle="collapse" role="button"
                         aria-expanded="{{ $productActive ? 'true' : 'false' }}" aria-controls="sidebarProduct">
                         <i class="ri-shopping-bag-3-line"></i>
@@ -71,10 +75,8 @@
 
                 <!-- BRANDS -->
                 <li class="nav-item">
-                    @php
-                        $brandsActive = Route::is('brands.create') || Route::is('brands.index');
-                    @endphp
-                    <a class="nav-link menu-link @if ($brandsActive) ""@else collapsed @endif"
+                    @php $brandsActive = Route::is('brands.create') || Route::is('brands.index'); @endphp
+                    <a class="nav-link menu-link @if ($brandsActive) @else collapsed @endif"
                         href="#sidebarBrands" data-bs-toggle="collapse" role="button"
                         aria-expanded="{{ $brandsActive ? 'true' : 'false' }}" aria-controls="sidebarBrands">
                         <i class="ri-price-tag-3-line"></i>
@@ -96,10 +98,8 @@
 
                 <!-- CATEGORY -->
                 <li class="nav-item">
-                    @php
-                        $categoryActive = Route::is('categories.create') || Route::is('categories.index');
-                    @endphp
-                    <a class="nav-link menu-link @if ($categoryActive) ""@else collapsed @endif"
+                    @php $categoryActive = Route::is('categories.create') || Route::is('categories.index'); @endphp
+                    <a class="nav-link menu-link @if ($categoryActive) @else collapsed @endif"
                         href="#sidebarCategory" data-bs-toggle="collapse" role="button"
                         aria-expanded="{{ $categoryActive ? 'true' : 'false' }}" aria-controls="sidebarCategory">
                         <i class="ri-folder-2-line"></i>
@@ -121,14 +121,11 @@
 
                 <!-- TAGS -->
                 <li class="nav-item">
-                    @php
-                        $tagsActive = Route::is('tags.create') || Route::is('tags.index');
-                    @endphp
+                    @php $tagsActive = Route::is('tags.create') || Route::is('tags.index'); @endphp
                     <a href="#sidebarproduct_tags"
                         class="nav-link menu-link @if ($tagsActive) active @endif"
                         data-bs-toggle="collapse" role="button"
-                        aria-expanded="{{ $tagsActive ? 'true' : 'false' }}"
-                        aria-controls="sidebarproduct_tags">
+                        aria-expanded="{{ $tagsActive ? 'true' : 'false' }}" aria-controls="sidebarproduct_tags">
                         <i class="ri-hashtag"></i>
                         <span>Tags</span>
                     </a>
@@ -148,14 +145,11 @@
 
                 <!-- COLORS -->
                 <li class="nav-item">
-                    @php
-                        $colorsActive = Route::is('colors.create') || Route::is('colors.index');
-                    @endphp
+                    @php $colorsActive = Route::is('colors.create') || Route::is('colors.index'); @endphp
                     <a href="#sidebarproduct_color"
                         class="nav-link menu-link @if ($colorsActive) active @endif"
                         data-bs-toggle="collapse" role="button"
-                        aria-expanded="{{ $colorsActive ? 'true' : 'false' }}"
-                        aria-controls="sidebarproduct_color">
+                        aria-expanded="{{ $colorsActive ? 'true' : 'false' }}" aria-controls="sidebarproduct_color">
                         <i class="bi bi-palette"></i>
                         <span>Colors</span>
                     </a>
@@ -175,14 +169,11 @@
 
                 <!-- STOCKS -->
                 <li class="nav-item">
-                    @php
-                        $stocksActive = Route::is('stocks.create') || Route::is('stocks.index');
-                    @endphp
+                    @php $stocksActive = Route::is('stocks.create') || Route::is('stocks.index'); @endphp
                     <a href="#sidebarproduct_stocks"
                         class="nav-link menu-link @if ($stocksActive) active @endif"
                         data-bs-toggle="collapse" role="button"
-                        aria-expanded="{{ $stocksActive ? 'true' : 'false' }}"
-                        aria-controls="sidebarproduct_stocks">
+                        aria-expanded="{{ $stocksActive ? 'true' : 'false' }}" aria-controls="sidebarproduct_stocks">
                         <i class="ri-stack-line"></i>
                         <span>Stocks</span>
                     </a>
@@ -206,10 +197,9 @@
                 <!-- ORDERS -->
                 <li class="nav-item">
                     @php $orderActive = Route::is('orders.show'); @endphp
-                    <a class="nav-link menu-link @if ($orderActive) ""@else collapsed @endif"
+                    <a class="nav-link menu-link @if ($orderActive) @else collapsed @endif"
                         href="#sidebarorder" data-bs-toggle="collapse" role="button"
-                        aria-expanded="{{ $orderActive ? 'true' : 'false' }}"
-                        aria-controls="sidebarorder">
+                        aria-expanded="{{ $orderActive ? 'true' : 'false' }}" aria-controls="sidebarorder">
                         <i class="ri-file-list-3-line"></i>
                         <span>Orders</span>
                     </a>
@@ -229,13 +219,11 @@
                     <a href="#sidebarstore_visit"
                         class="nav-link menu-link @if ($storeVisitActive) active @endif"
                         data-bs-toggle="collapse" role="button"
-                        aria-expanded="{{ $storeVisitActive ? 'true' : 'false' }}"
-                        aria-controls="sidebarstore_visit">
+                        aria-expanded="{{ $storeVisitActive ? 'true' : 'false' }}" aria-controls="sidebarstore_visit">
                         <i class="bi bi-shop"></i>
                         <span>Store Visits</span>
                     </a>
-                    <div class="collapse menu-dropdown @if ($storeVisitActive) show @endif"
-                        id="sidebarstore_visit">
+                    <div class="collapse menu-dropdown @if ($storeVisitActive) show @endif" id="sidebarstore_visit">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{ route('store_visits.index') }}"
@@ -258,40 +246,29 @@
                             Route::is('view.settings.ecommerce') ||
                             Route::is('faqs.*');
                     @endphp
-
-                    <a class="nav-link menu-link @if ($settingsActive) "" @else collapsed @endif"
+                    <a class="nav-link menu-link @if ($settingsActive) @else collapsed @endif"
                         href="#sidebarSettings" data-bs-toggle="collapse" role="button"
-                        aria-expanded="{{ $settingsActive ? 'true' : 'false' }}"
-                        aria-controls="sidebarSettings">
+                        aria-expanded="{{ $settingsActive ? 'true' : 'false' }}" aria-controls="sidebarSettings">
                         <i class="ri-home-gear-line"></i>
                         <span>Settings</span>
                     </a>
-                    <div class="collapse menu-dropdown @if ($settingsActive) show @endif"
-                        id="sidebarSettings">
+                    <div class="collapse menu-dropdown @if ($settingsActive) show @endif" id="sidebarSettings">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{ route('view.settings.general') }}"
-                                    class="nav-link @if (Route::is('view.settings.general')) active @endif">
-                                    General
-                                </a>
+                                    class="nav-link @if (Route::is('view.settings.general')) active @endif">General</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('view.settings.home') }}"
-                                    class="nav-link @if (Route::is('view.settings.home')) active @endif">
-                                    Home
-                                </a>
+                                    class="nav-link @if (Route::is('view.settings.home')) active @endif">Home</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('view.settings.pages') }}"
-                                    class="nav-link @if (Route::is('view.settings.pages')) active @endif">
-                                    Pages
-                                </a>
+                                    class="nav-link @if (Route::is('view.settings.pages')) active @endif">Pages</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('view.settings.ecommerce') }}"
-                                    class="nav-link @if (Route::is('view.settings.ecommerce')) active @endif">
-                                    E-Commerce
-                                </a>
+                                    class="nav-link @if (Route::is('view.settings.ecommerce')) active @endif">E-Commerce</a>
                             </li>
                         </ul>
                     </div>
@@ -311,13 +288,11 @@
                 @role('salesman')
                 <li class="menu-title"><span>Salesman</span></li>
                 <li class="nav-item">
-                    @php
-                    $visitActive = Route::is('salesman.visit.create') || Route::is('salesman.visit.store');
-                    @endphp
+                    @php $visitActive = Route::is('salesman.visit.create') || Route::is('salesman.visit.store'); @endphp
                     <a href="#sidebarVisit"
-                        class="nav-link menu-link @if ($visitActive) "" @else collapsed @endif"
-                        data-bs-toggle="collapse" role="button" aria-expanded="{{ $visitActive ? 'true' : 'false' }}"
-                        aria-controls="sidebarVisit">
+                        class="nav-link menu-link @if ($visitActive) @else collapsed @endif"
+                        data-bs-toggle="collapse" role="button"
+                        aria-expanded="{{ $visitActive ? 'true' : 'false' }}" aria-controls="sidebarVisit">
                         <i class="ri-briefcase-line"></i><span>Salesman Visits</span>
                     </a>
                     <div class="collapse menu-dropdown @if ($visitActive) show @endif" id="sidebarVisit">
@@ -330,6 +305,7 @@
                     </div>
                 </li>
                 @endrole
+
             </ul>
         </div>
     </div>

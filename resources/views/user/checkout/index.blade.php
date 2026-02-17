@@ -1,172 +1,133 @@
-<x-header :meta="array(
-    'title' => 'Product Inquiry - E-commerce Store',
-    'description' => 'Send your inquiry'
-)" />
+@extends('layout.app')
 
-@if ($errors->any()) <div class="alert alert-danger"> {{ $errors->first() }} </div> @endif
-@if (session('error'))<div class="alert alert-danger"> {{ session('error') }} </div> @endif
-@if (session('success')) <div class="alert alert-success"> {{ session('success') }} </div> @endif
+@section('title', 'Your Inquiry Cart - Hardware Store')
 
-<main class="ko-container py-5">
-    <div class="row mb-4">
-        <div class="col">
-            <h2 class="fw-bold">Product Inquiry</h2>
-            <p class="text-muted mb-0">Submit your inquiry for the selected products</p>
+@section('content')
+
+<div class="hero">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-lg-5">
+                <div class="intro-excerpt">
+                    <h1>Inquiry Checkout</h1>
+                    <p class="mb-4">Please provide your details to receive a formal quote for your selected items.</p>
+                </div>
+            </div>
         </div>
     </div>
-
-    {{-- @if(session('applied_coupon'))
-        <div class="alert alert-success d-flex justify-content-between align-items-center">
-            <span>
-                Reference Code <strong>{{ session('applied_coupon')['code'] }}</strong> attached
-            </span>
-
-            <form method="POST" action="{{ route('checkout.remove.coupon') }}">
-                @csrf
-                <button class="btn btn-sm btn-outline-danger">Remove</button>
-            </form>
+</div>
+<div class="untree_co-section">
+    <div class="container">
+        
+        @if ($errors->any() || session('error') || session('success'))
+        <div class="row mb-4">
+            <div class="col-md-12">
+                @if ($errors->any()) <div class="alert alert-danger">{{ $errors->first() }}</div> @endif
+                @if (session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif
+                @if (session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
+            </div>
         </div>
-    @else
-        <form method="POST" action="{{ route('checkout.apply.coupon') }}" class="mb-3">
+        @endif
+
+        <form method="POST" action="{{ route('checkout.place') }}">
             @csrf
-            <div class="input-group">
-                <input type="text" name="code" class="form-control" placeholder="Enter reference code (optional)">
-                <button class="btn btn-outline-secondary">Attach</button>
+            <div class="row">
+                <div class="col-md-6 mb-5 mb-md-0">
+                    <h2 class="h3 mb-3 text-black">Inquiry Details</h2>
+                    <div class="p-3 p-lg-5 border bg-white">
+                        
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label for="name" class="text-black">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required value="{{ old('name') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row mt-3">
+                            <div class="col-md-6">
+                                <label for="email" class="text-black">Email Address <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required value="{{ old('email') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="text-black">Phone <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="phone" name="phone" placeholder="+91 ..." required value="{{ old('phone') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row mt-3">
+                            <div class="col-md-12">
+                                <label for="address" class="text-black">Message / Requirement Details <span class="text-danger">*</span></label>
+                                <textarea name="address" id="address" cols="30" rows="5" class="form-control" 
+                                    placeholder="Tell us about your specific requirements, quantity, or company name..." required>{{ old('address') }}</textarea>
+                            </div>
+                        </div>
+
+                        {{-- Optional Coupon/Reference Code Section --}}
+                        <div class="form-group mt-4">
+                            <label for="c_code" class="text-black">Reference Code (Optional)</label>
+                            <div class="input-group w-100">
+                                <input type="text" name="coupon_code" class="form-control" id="c_code" placeholder="Code">
+                                <div class="input-group-append">
+                                    <button class="btn btn-black btn-sm" type="button">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="row mb-5">
+                        <div class="col-md-12">
+                            <h2 class="h3 mb-3 text-black">Inquiry Summary</h2>
+                            <div class="p-3 p-lg-5 border bg-white">
+                                <table class="table site-block-order-table mb-5">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th class="text-end">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($cart as $item)
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ asset('storage/'.$item['image']) }}" alt="Image" class="img-fluid rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                                    <span>{{ $item['name'] }} <strong class="mx-1">x</strong> {{ $item['quantity'] }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-end text-muted small">For Inquiry</td>
+                                        </tr>
+                                        @endforeach
+                                        
+                                        <tr>
+                                            <td class="text-black font-weight-bold"><strong>Total Items</strong></td>
+                                            <td class="text-black text-end"><strong>{{ $cart->sum('quantity') }}</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-black font-weight-bold"><strong>Inquiry Type</strong></td>
+                                            <td class="text-black text-end">Product Request</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="border p-3 mb-4 bg-light rounded">
+                                    <p class="mb-0 small text-muted">
+                                        <strong>Note:</strong> This is not a purchase. Our sales team will review your requirements and contact you with the best pricing and availability within 24 hours.
+                                    </p>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-black btn-lg py-3 btn-block w-100">Submit Inquiry Request</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
-    @endif --}}
-
-    <form method="POST" action="{{ route('checkout.place') }}">
-        @csrf
-
-        <div class="row g-4">
-            <!-- LEFT : Inquiry Details -->
-            <div class="col-lg-7">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <h5 class="fw-semibold mb-4">Your Details</h5>
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Full Name</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    class="form-control"
-                                    placeholder="John Doe"
-                                    required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Email Address</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    class="form-control"
-                                    placeholder="john@example.com"
-                                    required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Phone Number</label>
-                                <input
-                                    type="text"
-                                    name="phone"
-                                    class="form-control"
-                                    placeholder="+91 98765 43210"
-                                    required>
-                            </div>
-
-                            <div class="col-12">
-                                <label class="form-label">Message / Inquiry Details</label>
-                                <textarea
-                                    name="address"
-                                    rows="3"
-                                    class="form-control"
-                                    placeholder="Write your inquiry, quantity requirement, company name, or any specific request..."
-                                    required></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- RIGHT : Inquiry Summary -->
-            <div class="col-lg-5">
-                <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
-                    <div class="card-body p-4">
-                        <h5 class="fw-semibold mb-4">Selected Products</h5>
-
-                        @foreach($cart as $item)
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <img
-                                        src="{{ asset('storage/'.$item['image']) }}"
-                                        width="50"
-                                        height="50"
-                                        class="rounded"
-                                        style="object-fit: cover">
-
-                                    <div>
-                                        <div class="fw-medium">{{ $item['name'] }}</div>
-                                        <small class="text-muted">
-                                            Qty: {{ $item['quantity'] }}
-                                        </small>
-                                    </div>
-                                </div>
-
-                                <div class="fw-semibold text-muted">
-                                    For Inquiry
-                                </div>
-                            </div>
-                        @endforeach
-
-                        <hr>
-
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Total Items</span>
-                            <span>{{ $cart->sum('quantity') }}</span>
-                        </div>
-
-                        <div class="d-flex justify-content-between fs-6 fw-bold mb-4">
-                            <span>Inquiry Type</span>
-                            <span>Product Inquiry</span>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 py-2">
-                            Submit Inquiry
-                        </button>
-
-                        <div class="text-center mt-3">
-                            <small class="text-muted">
-                                📩 Our team will contact you soon
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-</main>
-
-<script>
-@if ($errors->any())
-    <div class="alert alert-danger">
-        {{ $errors->first() }}
     </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-
-@if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-</script>
-
-<x-footer />
+</div>
+@endsection

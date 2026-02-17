@@ -25,8 +25,6 @@ class Product extends Model implements HasMedia
         'short_description',
         'product_decscription',
 
-        'exchangeable',
-        'refundable',
 
         'stock',
         'price',
@@ -36,41 +34,18 @@ class Product extends Model implements HasMedia
         'sell_price_start_date',
         'sell_price_end_date',
 
-        'weight',
-        'length',
-        'width',
-        'height',
-
-        'free_shipping',
-
         'status',
         'visibility',
 
-        'product_image',
-        'gallery_images',
 
         'media_library_main_image_id',
         'media_library_gallery_image_ids',
     ];
 
     protected $casts = [
-        'gallery_images'          => 'array',
-
-        'exchangeable'            => 'boolean',
-        'refundable'              => 'boolean',
-        'free_shipping'           => 'boolean',
-
-        'sell_price_start_date'   => 'date',
-        'sell_price_end_date'     => 'date',
-
         'price'                   => 'decimal:2',
         'sell_price'              => 'decimal:2',
         'discount'                => 'decimal:2',
-
-        'weight'                  => 'decimal:2',
-        'length'                  => 'decimal:2',
-        'width'                   => 'decimal:2',
-        'height'                  => 'decimal:2',
     ];
 
     /**

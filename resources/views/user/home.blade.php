@@ -1,146 +1,334 @@
-<x-header :meta="array(
-    'title' => getSetting('page_rooms_meta_title'),
-    'description' => getSetting('page_rooms_meta_description')
-)" />
+@extends('layout.app')
 
-<main class="bg-light">
+@section('title', 'Home - Furni Interior Design')
 
-    {{-- HERO SECTION --}}
-    <section class="bg-white border-bottom">
-        <div class="ko-container py-5">
-            <div class="row align-items-center gy-4">
+@section('content')
+
+    <!-- Start Hero Section -->
+    <div class="hero">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-lg-5">
+                    <div class="intro-excerpt">
+                        <h1>Premium Bathroom <span class="d-block">& Hardware Essentials</span></h1>
+                        <p class="mb-4">Upgrade your home with our exclusive collection of designer faucets, durable
+                            fixtures, and modern bathroom accessories. Quality craftsmanship for every corner of your home.
+                        </p>
+                        <p><a href="{{ url('/shop') }}" class="btn btn-secondary me-2">Shop Collection</a><a href="#"
+                                class="btn btn-white-outline">View Catalog</a></p>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="hero-img-wrap">
+                        <img src="{{ asset('user/images/couch.png') }}" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Hero Section -->
+
+    <!-- Start Product Section -->
+    <div class="product-section">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
+                    <h2 class="mb-4 section-title">Crafted with excellent material.</h2>
+                    <p class="mb-4">
+                        {{ $products->first()->short_description ?? 'Donec vitae odio quis nisl dapibus malesuada.' }}</p>
+                    <p><a href="{{ route('cart.index') }}" class="btn">Explore All</a></p>
+                </div>
+
+                @foreach ($products->take(3) as $product)
+                    <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
+                        <a class="product-item" href="#">
+
+                            {{-- Use Spatie Media if main_image exists, else fallback --}}
+                            @php
+                                $mainImage = \Spatie\MediaLibrary\MediaCollections\Models\Media::find(
+                                    $product->media_library_main_image_id,
+                                );
+                            @endphp
+
+                            <img src="{{ $mainImage?->getUrl() ?: asset('user/images/product-1.png') }}"
+                                class="img-fluid product-thumbnail" alt="{{ $product->product_title }}">
+
+                            <h3 class="product-title">{{ $product->product_title }}</h3>
+                            <strong class="product-price">₹{{ number_format($product->price, 2) }}</strong>
+
+                            <span class="icon-cross add-to-cart-btn" data-id="{{ $product->id }}">
+                                <img src="{{ asset('user/images/cross.svg') }}" class="img-fluid">
+                            </span>
+                        </a>
+                    </div>
+                @endforeach
+
+            </div>
+        </div>
+    </div>
+    <!-- End Product Section -->
+
+    <!-- Start Why Choose Us Section -->
+    <div class="why-choose-section">
+        <div class="container">
+            <div class="row justify-content-between">
                 <div class="col-lg-6">
-                    <span class="badge bg-primary mb-3 px-3 py-2">
-                        New Collection
-                    </span>
+                    <h2 class="section-title">Why Choose Us</h2>
+                    <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit
+                        imperdiet dolor tempor tristique.</p>
 
-                    <h1 class="fw-bold mb-3" style="font-size: 2.5rem;">
-                        Premium Bathroom Hardware
-                    </h1>
+                    <div class="row my-5">
+                        <div class="col-6 col-md-6">
+                            <div class="feature">
+                                <div class="icon">
+                                    <img src="{{ asset('user/images/truck.svg') }}" alt="Image" class="imf-fluid">
+                                </div>
+                                <h3>Fast &amp; Free Shipping</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                </p>
+                            </div>
+                        </div>
 
-                    <p class="text-muted mb-4">
-                        Discover durable, elegant and modern fittings
-                        crafted for everyday luxury.
-                    </p>
+                        <div class="col-6 col-md-6">
+                            <div class="feature">
+                                <div class="icon">
+                                    <img src="{{ asset('user/images/bag.svg') }}" alt="Image" class="imf-fluid">
+                                </div>
+                                <h3>Easy to Shop</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                </p>
+                            </div>
+                        </div>
 
-                    <div class="d-flex gap-3">
-                        <a href="#products" class="btn btn-dark btn-lg px-4">
-                            Shop Now
-                        </a>
+                        <div class="col-6 col-md-6">
+                            <div class="feature">
+                                <div class="icon">
+                                    <img src="{{ asset('user/images/support.svg') }}" alt="Image" class="imf-fluid">
+                                </div>
+                                <h3>24/7 Support</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                </p>
+                            </div>
+                        </div>
 
-                        <a href="{{ route('wishlist.index') }}"
-                           class="btn btn-outline-dark btn-lg px-4">
-                            Wishlist
-                        </a>
+                        <div class="col-6 col-md-6">
+                            <div class="feature">
+                                <div class="icon">
+                                    <img src="{{ asset('user/images/return.svg') }}" alt="Image" class="imf-fluid">
+                                </div>
+                                <h3>Hassle Free Returns</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                </p>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
-                <div class="col-lg-6 text-center">
-                    <img src="{{ asset('assets/images/hero-products.png') }}"
-                         class="img-fluid rounded-4 shadow-sm"
-                         style="max-height: 400px;">
+                <div class="col-lg-5">
+                    <div class="img-wrap">
+                        <img src="{{ asset('user/images/why-choose-us-img.jpg') }}" alt="Image" class="img-fluid">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- End Why Choose Us Section -->
+
+    <!-- Start We Help Section -->
+    <div class="we-help-section">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-lg-7 mb-5 mb-lg-0">
+                    <div class="imgs-grid">
+                        <div class="grid grid-1"><img src="{{ asset('user/images/img-grid-1.jpg') }}" alt="Untree.co">
+                        </div>
+                        <div class="grid grid-2"><img src="{{ asset('user/images/img-grid-2.jpg') }}" alt="Untree.co">
+                        </div>
+                        <div class="grid grid-3"><img src="{{ asset('user/images/img-grid-3.jpg') }}" alt="Untree.co">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 ps-lg-5">
+                    <h2 class="section-title mb-4">We Help You Make Modern Interior Design</h2>
+                    <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam
+                        ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant
+                        morbi tristique senectus et netus et malesuada</p>
+
+                    <ul class="list-unstyled custom-list my-4">
+                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
+                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
+                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
+                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
+                    </ul>
+                    <p><a herf="#" class="btn">Explore</a></p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+    <!-- End We Help Section -->
 
-    {{-- FEATURE STRIP --}}
-    <section class="bg-white py-4 border-bottom">
-        <div class="ko-container">
-            <div class="row text-center gy-3">
-                <div class="col-md-3">
-                    <div class="fw-semibold">🚚 Fast Delivery</div>
-                    <small class="text-muted">Across India</small>
+    <!-- Start Popular Product -->
+    <div class="popular-product">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                    <div class="product-item-sm d-flex">
+                        <div class="thumbnail">
+                            <img src="{{ asset('user/images/product-1.png') }}" alt="Image" class="img-fluid">
+                        </div>
+                        <div class="pt-3">
+                            <h3>Nordic Chair</h3>
+                            <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
+                            <p><a href="#">Read More</a></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="fw-semibold">💳 Secure Payments</div>
-                    <small class="text-muted">100% Protected</small>
+
+                <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                    <div class="product-item-sm d-flex">
+                        <div class="thumbnail">
+                            <img src="{{ asset('user/images/product-2.png') }}" alt="Image" class="img-fluid">
+                        </div>
+                        <div class="pt-3">
+                            <h3>Kruzo Aero Chair</h3>
+                            <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
+                            <p><a href="#">Read More</a></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="fw-semibold">⭐ Premium Quality</div>
-                    <small class="text-muted">Rust-Proof Guarantee</small>
+
+                <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                    <div class="product-item-sm d-flex">
+                        <div class="thumbnail">
+                            <img src="{{ asset('user/images/product-3.png') }}" alt="Image" class="img-fluid">
+                        </div>
+                        <div class="pt-3">
+                            <h3>Ergonomic Chair</h3>
+                            <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
+                            <p><a href="#">Read More</a></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="fw-semibold">📞 24/7 Support</div>
-                    <small class="text-muted">Dedicated Assistance</small>
+
+            </div>
+        </div>
+    </div>
+    <!-- End Popular Product -->
+
+    <!-- Start Testimonial Slider -->
+    <div class="testimonial-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 mx-auto text-center">
+                    <h2 class="section-title">Testimonials</h2>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <div class="testimonial-slider-wrap text-center">
+
+                        <div id="testimonial-nav">
+                            <span class="prev" data-controls="prev"><span class="fa fa-chevron-left"></span></span>
+                            <span class="next" data-controls="next"><span class="fa fa-chevron-right"></span></span>
+                        </div>
+
+                        <div class="testimonial-slider">
+
+                            <div class="item">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-8 mx-auto">
+
+                                        <div class="testimonial-block text-center">
+                                            <blockquote class="mb-5">
+                                                <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio
+                                                    quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate
+                                                    velit imperdiet dolor tempor tristique. Pellentesque habitant morbi
+                                                    tristique senectus et netus et malesuada fames ac turpis egestas.
+                                                    Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
+                                            </blockquote>
+
+                                            <div class="author-info">
+                                                <div class="author-pic">
+                                                    <img src="{{ asset('user/images/person-1.png') }}" alt="Maria Jones"
+                                                        class="img-fluid">
+                                                </div>
+                                                <h3 class="font-weight-bold">Maria Jones</h3>
+                                                <span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END item -->
+
+                            <div class="item">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-8 mx-auto">
+
+                                        <div class="testimonial-block text-center">
+                                            <blockquote class="mb-5">
+                                                <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio
+                                                    quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate
+                                                    velit imperdiet dolor tempor tristique. Pellentesque habitant morbi
+                                                    tristique senectus et netus et malesuada fames ac turpis egestas.
+                                                    Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
+                                            </blockquote>
+
+                                            <div class="author-info">
+                                                <div class="author-pic">
+                                                    <img src="{{ asset('user/images/person-1.png') }}" alt="Maria Jones"
+                                                        class="img-fluid">
+                                                </div>
+                                                <h3 class="font-weight-bold">Maria Jones</h3>
+                                                <span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END item -->
+
+                            <div class="item">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-8 mx-auto">
+
+                                        <div class="testimonial-block text-center">
+                                            <blockquote class="mb-5">
+                                                <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio
+                                                    quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate
+                                                    velit imperdiet dolor tempor tristique. Pellentesque habitant morbi
+                                                    tristique senectus et netus et malesuada fames ac turpis egestas.
+                                                    Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
+                                            </blockquote>
+
+                                            <div class="author-info">
+                                                <div class="author-pic">
+                                                    <img src="{{ asset('user/images/person-1.png') }}" alt="Maria Jones"
+                                                        class="img-fluid">
+                                                </div>
+                                                <h3 class="font-weight-bold">Maria Jones</h3>
+                                                <span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END item -->
+
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
-
-
-    {{-- PRODUCT HEADER --}}
-    <section id="products" class="bg-light sticky-top z-2 shadow-sm">
-        <div class="ko-container py-3">
-            <div class="row align-items-center gy-2">
-                <div class="col-md-6">
-                    <h5 class="mb-0 fw-bold">
-                        All Products
-                        <span class="text-muted small">
-                            ({{ $products->total() ?? 0 }} items)
-                        </span>
-                    </h5>
-                </div>
-
-                <div class="col-md-6 text-md-end">
-                    <select class="form-select w-auto d-inline-block shadow-sm">
-                        <option value="latest">Latest</option>
-                        <option value="price_asc">Price: Low → High</option>
-                        <option value="price_desc">Price: High → Low</option>
-                        <option value="popular">Most Popular</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- PRODUCT GRID --}}
-    <section class="py-5">
-        <div class="ko-container">
-            <div class="row g-4"
-                 id="vec_product-grid"
-                 data-fetch-url="{{ route('view.home') }}"
-                 data-wishlist-url="{{ route('wishlist.toggle') }}">
-
-                @include('components.product-card')
-
-            </div>
-
-            {{-- PAGINATION --}}
-            <div class="d-flex justify-content-center mt-5">
-                {!! $products->links('pagination::bootstrap-4') !!}
-            </div>
-        </div>
-    </section>
-
-
-    {{-- CTA SECTION --}}
-    <section class="bg-dark text-white py-5 mt-4">
-        <div class="ko-container text-center">
-            <h3 class="fw-bold mb-3">
-                Need Help Choosing the Right Product?
-            </h3>
-            <p class="text-light mb-4">
-                Our experts are ready to assist you with bulk orders & project consultation.
-            </p>
-
-            <a href="#"
-               class="btn btn-primary btn-lg px-4 me-2">
-                Contact Us
-            </a>
-
-            <a href="#"
-               class="btn btn-outline-light btn-lg px-4">
-                Send Inquiry
-            </a>
-        </div>
-    </section>
-
-</main>
-<script>
-    window.guestMergeUrl = "{{ route('guest.merge') }}";
-   window.cartAddUrl = "{{ route('cart.add') }}";
-    window.isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
-</script>
-
-<x-footer />
+    </div>
+    <!-- End Testimonial Slider -->
+@endsection

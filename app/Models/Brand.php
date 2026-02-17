@@ -53,16 +53,4 @@ class Brand extends Model  implements HasMedia
             }
         });
     }
-    
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('brand_logo')->singleFile();
-    }
-
-    public function getLogoUrlAttribute()
-    {
-        return $this->hasMedia('brand_logo')
-            ? $this->getFirstMediaUrl('brand_logo')
-            : asset('admin/images/no-image.png');
-    }
 }

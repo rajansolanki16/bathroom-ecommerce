@@ -96,8 +96,6 @@ class SettingsSeeder extends Seeder
             ['page' => 'user-all',   "type" => "code", 'name' => 'Body Custom Scripts', 'slug' => 'page_custom_script_body', 'value' => 'null'],
             ['page' => 'user-all',   "type" => "code", 'name' => 'Footer Custom Scripts', 'slug' => 'page_custom_scrip_footer', 'value' => 'null'],
 
-
-
             // ['page' => '',   "type" => "", 'name' => '', 'slug' => '', 'value' => 'null'],
         ];
 

@@ -1,12 +1,5 @@
 <x-admin.header :title="'Categories'" />
 
-<style>
-    /* Same dropdown scrollbar fix */
-    .table-responsive {
-        overflow: visible !important;
-    }
-</style>
-
 <div class="container-fluid">
 
     <!-- Page Title -->
@@ -240,16 +233,6 @@
 
             if (row) {
                 row.remove();
-
-                // Recalculate index column
-                const rows = document.querySelectorAll('#categoryTable tbody tr');
-
-                rows.forEach((tr, index) => {
-                    const indexCell = tr.querySelector('td:first-child');
-                    if (indexCell) {
-                        indexCell.textContent = index + 1;
-                    }
-                });
             }
 
         });

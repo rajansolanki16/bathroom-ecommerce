@@ -1,11 +1,4 @@
 <x-admin.header :title="'Product Attributes'" />
-
-<style>
-    .table-responsive {
-        overflow: visible !important;
-    }
-</style>
-
 <div class="container-fluid">
 
     <!-- Page Title -->

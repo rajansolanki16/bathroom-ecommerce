@@ -41,5 +41,48 @@
 
 </div>
 </div>
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+    const hamburger = document.getElementById('topnav-hamburger-icon');
+    const html = document.documentElement;
+    const body = document.body;
+
+    if (hamburger) {
+        hamburger.addEventListener('click', function () {
+            const isMobile = window.innerWidth < 768;
+
+            if (isMobile) {
+                // Mobile: toggle the sidebar open/close via body class
+                body.classList.toggle('vertical-sidebar-enable');
+            } else {
+                // Desktop: toggle between full (lg) and icon-only (sm)
+                const currentSize = html.getAttribute('data-sidebar-size');
+                if (currentSize === 'lg') {
+                    html.setAttribute('data-sidebar-size', 'sm');
+                } else {
+                    html.setAttribute('data-sidebar-size', 'lg');
+                }
+            }
+        });
+    }
+
+    // Close sidebar when overlay is clicked (mobile)
+    const overlay = document.querySelector('.vertical-overlay');
+    if (overlay) {
+        overlay.addEventListener('click', function () {
+            body.classList.remove('vertical-sidebar-enable');
+        });
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', function () {
+        if (window.innerWidth >= 768) {
+            body.classList.remove('vertical-sidebar-enable');
+        }
+    });
+});
+
+    </script>
 </body>
 </html>
