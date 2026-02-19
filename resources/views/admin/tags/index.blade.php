@@ -184,16 +184,6 @@
 
             if (row) {
                 row.remove();
-
-                // Recalculate index column
-                const rows = document.querySelectorAll('#tagTable tbody tr');
-
-                rows.forEach((tr, index) => {
-                    const indexCell = tr.querySelector('td:first-child');
-                    if (indexCell) {
-                        indexCell.textContent = index + 1;
-                    }
-                });
             }
 
         });

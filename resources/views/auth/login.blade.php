@@ -43,19 +43,19 @@
         }
 
         .form-control {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             color: #fff;
         }
 
         .form-control:focus {
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.15);
             color: #fff;
             box-shadow: none;
         }
 
         .form-control::placeholder {
-            color: rgba(255,255,255,0.6);
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .btn-login {
@@ -99,7 +99,6 @@
 <body>
 
 <div class="login-card">
-        <!-- Logo -->
     <div class="text-center mb-4">
         <img src="{{ publicPath(getSetting('site_logo_light')) }}"
              alt="Logo"
@@ -115,66 +114,9 @@
         </div>
     @endif
 
-    <form action="{{ route('auth.login') }}" method="POST">
-        @csrf
 
-        <!-- Email -->
-        <div class="mb-3">
-            <label class="form-label">{{ __('common.username_or_email') }}</label>
-            <input type="text"
-                   name="email"
-                   value="{{ old('email') }}"
-                   class="form-control @error('email') is-invalid @enderror"
-                   placeholder="Enter your email">
-
-            @error('email')
-                <div class="invalid-feedback text-danger">
-                    {{ $message }}
-                </div>
-            @enderror
-        </div>
-
-        <!-- Password -->
-        <div class="mb-3">
-            <label class="form-label">{{ __('common.password') }}</label>
-            <div class="input-group">
-                <input type="password"
-                       name="password"
-                       id="password"
-                       class="form-control @error('password') is-invalid @enderror"
-                       placeholder="Enter password">
-
-                <button type="button"
-                        class="btn btn-outline-light"
-                        onclick="togglePassword()">
-                    <i class="bi bi-eye"></i>
-                </button>
-            </div>
-
-            @error('password')
-                <div class="invalid-feedback text-danger">
-                    {{ $message }}
-                </div>
-            @enderror
-        </div>
-
-        <!-- Remember -->
-        <div class="d-flex justify-content-between align-items-center mb-3 remember-check">
-            <div>
-                <input type="checkbox" name="remember" id="remember">
-                <label for="remember">{{ __('common.remember_me') }}</label>
-            </div>
-
-            <a href="{{ route('view.forget_password') }}" class="forgot-link">
-                Forgot password?
-            </a>
-        </div>
-
-        <!-- Button -->
-        <button type="submit" class="btn btn-login w-100">
-            {{ __('common.login_button') }}
-        </button>
-    </form>
+        <!-- Logo -->
+        <livewire:login-form />
 
 </div>
 

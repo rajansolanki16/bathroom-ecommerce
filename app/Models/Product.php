@@ -113,10 +113,4 @@ class Product extends Model implements HasMedia
         return $this->reviews()->avg('rating') ?? 0;
     }
 
-    
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('product_image')->singleFile();
-        $this->addMediaCollection('gallery');
-    }
 }

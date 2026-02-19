@@ -23,12 +23,6 @@ class Setting extends Model implements HasMedia
         'value',
     ];
 
-    // Optionally, you can define media collections here
-    // public function registerMediaCollections(): void
-    // {
-    //     $this->addMediaCollection('uploads');
-    // }
-
     public function registerMediaConversions(?\Spatie\MediaLibrary\MediaCollections\Models\Media $media = null): void
     {
         $this->addMediaConversion('thumb')
@@ -41,10 +35,5 @@ class Setting extends Model implements HasMedia
         $this->addMediaConversion('large')
             ->width(1200)
             ->height(1200);
-    }
-
-    public function registerMediaCollections(): void
-{
-    $this->addMediaCollection('brand')->singleFile();
 }
 }

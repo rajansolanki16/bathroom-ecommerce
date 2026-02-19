@@ -29,10 +29,5 @@ class Category extends Model implements HasMedia
         return $this->hasMany(Category::class, 'parent_id');
     }
   
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('category_image')->singleFile();
-    }
-
 
 }

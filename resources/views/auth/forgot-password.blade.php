@@ -118,30 +118,10 @@
             </div>
         @endif
 
-        <form action="{{ route('auth.password.otp') }}" method="POST">
-            @csrf
-
-            <!-- Email -->
-            <div class="mb-3">
-                <label class="form-label">Email address</label>
-                <input type="email" name="email" value="{{ old('email') }}"
-                    class="form-control @error('email') is-invalid @enderror" placeholder="Enter your email">
-
-                @error('email')
-                    <div class="invalid-feedback text-danger">
-                        {{ $message }}
-                    </div>
-                @enderror
-            </div>
-
-            <!-- Submit -->
-            <button type="submit" class="btn btn-submit w-100">
-                Get OTP
-            </button>
-        </form>
+        <livewire:forgot-password />
 
         <div class="text-center mt-3">
-            <a href="{{ route('login') }}" class="back-link">
+            <a href="{{ route('login') }}" class="back-link" wire:navigate>
                 <i class="bi bi-arrow-left"></i> Back to Login
             </a>
         </div>
